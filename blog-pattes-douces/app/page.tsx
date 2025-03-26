@@ -6,7 +6,7 @@ import Footer from "./Components/navigation/Footer";
 
 export default function App({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body>
         <Navbar />
         <Feedhome />
