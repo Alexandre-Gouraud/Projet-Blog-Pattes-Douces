@@ -1,6 +1,8 @@
 import Navbar from "./Components/navigation/Navbar";
 import Footer from "./Components/navigation/Footer";
-import Home from "./Components/Home/Home";
+import Posts from "./Components/Posts/Posts";
+import Feedhome from "./Components/feed/Feedhome";
+
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -20,7 +22,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-        <Home />
+        <Feedhome />
+        {/* <Home /> */}
         <Footer />
         {children}
       </body>
