@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Feedhome from "../../feed/Feedhome";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
@@ -18,7 +19,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/feed">
+                <Link href="</feedhome>">
                   <p>Feed</p>
                 </Link>
               </li>
