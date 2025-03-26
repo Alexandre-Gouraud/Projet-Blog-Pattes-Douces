@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react"; 
+import { useState } from "react";
 
 export default function Inscription() {
     const [error, setError] = useState<string | null>(null);

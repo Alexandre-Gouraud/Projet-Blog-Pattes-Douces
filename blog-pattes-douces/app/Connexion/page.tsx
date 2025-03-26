@@ -2,7 +2,6 @@
 
 import React from "react"; 
 import { useState } from "react";
-import Inscription from "../Components/inscription/page";
 
 
 export default function Connexion() {
