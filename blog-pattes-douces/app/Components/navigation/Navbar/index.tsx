@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import Feedhome from "../../feed/Feedhome";
-import Profile from "../../pages/profile";
+import Profile from "../../../Profile/page";
+import Feed from "../../../Feed/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
@@ -19,14 +20,10 @@ const Navbar = () => {
           <div className="flex justify-end items-center h-full">
             <ul className="hidden md:flex gap-x-6 text-white">
               <li>
-                <Link href="/profile">
-                  <p>Profile</p>
-                </Link>
+                <a href="/Profile">Profile</a>
               </li>
               <li>
-                <Link href="/feed">
-                  <p>Feed</p>
-                </Link>
+                <a href="/Feed">Feed</a>
               </li>
               <li>
                 <Link href="/activity">

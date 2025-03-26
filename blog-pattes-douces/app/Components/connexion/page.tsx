@@ -2,7 +2,7 @@
 
 import React from "react"; 
 import { useState } from "react";
-
+import Inscription from "../Components/inscription/page";
 
 
 export default function Connexion() {
@@ -53,7 +53,7 @@ export default function Connexion() {
                 <button type="submit">Login</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <p>Pas encore de compte ? <a href="/inscription">Inscription</a></p>
+            <p>Première fois sur Pattes Douces ?<a href="/inscription">Inscris-toi</a></p>
         </>
     );
 }
