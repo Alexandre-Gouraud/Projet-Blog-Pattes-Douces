@@ -10,7 +10,7 @@ export default function App({ children }: { children: React.ReactNode }) {
       <body>
         <Navbar />
         <Feedhome />
-        <Home />
+        {/* <Home /> */}
         <Footer />
         {children}
       </body>
