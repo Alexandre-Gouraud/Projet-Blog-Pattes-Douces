@@ -2,17 +2,20 @@
 
 import React from "react"; 
 import { useState } from "react";
+import Inscription from "../Inscription/page";
+
+// Removed unnecessary import for "/inscription"
 
 
 export default function Connexion() {
     const [error, setError] = useState<string | null>(null);
-
+    
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const pseudo = formData.get("pseudo") as string;
         const password = formData.get("password") as string;
-
+        
         try {
             const response = await fetch("/api/connexion", {
                 method: "POST",
@@ -31,7 +34,7 @@ export default function Connexion() {
             if (response.ok) {
               const { message } = await response.json();
               alert(message || "Connexion réussie"); // Afficher un message si la connexion est réussie
-              window.location.href = "/accueil";
+              window.location.href = "../Feed"; // Rediriger vers la page d'accueil
             }
 
             // Redirection après connexion réussie
@@ -52,7 +55,8 @@ export default function Connexion() {
                 <button type="submit">Login</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <p>Première fois sur Pattes Douces ?<a href="/inscription">Inscris-toi</a></p>
+            <p>Première fois sur Pattes Douces ? <a href="../Inscription">Inscris-toi</a></p>
+            
         </>
     );
 }

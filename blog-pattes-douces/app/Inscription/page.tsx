@@ -47,7 +47,7 @@ export default function Inscription() {
                 <button type="submit">S'inscrire</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <p>Déjà un compte ? <a href="/connexion">Connexion</a></p>
+            <p>Déjà un compte ? <a href="../Connexion">Connexion</a></p>
         </>
     );
 }

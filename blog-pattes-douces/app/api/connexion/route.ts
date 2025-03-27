@@ -20,7 +20,9 @@ export async function POST(request: Request) {
         if (user.password !== password) {
             return NextResponse.json({ message: "Mot de passe incorrect" }, { status: 401 });
         }
-        return NextResponse.json({ message: "Connexion réussie" }, { status: 200 });
+        return NextResponse.json({ message: "Connexion réussie", redirectUrl: "/app/pages.tsx" }, { status: 200 });
+
+
     } catch (error) {
         console.error("Error during login:", error);
         return NextResponse.json({ message: "Erreur interne du serveur" }, { status: 500 });
