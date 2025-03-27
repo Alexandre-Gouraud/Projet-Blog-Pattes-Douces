@@ -27,12 +27,12 @@ export default function Feedhome() {
       <h1 className="text-3xl font-bold mb-4">Articles récents</h1>
       <div className="space-y-6">
         {articles.map((article) => (
-          <div key={article.id} className="border p-4 rounded-lg shadow-md">
+            <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && <img src={article.image} alt={article.titre} className="mt-2 rounded-md" />}
             <p className="text-sm text-gray-500">Publié le {new Date(article.date).toLocaleDateString()}</p>
-          </div>
+            </div>
         ))}
       </div>
     </div>
