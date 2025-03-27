@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import Feedhome from "../../feed/Feedhome";
+import Feedhome from "../../../Feed/page";
 import Profile from "../../../Profile/page";
-import Feed from "../../../Feed/page";
+import Feed from "../../../../assets/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 

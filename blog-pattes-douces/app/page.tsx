@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Feedhome from "./Components/feed/Feedhome";
+import Feedhome from "./Feed/page";
 import Navbar from "./Components/navigation/Navbar";
 import Footer from "./Components/navigation/Footer";
 
