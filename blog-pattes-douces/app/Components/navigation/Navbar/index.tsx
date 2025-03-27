@@ -20,7 +20,7 @@ const Navbar = () => {
           <div className="flex justify-end items-center h-full">
             <ul className="hidden md:flex gap-x-6 text-white">
               <li>
-                <a href="/Profile">Profile</a>
+                <a href="/Connexion">Profile</a>
               </li>
               <li>
                 <a href="/Feed">Feed</a>
