@@ -1,22 +1,23 @@
 import React from "react";
-import Link from "next/link";
-import Feedhome from "../../feed/Feedhome";
-import Profile from "../../../Profile/page";
-import Feed from "../../../Feed/page";
+// import Link from "next/link";
+// import Feedhome from "../../feed/Feedhome";
+// import Profile from "../../../Profile/page";
+// import Feed from "../../../Feed/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
 const Header = () => {
   return (
     <div className="header">
-      <h1>Pattes Douces</h1>
+      
       <div
-        className="w-full h-20"
+        className="w-full h-20 flex justify-center items-center"
         style={{
-          background:
-            "linear-gradient(90deg, hsla(28, 38%, 43%, 1) 0%, hsla(0, 0%, 27%, 1) 100%)",
+          background: "white",
         }}
-      ></div>
+      >
+        <h1><em>Pattes Douces</em></h1>
+      </div>
     </div>
   );
 };
