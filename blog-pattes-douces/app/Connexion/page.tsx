@@ -31,13 +31,8 @@ export default function Connexion() {
             }
 
             if (response.ok) {
-                const { message, userId } = await response.json();
-                alert(message || "Connexion réussie");
-                localStorage.setItem("userId", userId);
-                setTimeout(() => {
-                    window.location.href = "../Feed";
-                  }, 300);
-                setError(null);
+                localStorage.setItem("pseudo", pseudo); // Stocker le pseudo dans le localStorage
+                window.location.href = "/Feed"; // Rediriger vers la page d'accueil
             }
         } catch (error) {
             console.error("Erreur lors de la connexion :", error);

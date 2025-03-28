@@ -6,7 +6,7 @@ const NavbarAff = () => {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        if (typeof window !== "undefined" && localStorage.getItem("userId") !== null) {
+        if (typeof window !== "undefined" && localStorage.getItem("pseudo") !== null) {
             setIsConnected(true);
         }
     }, []);

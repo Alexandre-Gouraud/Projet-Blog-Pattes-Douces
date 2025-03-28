@@ -9,16 +9,19 @@ import Header from "../Components/navigation/Header";
 import { useState, useEffect } from "react";
 
 const Profil = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+
+  const [pseudo, setPseudo] = useState<string | null>(null);
 
   useEffect(() => {
-    const UserId = localStorage.getItem("userId");
-    setUserId(UserId);
+    if (typeof window !== "undefined") {
+      const storedPseudo = localStorage.getItem("pseudo");
+      setPseudo(storedPseudo);
+    }
   }, []);
-  
 
+  
   const Deconnexion = () => {
-    localStorage.removeItem("userId");
+    localStorage.removeItem("pseudo");
     window.location.href = "../Feed"; 
   }
 
@@ -27,7 +30,7 @@ const Profil = () => {
       <NavbarAff/>
       <Header/>
       <h1>Profil</h1>
-      <p>Bienvenue sur votre profil {userId} !</p>
+      <p>Bienvenue sur votre profil {pseudo} !</p>
       <button onClick={Deconnexion}>Se déconnecter</button>
       <Footer />
     </>
