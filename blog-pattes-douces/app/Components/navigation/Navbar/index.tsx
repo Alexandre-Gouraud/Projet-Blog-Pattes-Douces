@@ -3,6 +3,7 @@ import Link from "next/link";
 import Feedhome from "../../feed/Feedhome";
 import Profile from "../../../Profile/page";
 import Feed from "../../../Feed/page";
+import Activity from "../../../Activity/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
@@ -26,7 +27,7 @@ const Navbar = () => {
                 <a href="/Feed">Feed</a>
               </li>
               <li>
-                <Link href="/activity">
+                <Link href="/Activity">
                   <p>Activité</p>
                 </Link>
               </li>
