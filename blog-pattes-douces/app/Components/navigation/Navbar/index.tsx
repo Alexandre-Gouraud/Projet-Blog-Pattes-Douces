@@ -20,20 +20,23 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-4 h-full">
           <div className="flex justify-end items-center h-full">
-            <ul className="hidden md:flex gap-x-6 text-white">
+            <ul className="hidden md:flex items-center gap-x-6 text-white">
+              <li>
+                <a href="/Feed">Accueil</a>
+              </li>
               <li>
                 <a href="/Connexion">Se Connecter</a>
               </li>
               <li>
-                <a href="/Feed">Feed</a>
+              <a href="/Feed">Feed</a>
               </li>
               <li>
-                <Link href="/Activity">
-                  <p>Activité</p>
-                </Link>
+              <Link href="/Activity">
+                <p>Activité</p>
+              </Link>
               </li>
               <li>
-                <a href="/Dashboard">Dashboard</a>
+              <a href="/Dashboard">Dashboard</a>
               </li>
             </ul>
           </div>
