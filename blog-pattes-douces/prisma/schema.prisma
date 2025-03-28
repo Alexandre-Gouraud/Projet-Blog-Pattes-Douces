@@ -31,7 +31,7 @@ model Article {
   commentaires Json
 }
 
-model commentaires {
+model Commentaires {
   id          String   @id @map("_id") @default(auto()) @db.ObjectId
   id_article  String   @db.ObjectId
   id_user     String   @db.ObjectId
