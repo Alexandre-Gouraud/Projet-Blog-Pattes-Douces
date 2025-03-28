@@ -23,6 +23,14 @@ pnpm run dev : Pour test l'application
 
 Une fois démarré, l'application sera accessible à l'URL indiquée dans le terminal (généralement http://localhost:3000/).
 
+# Après avoir Importer depuis GitHub
+
+    1 - Installer les packages
+
+pnpm install
+
+   
+
 # Prisma et Next-Auth
 
     1 - Installer Prisma et Next-Auth
@@ -43,6 +51,7 @@ Puis Installer Next-Auth : pnpm install next-auth
 # 📄 Licence
 
 Ce projet est sous licence MIT, vous êtes libre de le modifier et de l'utiliser comme bon vous semble.
+
 
 
 
