@@ -31,17 +31,19 @@ export default function Connexion() {
             }
 
             if (response.ok) {
-              const { message, userId } = await response.json();
-              alert(message || "Connexion réussie"); // Afficher un message si la connexion est réussie
-              localStorage.setItem("userId", userId); // Enregistrer l'id de l'utilisateur dans le localStorage
-              window.location.href = "../Feed"; // Rediriger vers la page d'accueil
+                const { message, userId } = await response.json();
+                alert(message || "Connexion réussie");
+                localStorage.setItem("userId", userId);
+                setTimeout(() => {
+                    window.location.href = "../Feed";
+                  }, 300);
+                setError(null);
             }
-            setError(null); // Réinitialiser l'erreur en cas de succès
-            // Redirection après connexion réussie
-        } catch (err) {
-            setError("Une erreur s'est produite. Veuillez réessayer.");
+        } catch (error) {
+            console.error("Erreur lors de la connexion :", error);
+            setError("Erreur lors de la connexion.");
         }
-    };
+            };
 
     return (
         <>
