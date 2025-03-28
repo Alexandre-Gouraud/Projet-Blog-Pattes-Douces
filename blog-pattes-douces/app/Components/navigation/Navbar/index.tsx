@@ -4,6 +4,7 @@ import Feedhome from "../../feed/Feedhome";
 import Profile from "../../../Profile/page";
 import Feed from "../../../Feed/page";
 import Activity from "../../../Activity/page";
+// import Dashboard from "../../dashboard/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
@@ -32,9 +33,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard">
-                  <p>Dashboard</p>
-                </Link>
+                <a href="/Dashboard">Dashboard</a>
               </li>
             </ul>
           </div>
