@@ -2,7 +2,6 @@ import {prisma} from "@/src/db/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-
     const { pseudo, password } = await request.json();
     // Validate input
     if (!pseudo || !password) {

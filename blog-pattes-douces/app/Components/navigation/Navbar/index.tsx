@@ -21,7 +21,7 @@ const Navbar = () => {
           <div className="flex justify-end items-center h-full">
             <ul className="hidden md:flex gap-x-6 text-white">
               <li>
-                <a href="/Connexion">Se connecter</a>
+                <a href="/Connexion">Profile</a>
               </li>
               <li>
                 <a href="/Feed">Feed</a>
