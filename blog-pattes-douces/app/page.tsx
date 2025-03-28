@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache"
 import Form from "next/form";
 import { redirect } from "next/navigation";
 
+// import id_import from "@/src/db/Id_import"
+
 // composants
 import RedirectTo from "@/components/redirection";
 
@@ -14,46 +16,32 @@ import RedirectTo from "@/components/redirection";
 
 
 export default async function Home() {
-// Affichage des users
+
+// const  [user_id,sauvegarde_id] = id_import("user_id")
+
+// stocker tout users
 const AllUsers= await prisma.user.findMany()
 
+
 const a= <div>{AllUsers.map((element) => (
-    <li key={element.id}>{element.pseudo}</li>
+
+   
+    <li key={element.id}>{element.pseudo}{"     "}  
+    <RedirectTo path="/page_user" nom_page="Page User" id_user={element.id}></RedirectTo>
+    </li>
+    
   ))}</div>
-
-
-// Ajouter des users
-let nom_user = ""
-
-if (!(prisma.user.findFirst({where:{pseudo:nom_user}}))){
-
-  const user_create =  prisma.user.create({
-    data:{
-      pseudo: nom_user.toString(), 
-      bio:'d',
-      mail:'d',
-      password:'d'
-    }
-  })
-}
-
-async function InscriptionRedirect(){
-  revalidatePath("/inscription")
-  redirect("/inscription")
-}
 
   return (<><div>
     <h1>Liste des users : </h1>
     <br/>
     {a}
     <br/>
-    <h1>Ajouter un user:</h1>
-    <label htmlFor="nom">Name:</label>
-    <input type="text" id="nom" name="nom" value={nom_user}/>
+    
 
     <br/>
 
-    <RedirectTo path="/inscription" nom_page="Inscription"></RedirectTo>
+    <RedirectTo path="/inscription" nom_page="Inscription" id_user=""></RedirectTo>
     
   </div>
   </>);

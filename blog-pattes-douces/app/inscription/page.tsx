@@ -3,7 +3,12 @@ import { revalidatePath } from "next/cache";
 import Form from "next/form";
 import { redirect } from "next/navigation";
 
-export default function NewPost() {
+// déclarer les variables en dehors des fonctions 
+let alerte=""
+export default function Inscription() {
+  
+  
+
   async function createPost(formData: FormData) {
     "use server";
     // récupère les valeurs des inputs
@@ -12,7 +17,14 @@ export default function NewPost() {
     const mail = formData.get("mail") as string;
     const password = formData.get("password") as string;
 
-    // Create the post using Prisma
+
+    // creation d'un user
+    // il est important de mettre await ici 
+    // ça permet d'attendre jusqu'à ce qu'à ce que la variable vérifie toute la base avant de continuer
+    // ne pas mettre await renverra toujours "Promise" c'est à dire false
+    const user_check = await prisma.user.findFirst({where:{pseudo: pseudo }})
+
+    if (!(user_check)){
     await prisma.user.create({
       data: {
       pseudo, 
@@ -22,10 +34,21 @@ export default function NewPost() {
       },
     });
 
+    alerte=""
+    
+    // redirection vers la page user (à changer)
+
+    revalidatePath("/inscription");
+    redirect("/inscription");
+  }else{
+    alerte="Ce user existe deja, veuiller utiliser un autre nom"
+    console.log("la valeur de alerte est changé")
     revalidatePath("/inscription");
     redirect("/inscription");
   }
-
+  
+  }
+ 
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Create New Post</h1>
@@ -43,6 +66,9 @@ export default function NewPost() {
             className="w-full px-4 py-2 border rounded-lg"
           />
         </div>
+        {/* message d'alerte quand le user existe deja */}
+        <h2>{alerte}</h2>
+
         {/* bio */}
         <div>
           <label htmlFor="bio" className="block text-lg mb-2">
@@ -87,7 +113,7 @@ export default function NewPost() {
           type="submit"
           className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600"
         >
-          Create Post
+          Inscription
         </button>
       </Form>
     </div>
