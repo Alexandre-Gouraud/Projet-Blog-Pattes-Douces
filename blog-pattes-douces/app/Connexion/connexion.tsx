@@ -3,9 +3,6 @@
 import React from "react"; 
 import { useState } from "react";
 
-// Removed unnecessary import for "/inscription"
-
-
 export default function Connexion() {
     const [error, setError] = useState<string | null>(null);
     
@@ -31,11 +28,12 @@ export default function Connexion() {
             }
 
             if (response.ok) {
-              const { message } = await response.json();
+              const { message, userId } = await response.json();
               alert(message || "Connexion réussie"); // Afficher un message si la connexion est réussie
+              localStorage.setItem("userId", userId); // Enregistrer l'id de l'utilisateur dans le localStorage
               window.location.href = "../Feed"; // Rediriger vers la page d'accueil
             }
-
+            setError(null); // Réinitialiser l'erreur en cas de succès
             // Redirection après connexion réussie
         } catch (err) {
             setError("Une erreur s'est produite. Veuillez réessayer.");

@@ -22,7 +22,7 @@ const Navbar = () => {
           <div className="flex justify-end items-center h-full">
             <ul className="hidden md:flex gap-x-6 text-white">
               <li>
-                <a href="/Connexion">Profil</a>
+                <a href="/Connexion">Se Connecter</a>
               </li>
               <li>
                 <a href="/Feed">Feed</a>

@@ -1,9 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import Connexion from "../Connexion/page";
 import Navbar from "../Components/navigation/Navbar";
 import Footer from "../Components/navigation/Footer";
-import Inscription from "../Inscription/page";
+import Inscription from "../Inscription";
 
 const Profile = () => {
   return (
