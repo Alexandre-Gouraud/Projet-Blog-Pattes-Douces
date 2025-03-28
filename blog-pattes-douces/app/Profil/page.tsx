@@ -1,17 +1,21 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import Navbar from "../Components/navigation/Navbar";
+import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
-import Inscription from "../Inscription";
+import Header from "../Components/navigation/Header";
 
-const Profile = () => {
+import { useState, useEffect } from "react";
+
+const Profil = () => {
   return (
     <>
-      <Navbar />
-      <Inscription />
+      <NavbarAff/>
+      <Header/>
       <Footer />
     </>
   );
 };
 
-export default Profile;
+export default Profil;

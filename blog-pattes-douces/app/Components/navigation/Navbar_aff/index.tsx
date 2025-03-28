@@ -11,7 +11,7 @@ const NavbarAff = () => {
         }
     }, []);
 
-    return isConnected ? <Navbar /> : <Navbar_connecte />;
+    return isConnected ? <Navbar_connecte /> : <Navbar />;
 };
 
 export default NavbarAff;
