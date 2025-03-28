@@ -1,5 +1,0 @@
-Pour utiliser la commande prisma, il faut saisir pnpm avant ==> EX : pnpm prisma init
-pnpm prisma db push ==> envoyer le shema prisma pour mettre a jour l'organistaion de la DataBase
-pnpm prisma studio ==> ouvrir notre base de donnée sur un site web où on pourra ajouter et seupprimer des données
-npx prisma generate ==> à saisir après chaque modif dans notre DB 
-dans les fichiers .tsx, utiliser map au lieu de forEach
