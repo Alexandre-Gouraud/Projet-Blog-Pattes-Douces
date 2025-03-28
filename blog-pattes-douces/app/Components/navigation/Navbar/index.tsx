@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Feedhome from "../../feed/Feedhome";
 import Profile from "../../../Profile/page";
-import Feed from "../../../Feed/page";
+import Feed from "../../feed/Feedhome";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
@@ -31,9 +31,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard">
-                  <p>Dashboard</p>
-                </Link>
+                <a href="/Dashboard">Dashboard</a>
               </li>
             </ul>
           </div>

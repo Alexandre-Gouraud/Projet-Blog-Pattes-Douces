@@ -3,6 +3,7 @@ import Feedhome from "./Components/feed/Feedhome";
 import Header from "./Components/navigation/Header";
 import Navbar from "./Components/navigation/Navbar";
 import Footer from "./Components/navigation/Footer";
+import Dashboard from "./dashboard/page";
 
 export default function App({ children }: { children: React.ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export default function App({ children }: { children: React.ReactNode }) {
       <body>
         <Navbar />
         <Header />
+        <Dashboard />
         <Feedhome />
         {/* <Home /> */}
         <Footer />

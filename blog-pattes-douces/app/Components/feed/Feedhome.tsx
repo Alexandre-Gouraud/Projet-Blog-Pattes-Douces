@@ -18,8 +18,8 @@ export default function Feedhome() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch("/api/article");
-        if (!response.ok) throw new Error("Erreur lors du chargement des articles");
+        const response = await fetch("/api/article"); // fetch pour l'API article
+        if (!response) throw new Error("Erreur lors du chargement des articles");
         
         const data: Article[] = await response.json();
         setArticles(data);
