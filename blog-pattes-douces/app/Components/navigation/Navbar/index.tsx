@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Feedhome from "../../feed/Feedhome";
-import Profile from "../../../Profile/page";
+import Profile from "../../../Profil/page";
 import Feed from "../../../Feed/page";
 import Activity from "../../../Activity/page";
 // import Logo from "./Components/Navbar/Logo";
@@ -21,7 +21,7 @@ const Navbar = () => {
           <div className="flex justify-end items-center h-full">
             <ul className="hidden md:flex gap-x-6 text-white">
               <li>
-                <a href="/Connexion">Profile</a>
+                <a href="/Connexion">Profil</a>
               </li>
               <li>
                 <a href="/Feed">Feed</a>
