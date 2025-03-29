@@ -14,22 +14,33 @@ type Article = {
     
 };
 
-export default function Post_user() {
+export default function Post_user() { // Composant pour afficher les articles d'un utilisateur
       const [pseudo, setPseudo] = useState<string | null>(null);
     
-      useEffect(() => {
+      useEffect(() => { // Récupération du pseudo depuis le localStorage
         if (typeof window !== "undefined") {
-          const storedPseudo = localStorage.getItem("pseudo");
-          setPseudo(storedPseudo);
+            const storedPseudo = localStorage.getItem("pseudo");
+            setPseudo(storedPseudo);
         }
       }, []);
 
+    const [id_user, setId_user] = useState<string | null>(null);
+    const storedid_user = localStorage.getItem("id_user");
+    const userId = "67e667f590014db66ca3fb27";  // ID_user mis manuellement pour le test mais il faut trouver un moyen de le récupérer dynamiquement
 
-    const [articles, setArticles] = useState<Article[]>([]);
-    const userId = "67e667f590014db66ca3fb27"; // Il faut trouver un moyen de récupérer l'id_user de l'utilisateur connecté
+    useEffect(() => { // Récupération de l'id_user depuis le localStorage
+        if (typeof window !== "undefined") {
+            const storedid_user = localStorage.getItem("id_user");
+            setId_user(storedid_user);
+        }
+    }
+    , []);
+
+
+    const [articles, setArticles] = useState<Article[]>([]); // État pour stocker les articles de l'utilisateur
     
 
-    useEffect(() => {
+    useEffect(() => { // Récupération des articles de l'utilisateur
         const fetchArticles = async () => {
             try {
                 const response = await fetch("/api/article");
@@ -44,7 +55,7 @@ export default function Post_user() {
         };
 
         fetchArticles();
-    }, [userId]);
+    }, [storedid_user]);
 
     return (
         <div className="p-8">
@@ -52,6 +63,8 @@ export default function Post_user() {
             <div className="space-y-6">
                 {articles.map((article) => (
                     <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
+                        <h2 className="text-xl font-semibold">{pseudo}</h2>
+                        <h2 className="text-xl font-semibold">{article.id_user}</h2>
                         <h2 className="text-xl font-semibold">{article.titre}</h2>
                         <p className="text-gray-700">{article.texte}</p>
                         {article.image && (

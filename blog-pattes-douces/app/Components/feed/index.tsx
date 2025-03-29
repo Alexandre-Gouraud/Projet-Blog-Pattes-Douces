@@ -13,6 +13,15 @@ type Article = {
 };
 
 export default function Feedhome() {
+  const [pseudo, setPseudo] = useState<string | null>(null);
+    
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedPseudo = localStorage.getItem("pseudo");
+      setPseudo(storedPseudo);
+    }
+  }, []);
+
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
@@ -37,6 +46,7 @@ export default function Feedhome() {
       <div className="space-y-6">
         {articles.map((article) => (
           <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
+            <h2 className="text-xl font-semibold">{pseudo}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && (
