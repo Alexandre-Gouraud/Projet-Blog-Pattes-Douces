@@ -5,6 +5,7 @@ import Link from "next/link";
 import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
 import Header from "../Components/navigation/Header";
+import Post_user from "../Post_user/page";
 
 import { useState, useEffect } from "react";
 
@@ -32,6 +33,7 @@ const Profil = () => {
       <h1>Profil</h1>
       <p>Bienvenue sur votre profil {pseudo} !</p>
       <button onClick={Deconnexion}>Se déconnecter</button>
+      <Post_user/>
       <Footer />
     </>
   );

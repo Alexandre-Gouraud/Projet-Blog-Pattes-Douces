@@ -1,11 +1,4 @@
 @import "tailwindcss";
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "tailwindcss-intersect";
-@plugin "tailwindcss-motion";
-
-
 
 /* @import "tailwindcss/base";
 @import "tailwindcss/components";
