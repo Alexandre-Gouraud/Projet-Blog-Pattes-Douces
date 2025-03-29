@@ -15,7 +15,7 @@ type Article = {
 };
 
 export default function Post_user() { // Composant pour afficher les articles d'un utilisateur
-      const [pseudo, setPseudo] = useState<string | null>(null);
+    const [pseudo, setPseudo] = useState<string | null>(null);
     
       useEffect(() => { // Récupération du pseudo depuis le localStorage
         if (typeof window !== "undefined") {
@@ -23,15 +23,14 @@ export default function Post_user() { // Composant pour afficher les articles d'
             setPseudo(storedPseudo);
         }
       }, []);
-
+      
+    // const userId = "67e667f590014db66ca3fb27"; ID_user mis manuellement pour le test mais il faut trouver un moyen de le récupérer dynamiquement
     const [id_user, setId_user] = useState<string | null>(null);
-    const storedid_user = localStorage.getItem("id_user");
-    const userId = "67e667f590014db66ca3fb27";  // ID_user mis manuellement pour le test mais il faut trouver un moyen de le récupérer dynamiquement
 
     useEffect(() => { // Récupération de l'id_user depuis le localStorage
         if (typeof window !== "undefined") {
-            const storedid_user = localStorage.getItem("id_user");
-            setId_user(storedid_user);
+            const id_user = localStorage.getItem("id_user");
+            setId_user(id_user);
         }
     }
     , []);
@@ -47,7 +46,7 @@ export default function Post_user() { // Composant pour afficher les articles d'
                 if (!response) throw new Error("Erreur lors du chargement de vos articles");
 
                 const data: Article[] = await response.json();
-                const userArticles = data.filter((article) => article.id_user === userId); // Filtrer par id_user
+                const userArticles = data.filter((article) => article.id_user === id_user); // Filtrer par id_user
                 setArticles(userArticles);
             } catch (error) {
                 console.error(error);
@@ -55,7 +54,7 @@ export default function Post_user() { // Composant pour afficher les articles d'
         };
 
         fetchArticles();
-    }, [storedid_user]);
+    }, [id_user]); // Dépendance sur id_user pour recharger les articles si l'id change
 
     return (
         <div className="p-8">
