@@ -1,9 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Feedhome from "../../feed/Feedhome";
-import Profile from "../../../Profile/page";
+import Profile from "@/app/Profile/page";
 import Feed from "../../../Feed/page";
 import Activity from "../../../Activity/page";
+import Article_user from "../../articles_user/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";
 
@@ -34,6 +35,11 @@ const Navbar = () => {
               <li>
                 <Link href="/dashboard">
                   <p>Dashboard</p>
+                </Link>
+              </li>
+              <li>
+                <Link href="/Articles_users">
+                  <p>Mes articles</p>
                 </Link>
               </li>
             </ul>

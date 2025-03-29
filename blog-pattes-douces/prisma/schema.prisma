@@ -24,7 +24,7 @@ model Article {
   titre       String
   texte       String
   image       String?
-  date        DateTime
+  date        DateTime  @default(now())
   vue         String[]
   reaction1   String[]
   reaction2   String[]
