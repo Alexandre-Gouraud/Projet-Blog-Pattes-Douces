@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react"; 
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function Inscription() {
     const [error, setError] = useState<string | null>(null);
@@ -47,7 +46,7 @@ export default function Inscription() {
                 <button type="submit">S'inscrire</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <p>Déjà un compte ? <a href="../Connexion">Connexion</a></p>
+            <p>Déjà un compte ? <a href="/Connexion">Connexion</a></p>
         </>
     );
 }

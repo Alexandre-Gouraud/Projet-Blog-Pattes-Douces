@@ -2,10 +2,9 @@
 
 import React from "react"; 
 import { useState } from "react";
-import Inscription from "../Inscription/page";
-
-// Removed unnecessary import for "/inscription"
-
+import NavbarAff from "../Components/navigation/Navbar_aff";
+import Header from "../Components/navigation/Header";
+import Footer from "../Components/navigation/Footer";
 
 export default function Connexion() {
     const [error, setError] = useState<string | null>(null);
@@ -32,19 +31,20 @@ export default function Connexion() {
             }
 
             if (response.ok) {
-              const { message } = await response.json();
-              alert(message || "Connexion réussie"); // Afficher un message si la connexion est réussie
-              window.location.href = "../Feed"; // Rediriger vers la page d'accueil
+                localStorage.setItem("pseudo", pseudo); // Stocker le pseudo dans le localStorage
+                window.location.href = "/Feed"; // Rediriger vers la page d'accueil
             }
-
-            // Redirection après connexion réussie
-        } catch (err) {
-            setError("Une erreur s'est produite. Veuillez réessayer.");
+        } catch (error) {
+            console.error("Erreur lors de la connexion :", error);
+            setError("Erreur lors de la connexion.");
         }
-    };
+            };
 
     return (
         <>
+            <NavbarAff />
+            <Header />
+        
             <h1>Connexion</h1>
             <br />
             <form onSubmit={handleSubmit}>
@@ -56,7 +56,7 @@ export default function Connexion() {
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
             <p>Première fois sur Pattes Douces ? <a href="../Inscription">Inscris-toi</a></p>
-            
+            <Footer />
         </>
     );
 }

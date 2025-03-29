@@ -30,3 +30,13 @@ model Article {
   reaction2   String[]
   commentaires Json
 }
+
+model Commentaires {
+  id          String   @id @map("_id") @default(auto()) @db.ObjectId
+  id_article  String   @db.ObjectId
+  id_user     String   @db.ObjectId
+  date        DateTime
+  texte       String
+  reaction1   String[]
+  reaction2   String[]
+}
