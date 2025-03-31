@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
 import Header from "../Components/navigation/Header";
@@ -19,6 +18,7 @@ const Profil = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("pseudo");
+    localStorage.removeItem("user_id");
     window.location.href = "../Feed";
   };
 

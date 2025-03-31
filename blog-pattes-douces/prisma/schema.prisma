@@ -1,4 +1,3 @@
-// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,35 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
  
- 
 model User {
-  id         String  @id @map("_id") @default(auto()) @db.ObjectId
-  pseudo    String  @unique
-  email      String  @unique
-  password   String
-  biographie String?
+  id  String   @id @default(auto()) @map("_id") @db.ObjectId
+  pseudo  String @unique
+  biographie String?  
+  email  String  @unique
+  password String
+ 
+  articles Article[]
+  commentaires Commentaire[]
+ 
 }
  
- 
-model Article {
-  id          String   @id @map("_id") @default(auto()) @db.ObjectId
-  id_user     String   @db.ObjectId
-  titre       String
-  texte       String
-  image       String?
-  date        DateTime
+model Article{
+  id String   @id @default(auto()) @map("_id") @db.ObjectId
+  titre String
+  texte String
+  image String
+  date DateTime @default(now())
   vue         String[]
   reaction1   String[]
   reaction2   String[]
-  commentaires Json
+ 
+  auteur User @relation(fields: [auteurId], references: [id])
+  auteurId  String @db.ObjectId
+ 
+  commentaires Commentaire[]
+ 
+ 
 }
-
-model Commentaires {
-  id          String   @id @map("_id") @default(auto()) @db.ObjectId
-  id_article  String   @db.ObjectId
-  id_user     String   @db.ObjectId
-  date        DateTime
-  texte       String
+ 
+model Commentaire{
+  id String   @id @default(auto()) @map("_id") @db.ObjectId
+  texte String
+  date DateTime @default(now())
   reaction1   String[]
   reaction2   String[]
+ 
+ article_source Article @relation(fields: [article_sourceId],references: [id])
+ article_sourceId String @db.ObjectId
+ 
+  commentataire User @relation(fields: [commentataireId], references: [id])
+  commentataireId  String @db.ObjectId
+}
+ 
+enum Reactions{
+  Like
+  Dislike
 }
