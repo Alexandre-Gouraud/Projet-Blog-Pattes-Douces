@@ -12,56 +12,38 @@ type Article = {
     vue: any[];
     reaction1: any[];
     reaction2: any[];
-    
 };
 
 export default function Post_user() { // Composant pour afficher les articles d'un utilisateur
     const [pseudo, setPseudo] = useState<string | null>(null);
-<<<<<<< Updated upstream
-    
-      useEffect(() => { // Récupération du pseudo depuis le localStorage
-=======
+    const [id_user, setId_user] = useState<string | null>(null);
+    const [articles, setArticles] = useState<Article[]>([]); // État pour stocker les articles de l'utilisateur
 
     useEffect(() => { // Récupération du pseudo depuis le localStorage
->>>>>>> Stashed changes
         if (typeof window !== "undefined") {
             const storedPseudo = localStorage.getItem("pseudo");
             setPseudo(storedPseudo);
         }
-<<<<<<< Updated upstream
-      }, []);
-      
-    // const userId = "67e667f590014db66ca3fb27"; ID_user mis manuellement pour le test mais il faut trouver un moyen de le récupérer dynamiquement
-    const [id_user, setId_user] = useState<string | null>(null);
-=======
     }, []);
-
-    const [id_user, setId_user] = useState<string | null>(null);
-    const storedid_user = localStorage.getItem("id_user");
->>>>>>> Stashed changes
 
     useEffect(() => { // Récupération de l'id_user depuis le localStorage
         if (typeof window !== "undefined") {
-            const id_user = localStorage.getItem("id_user");
-            setId_user(id_user);
+            const storedIdUser = localStorage.getItem("id_user");
+            setId_user(storedIdUser);
         }
     }, []);
-
-    const [articles, setArticles] = useState<Article[]>([]); // État pour stocker les articles de l'utilisateur
 
     useEffect(() => { // Récupération des articles de l'utilisateur
         const fetchArticles = async () => {
             try {
                 const response = await fetch("/api/article");
-                if (!response) throw new Error("Erreur lors du chargement de vos articles");
+                if (!response.ok) throw new Error("Erreur lors du chargement de vos articles");
 
                 const data: Article[] = await response.json();
-<<<<<<< Updated upstream
-                const userArticles = data.filter((article) => article.id_user === id_user); // Filtrer par id_user
-=======
-                const userArticles = data.filter((article) => article.id_user === storedid_user); // Filtrer par id_user
->>>>>>> Stashed changes
-                setArticles(userArticles);
+                if (id_user) {
+                    const userArticles = data.filter((article) => article.id_user === id_user); // Filtrer par id_user
+                    setArticles(userArticles);
+                }
             } catch (error) {
                 console.error(error);
             }
