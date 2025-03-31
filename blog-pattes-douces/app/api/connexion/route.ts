@@ -1,5 +1,6 @@
 import {prisma} from "@/src/db/prisma";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export async function POST(request: Request) {
     const { pseudo, password } = await request.json();
@@ -17,7 +18,8 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: "Utilisateur introuvable" }, { status: 404 });
         }
 
-        if (user.password !== password) {
+        const MotdePasseCrypte = await bcrypt.compare(password, user.password);
+        if (!MotdePasseCrypte) {
             return NextResponse.json({ message: "Mot de passe incorrect" }, { status: 401 });
         }
         return NextResponse.json({ message: "Connexion réussie", redirectUrl: "/app/pages.tsx" }, { status: 200 });
