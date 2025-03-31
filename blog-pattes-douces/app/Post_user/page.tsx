@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 type Article = {
     id: string;
-    id_user: string; // Ajout de l'id_user pour identifier l'auteur
+    auteurId: string;
     titre: string;
     texte: string;
     image?: string;
@@ -16,39 +16,18 @@ type Article = {
 };
 
 export default function Post_user() { // Composant pour afficher les articles d'un utilisateur
-      const [pseudo, setPseudo] = useState<string | null>(null);
-    
-      useEffect(() => { // Récupération du pseudo depuis le localStorage
-        if (typeof window !== "undefined") {
-            const storedPseudo = localStorage.getItem("pseudo");
-            setPseudo(storedPseudo);
-        }
-      }, []);
-
-    const [id_user, setId_user] = useState<string | null>(null);
-    const storedid_user = localStorage.getItem("id_user");
-    const userId = "67e667f590014db66ca3fb27";  // ID_user mis manuellement pour le test mais il faut trouver un moyen de le récupérer dynamiquement
-
-    useEffect(() => { // Récupération de l'id_user depuis le localStorage
-        if (typeof window !== "undefined") {
-            const storedid_user = localStorage.getItem("id_user");
-            setId_user(storedid_user);
-        }
-    }
-    , []);
-
-
-    const [articles, setArticles] = useState<Article[]>([]); // État pour stocker les articles de l'utilisateur
-    
+    const [articles, setArticles] = useState<Article[]>([]);
+    const pseudo = typeof window !== "undefined" ? localStorage.getItem("pseudo") : null; // Récupération de l'id_user depuis le localStorage
+    const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null; // Récupération de l'id_user depuis le localStorage
 
     useEffect(() => { // Récupération des articles de l'utilisateur
-        const fetchArticles = async () => {
+        const fetchArticles = async (): Promise<void> => {
             try {
                 const response = await fetch("/api/article");
                 if (!response) throw new Error("Erreur lors du chargement de vos articles");
 
                 const data: Article[] = await response.json();
-                const userArticles = data.filter((article) => article.id_user === userId); // Filtrer par id_user
+                const userArticles = data.filter((article) => article.auteurId === userId); // Filtrer par id_user
                 setArticles(userArticles);
             } catch (error) {
                 console.error(error);
@@ -56,7 +35,7 @@ export default function Post_user() { // Composant pour afficher les articles d'
         };
 
         fetchArticles();
-    }, [storedid_user]);
+    }, [userId]);
 
     return (
         <div className="p-8">
@@ -65,7 +44,6 @@ export default function Post_user() { // Composant pour afficher les articles d'
                 {articles.map((article) => (
                     <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
                         <h2 className="text-xl font-semibold">{pseudo}</h2>
-                        <h2 className="text-xl font-semibold">{article.id_user}</h2>
                         <h2 className="text-xl font-semibold">{article.titre}</h2>
                         <p className="text-gray-700">{article.texte}</p>
                         {article.image && (

@@ -13,7 +13,7 @@ export default async function GET(request: Request) {
       }
 
       const articles = await prisma.article.findMany({
-        where: { id_user: id_user },
+        where: { auteurId: id_user }, // Replace 'userId' with the correct field name from your Prisma schema
         orderBy: { date: "desc" },
         select: {
           id: true,
