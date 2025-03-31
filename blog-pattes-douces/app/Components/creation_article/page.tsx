@@ -15,7 +15,7 @@ export default function Creation_article() {
   
     await prisma.article.create({
       data: {
-        id_user:"67e171b2681e5e20719952c4",
+      auteurId:"67eab2c1bbb0b4f399cca109",
       titre, 
       texte,
       image:null,
@@ -23,7 +23,7 @@ export default function Creation_article() {
       vue:[],
       reaction1:[],
       reaction2:[],
-      commentaires:[]
+      // commentaires:[]
       },
     });
 

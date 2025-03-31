@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { DateTime } from "next-auth/providers/kakao";
 
 type Article = {
   id: string;
   titre: string;
   texte: string;
   image?: string;
-  date: string;
+  date: DateTime;
   vue: any[];
   reaction1: any[];
   reaction2: any[];

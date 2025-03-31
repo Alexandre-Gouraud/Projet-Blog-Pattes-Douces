@@ -11,7 +11,7 @@ export default function Inscription() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const pseudo = formData.get("pseudo") as string;
-        const mail = formData.get("mail") as string;
+        const email = formData.get("email") as string;
         const biographie = formData.get("biographie") as string;
         const password = formData.get("password") as string;
         const confirmPassword = formData.get("confirmPassword") as string;
@@ -52,7 +52,7 @@ export default function Inscription() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ pseudo, mail, biographie, password }),
+            body: JSON.stringify({ pseudo, email, biographie, password }),
             });
 
             const { message } = await response.json();
@@ -86,7 +86,7 @@ export default function Inscription() {
                     <div className="mb-4">
                         <input
                             type="email"
-                            name="mail"
+                            name="email"
                             placeholder="E-Mail"
                             required
                             className="w-full p-3 border border-[#996C44] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFB371]" />
