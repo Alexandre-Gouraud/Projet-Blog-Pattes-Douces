@@ -30,7 +30,7 @@ export default function App({ children }: { children: React.ReactNode }) {
         <Navbar />
         <Header />
         <Feedhome />
-        <Dashboard />
+        {/* <Dashboard /> */}
         {/* <Home /> */}
         <Footer />
         {children}
