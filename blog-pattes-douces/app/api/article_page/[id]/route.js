@@ -17,8 +17,17 @@ export async function GET(request, { params }) {
         vue: true,
         reaction1: true,
         reaction2: true,
+        auteur:{
+          select:{
+            id: true,
+            pseudo: true,
+          }
+        }
       },
     });
+
+    
+
 
     if (!article) {
       return NextResponse.json({ error: "Article non trouvé" }, { status: 404 });
