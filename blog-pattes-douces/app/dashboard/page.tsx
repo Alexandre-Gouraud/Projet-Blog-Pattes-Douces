@@ -8,14 +8,11 @@ import Navbar from "../Components/navigation/Navbar_connecte";
 const Dashboard = () => {
   return (
     <>
-    <Navbar />
-    <Graph />
-    <DashboardComponent />
-    <StatsMetrics />
-    
-      
+      <Navbar />
+      <Graph />
+      <DashboardComponent />
+      <StatsMetrics />
     </>
   );
 };
-
 export default Dashboard;
