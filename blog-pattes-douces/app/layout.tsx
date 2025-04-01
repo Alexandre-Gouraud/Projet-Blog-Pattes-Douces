@@ -2,6 +2,9 @@ import Navbar from "./Components/navigation/Navbar";
 import Footer from "./Components/navigation/Footer";
 import Posts from "./Components/Posts/Posts";
 import Feedhome from "./Components/feed";
+import AppHeader from "./layout/AppHeader";
+import AppSidebar from "./layout/AppSidebar";
+import SidebarWidget from "./layout/SidebarWidget";
 
 import "./globals.css";
 import { Inter } from "next/font/google";
@@ -21,7 +24,15 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={inter.className}>
-        {children}
+        <AppHeader />
+        <div className="flex flex-col md:flex-row">
+          <AppSidebar />
+          <div className="flex-1">
+            {children}
+          </div>
+          <SidebarWidget />
+        </div>
+        <Footer />
       </body>
     </html>
   );
