@@ -23,7 +23,7 @@ model Article{
   id String   @id @default(auto()) @map("_id") @db.ObjectId
   titre String
   texte String
-  image String
+  image String?
   date DateTime @default(now())
   vue         String[]
   reaction1   String[]

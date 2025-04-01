@@ -8,8 +8,9 @@ import Post_user from "../Components/Post_user";
 import Dashboard from "../Components/dashboard";
 
 const Profil = () => {
+  const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
   const [pseudo, setPseudo] = useState<string | null>(null);
-
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedPseudo = localStorage.getItem("pseudo");
