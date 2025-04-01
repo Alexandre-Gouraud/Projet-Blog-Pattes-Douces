@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
 import Header from "../Components/navigation/Header";
-import Post_user from "../Post_user/page";
+import Post_user from "../Components/Post_user";
+import Dashboard from "../Components/dashboard";
 
 const Profil = () => {
   const [pseudo, setPseudo] = useState<string | null>(null);
@@ -46,6 +47,7 @@ const Profil = () => {
           Supprimer le compte
         </button>
       </div>
+      <Dashboard />
       <Footer />
     </>
   );

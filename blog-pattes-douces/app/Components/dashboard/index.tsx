@@ -1,101 +1,93 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
-type Stats = {
+type Article = {
   id: string;
-  vue: any[];
-  reaction1: any[];
-  reaction2: any[];
+  titre: string;
+  texte: string;
+  image?: string;
+  date: string;
+  vue: string[];
+  reaction1: string[];
+  reaction2: string[];
+  auteurId: string;
+  auteur: {
+    id: string;
+    pseudo: string;
+  };
 };
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<Stats[]>([]);
+  const [auteurId, setAuteurId] = useState<string>("");
+  const [articles, setArticles] = useState<Article[]>([]);
 
+  const user_id = localStorage.getItem("user_id") || ""; // Récupérer l'ID de l'utilisateur connecté depuis le localStorage
+  // Vérifier si l'utilisateur est connecté
+  if (!user_id) {
+    return (
+      <div className="p-8">
+        <h1 className="text-3xl font-bold mb-4">Vous n'êtes pas connecté</h1>
+        <p className="text-gray-500">Veuillez vous connecter pour voir vos statistiques.</p>
+      </div>
+    );
+  }
+  // Récupérer l'ID de l'utilisateur connecté
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchAuteurId = async () => {
       try {
-        const response = await fetch("/api/dashboard"); // fetch pour l'API dashboard
-        if (!response.ok) throw new Error("Erreur lors du chargement des stats");
-
-        const data: Stats[] = await response.json();
-        setStats(data);
+        const response = await fetch("/api/auteurId?user_id"); // 
+        if (!response.ok) throw new Error("Erreur lors du chargement de l'auteur ID");
+        
+        const data = await response.json();
+        setAuteurId(data.user_id);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchStats();
+    fetchAuteurId();
   }, []);
 
+  // Récupérer uniquement les articles de cet utilisateur
+  useEffect(() => {
+    if (!auteurId) return; // Attendre que l'auteurId soit chargé
+
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch(`/api/article?authorId=${auteurId}`);
+        if (!response.ok) throw new Error("Erreur lors du chargement des articles");
+        
+        const data: Article[] = await response.json();
+        setArticles(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchArticles();
+  }, [auteurId]); // Dépendance : recharge quand auteurId est défini
+
+  // Calcul des statistiques
+  const totalVues = articles.reduce((acc, article) => acc + article.vue.length, 0);
+  const totalLikes = articles.reduce((acc, article) => acc + article.reaction1.length, 0);
+  const totalDislikes = articles.reduce((acc, article) => acc + article.reaction2.length, 0);
+  const totalReactions = totalLikes + totalDislikes;
+
   return (
-    <>
-      <div className="flex flex-wrap gap-6 justify-center items-center min-h-screen">
-      <div className="stats intersect:motion-preset-slide-left intersect:motion-ease-spring-bouncier max-sm:w-full bg-white p-4 rounded-lg shadow-md">
-        <div className="stat">
-        <div className="avatar avatar-placeholder">
-          <div className="bg-success/20 text-success size-10 rounded-full">
-          <span className="icon-[tabler--package] size-6"></span>
+    <div className="p-8">
+      <h1 className="text-3xl font-bold mb-4">Vos Statistiques récentes</h1>
+      <div className="space-y-6">
+        <div className="border p-4 rounded-lg shadow-md bg-white">
+          <h2 className="text-xl font-semibold">ID Utilisateur : {auteurId}</h2>
+          <div className="flex space-x-4">
+            <p className="text-sm text-gray-400">Total de Vues : {totalVues}</p>
+            <p className="text-sm text-blue-400">Total de Like : {totalLikes}</p>
+            <p className="text-sm text-red-400">Total de Dislike : {totalDislikes}</p>
+            <p className="text-sm text-green-400">Total de Réactions : {totalReactions}</p>
           </div>
         </div>
-        <div className="stat-value mb-1">Nombre de réactions</div>
-        <div className="stat-title">5</div>
-        <div
-          className="progress bg-success/10 h-2 rounded-full"
-          role="progressbar"
-          aria-label="Order Progressbar"
-          aria-valuenow={75}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div className="progress-bar progress-success w-3/4 bg-green-600 rounded-full"></div>
-        </div>
-        </div>
       </div>
-
-      <div className="stats intersect:motion-preset-slide-left intersect:motion-delay-[400ms] intersect:motion-ease-spring-bouncier max-sm:w-full bg-white p-4 rounded-lg shadow-md">
-        <div className="stat">
-        <div className="avatar avatar-placeholder">
-          <div className="bg-warning/20 text-warning size-10 rounded-full">
-          <span className="icon-[tabler--cash] size-6"></span>
-          </div>
-        </div>
-        <div className="stat-value mb-1">Nombre de Commentaires</div>
-        <div className="stat-title">5</div>
-        <div
-          className="progress bg-warning/10 h-2 rounded-full"
-          role="progressbar"
-          aria-label="Revenue Progressbar"
-          aria-valuenow={45}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div className="progress-bar progress-warning w-2/5 bg-yellow-600 rounded-full"></div>
-        </div>
-        </div>
-      </div>
-
-      <div className="stats intersect:motion-preset-slide-left intersect:motion-delay-[800ms] intersect:motion-ease-spring-bouncier max-sm:w-full bg-white p-4 rounded-lg shadow-md">
-        <div className="stat">
-        <div className="avatar avatar-placeholder">
-          <div className="bg-error/20 text-error size-10 rounded-full">
-          <span className="icon-[tabler--credit-card] size-6"></span>
-          </div>
-        </div>
-        <div className="stat-value mb-1">Invoice</div>
-        <div className="stat-title">$18,200 of $25,000</div>
-        <div
-          className="progress bg-error/10 h-2 rounded-full"
-          role="progressbar"
-          aria-label="Invoice Progressbar"
-          aria-valuenow={73}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div className="progress-bar progress-error w-[73%] bg-red-600 rounded-full"></div>
-        </div>
-        </div>
-      </div>
-      </div>
-    </>
+    </div>
   );
 }
