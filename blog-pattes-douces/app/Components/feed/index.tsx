@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 type Article = {
   id: string;
-  auteur: User
+  auteur: User;
   titre: string;
   texte: string;
   image?: string;
@@ -17,13 +17,13 @@ type User = {
   id: string;
   pseudo: string;
   email: string;
-}
+};
 
 export default function Feedhome() {
   const [pseudo, setPseudo] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
-  const [commentText, setCommentText] = useState<string>(""); 
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null); 
+  const [commentText, setCommentText] = useState<string>("");
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -54,7 +54,7 @@ export default function Feedhome() {
       return;
     }
 
-    const userId = localStorage.getItem("user_id"); 
+    const userId = localStorage.getItem("user_id");
     if (!userId) {
       alert("Vous devez être connecté pour ajouter un commentaire.");
       return;
@@ -67,17 +67,17 @@ export default function Feedhome() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id_article: articleId, 
+          id_article: articleId,
           texte: commentText,
-          commentataireId: userId, 
+          commentataireId: userId,
         }),
       });
 
       if (!response.ok) throw new Error("Erreur lors de l'ajout du commentaire");
 
       alert("Commentaire ajouté avec succès !");
-      setCommentText(""); 
-      setSelectedArticleId(null); 
+      setCommentText("");
+      setSelectedArticleId(null);
     } catch (error) {
       console.error("Erreur lors de l'ajout du commentaire :", error);
     }
@@ -92,19 +92,21 @@ export default function Feedhome() {
             key={article.id}
             className="block transform transition-transform duration-300 hover:scale-102 bg-white p-4 rounded-md shadow-md"
           >
-            <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
-            <h2 className="text-xl font-semibold">{article.titre}</h2>
-            <p className="text-gray-700">{article.texte}</p>
-            {article.image && (
-              <img
-                src={article.image}
-                alt={article.titre}
-                className="mt-2 rounded-md"
-              />
-            )}
-            <p className="text-sm text-gray-500">
-              Publié le {new Date(article.date).toLocaleDateString()}
-            </p>
+            <a href={`/Article_page/${article.id}`}>
+              <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
+              <h2 className="text-xl font-semibold">{article.titre}</h2>
+              <p className="text-gray-700">{article.texte}</p>
+              {article.image && (
+                <img
+                  src={article.image}
+                  alt={article.titre}
+                  className="mt-2 rounded-md"
+                />
+              )}
+              <p className="text-sm text-gray-500">
+                Publié le {new Date(article.date).toLocaleDateString()}
+              </p>
+            </a>
 
             <div className="flex space-x-4">
               <p className="text-sm text-gray-400">Vues : {article.vue.length}</p>
