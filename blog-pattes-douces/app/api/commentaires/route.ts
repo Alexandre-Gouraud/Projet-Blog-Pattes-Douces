@@ -1,27 +1,16 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient;
+const prisma = new PrismaClient();
 
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient();
-  }
-  prisma = global.prisma;
-}
-
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") return res.status(405).json({ error: "Méthode non autorisée" });
-
+export async function GET() {
   try {
-    const commentaires = await prisma.commentaires.findMany({
+    const commentaires = await prisma.commentaire.findMany({
       orderBy: { date: "desc" },
       select: {
         id: true,
-        id_article: true,
-        id_user: true,
+        article_source: true, // Assurez-vous que ce champ correspond à votre schéma Prisma
+        commentataire: true,
         date: true,
         texte: true,
         reaction1: true,
@@ -29,9 +18,42 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    res.status(200).json(commentaires);
+    return NextResponse.json(commentaires, { status: 200 });
   } catch (error) {
     console.error("Erreur API:", error);
-    res.status(500).json({ error: "Erreur lors de la récupération des commentaires" });
+    return NextResponse.json({ error: "Erreur lors de la récupération des commentaires" }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { id_article, texte, commentataireId } = body;
+
+    if (!id_article || !texte || !commentataireId) {
+      return NextResponse.json(
+        { error: "Les champs id_article, texte et commentataireId sont obligatoires." },
+        { status: 400 }
+      );
+    }
+
+    const commentaire = await prisma.commentaire.create({
+      data: {
+        article_sourceId: id_article,
+        texte,
+        commentataireId,
+        reaction1: [], // Initialise avec un tableau vide
+        reaction2: [], // Initialise avec un tableau vide
+        date: new Date(),
+      },
+    });
+
+    return NextResponse.json(commentaire, { status: 201 });
+  } catch (error) {
+    console.error("Erreur lors de la création du commentaire :", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la création du commentaire" },
+      { status: 500 }
+    );
   }
 }

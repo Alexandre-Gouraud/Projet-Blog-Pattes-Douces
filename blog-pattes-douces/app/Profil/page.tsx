@@ -23,6 +23,39 @@ const Profil = () => {
     localStorage.removeItem("user_id");
     window.location.href = "../Feed";
   };
+  
+  const handleDeleteAccount = async () => {
+    if (!userId) {
+      console.error("Erreur: Aucun utilisateur identifié.");
+      return;
+    }
+  
+    const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer le compte ?");
+    if (!confirmation) return;
+  
+    try {
+      const response = await fetch("/api/supp_compte", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: userId }),
+      });
+  
+      if (response.ok) {
+        console.log("Compte supprimé avec succès");
+        localStorage.removeItem("pseudo");
+        localStorage.removeItem("user_id");
+        window.location.href = "../Feed";
+      } else {
+        const errorData = await response.json();
+        console.error("Erreur lors de la suppression du compte :", errorData.error);
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+    }
+  };
+  
 
   return (
     <>
@@ -44,6 +77,7 @@ const Profil = () => {
           Se déconnecter
         </button>
         <button
+        onClick={handleDeleteAccount}
           className="bg-[#FFB371] text-white px-4 py-2 rounded hover:bg-[#D9D9D9] hover:text-[#444444] transition-colors"
         >
           Supprimer le compte
