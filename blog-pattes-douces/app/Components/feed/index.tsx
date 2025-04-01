@@ -11,8 +11,10 @@ type Article = {
   vue: any[];
   reaction1: any[];
   reaction2: any[];
-};
-
+  commentaires: {
+    id: string;
+}[];
+}
 type User = {
   id: string;
   pseudo: string;
@@ -20,18 +22,10 @@ type User = {
 };
 
 export default function Feedhome() {
-  const [pseudo, setPseudo] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [commentText, setCommentText] = useState<string>("");
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedPseudo = localStorage.getItem("pseudo");
-      setPseudo(storedPseudo);
-    }
-  }, []);
-
+  
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -109,9 +103,9 @@ export default function Feedhome() {
             </a>
 
             <div className="flex space-x-4">
-              <p className="text-sm text-gray-400">Vues : {article.vue.length}</p>
-              <p className="text-sm text-blue-400">Like : {article.reaction1.length}</p>
-              <p className="text-sm text-red-400">Dislike : {article.reaction2.length}</p>
+              <p className="text-sm text-gray-400">👀{article.vue.length}</p>
+              <p className="text-sm text-blue-400"> 👍🏻{article.reaction1.length}</p>
+              <p className="text-sm text-red-400"> 👎🏿{article.reaction2.length}</p>             
             </div>
 
             <button
