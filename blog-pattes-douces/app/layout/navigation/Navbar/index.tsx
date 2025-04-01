@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import Feedhome from "../../feed";
+import Feedhome from "../../../Components/feed";
 import Profile from "../../../Profil/page";
 import Feed from "../../../Feed/page";
 import Activity from "../../../Activity/page";
