@@ -5,6 +5,7 @@ import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
 import Header from "../Components/navigation/Header";
 import Post_user from "../Post_user/page";
+import Dashboard from "../Components/dashboard";
 
 const Profil = () => {
   const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
@@ -34,6 +35,7 @@ const Profil = () => {
         </p>
       </div>
       <Post_user />
+      <Dashboard />
       <div className="flex justify-center mt-4 space-x-4">
         <button
           onClick={handleLogout}
