@@ -5,9 +5,9 @@ import Image from "next/image";
 import Navbar from "./layout/navigation/Navbar";
 import NavbarAff from "./layout/navigation/Navbar_aff";
 import Navbar_connecte from "./layout/navigation/Navbar_connecte";
-import Header from "./layout/navigation/Header";
+import Header from "./layout/AppHeader";
+import AppSidebar from "./layout/AppSidebar";
 import Footer from "./layout/navigation/Footer";
-import Posts from "./Components/Posts/Posts";
 import Feedhome from "./Components/feed";
 import { useState } from "react";
 
