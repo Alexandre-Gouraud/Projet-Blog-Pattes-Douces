@@ -45,15 +45,18 @@ export default function Feedhome() {
       <h1 className="text-3xl font-bold mb-4">Articles récents</h1>
       <div className="space-y-6">
         {articles.map((article) => (
-          <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
+            <div
+            key={article.id}
+            className="block transform transition-transform duration-300 hover:scale-105 bg-white p-4 rounded-md shadow-md"
+            >
             <h2 className="text-xl font-semibold">{pseudo}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && (
               <img
-                src={article.image}
-                alt={article.titre}
-                className="mt-2 rounded-md"
+              src={article.image}
+              alt={article.titre}
+              className="mt-2 rounded-md"
               />
             )}
             <p className="text-sm text-gray-500">
@@ -65,7 +68,7 @@ export default function Feedhome() {
               <p className="text-sm text-blue-400">Like : {article.reaction1.length}</p>
               <p className="text-sm text-red-400">Dislike : {article.reaction2.length}</p>
             </div>
-          </div>
+            </div>
         ))}
       </div>
     </div>
