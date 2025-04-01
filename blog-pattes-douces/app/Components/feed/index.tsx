@@ -81,15 +81,18 @@ export default function Feedhome() {
       <h1 className="text-3xl font-bold mb-4">Articles récents</h1>
       <div className="space-y-6">
         {articles.map((article) => (
-          <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
+            <div
+            key={article.id}
+            className="block transform transition-transform duration-300 hover:scale-105 bg-white p-4 rounded-md shadow-md"
+            >
             <h2 className="text-xl font-semibold">{pseudo}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && (
               <img
-                src={article.image}
-                alt={article.titre}
-                className="mt-2 rounded-md"
+              src={article.image}
+              alt={article.titre}
+              className="mt-2 rounded-md"
               />
             )}
             <p className="text-sm text-gray-500">
@@ -101,32 +104,6 @@ export default function Feedhome() {
               <p className="text-sm text-blue-400">Like : {article.reaction1.length}</p>
               <p className="text-sm text-red-400">Dislike : {article.reaction2.length}</p>
             </div>
-
-            {/* Bouton pour ajouter un commentaire */}
-            <button
-              onClick={() => setSelectedArticleId(article.id)}
-              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
-            >
-              Ajouter un commentaire
-            </button>
-
-            {/* Champ de texte pour le commentaire */}
-            {selectedArticleId === article.id && (
-              <div className="mt-4">
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Écrivez votre commentaire ici..."
-                  className="w-full p-2 border rounded-md"
-                />
-                <button
-                  onClick={() => handleAddComment(article.id)}
-                  className="mt-2 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
-                >
-                  Envoyer
-                </button>
-              </div>
-            )}
           </div>
         ))}
       </div>
