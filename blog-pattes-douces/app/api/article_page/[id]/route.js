@@ -13,6 +13,8 @@ export async function GET(request, { params }) {
         id: true,
         auteurId: true,
         titre: true,
+        texte: true,
+        image: true,
         date: true,
         vue: true,
         reaction1: true,
@@ -22,7 +24,22 @@ export async function GET(request, { params }) {
             id: true,
             pseudo: true,
           }
-        }
+        },
+        commentaires: {
+          select: {
+            id: true,
+            texte: true,
+            date: true,
+            reaction1: true,
+            reaction2: true,
+            commentataire:{
+              select:{
+                id: true,
+                pseudo: true,
+              }
+            },
+          },
+        },
       },
     });
 
