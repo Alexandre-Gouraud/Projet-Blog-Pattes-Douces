@@ -1,8 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import NavbarAff from "../Components/navigation/Navbar_aff";
-import Footer from "../Components/navigation/Footer";
+import Navbar from "../layout/navigation/Navbar";
+import NavbarAff from "../layout/navigation/Navbar_aff";
+import Navbar_connecte from "../layout/navigation/Navbar_connecte";
+import Header from "../layout/navigation/Header";
+import Footer from "../layout/navigation/Footer";
+import Posts from "../Components/Posts/Posts";
+import Feedhome from "../Components/feed";
 
 export default function Inscription() {
     const [error, setError] = useState<string | null>(null);
