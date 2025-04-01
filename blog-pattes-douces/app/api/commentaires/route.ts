@@ -1,26 +1,15 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient;
+const prisma = new PrismaClient();
 
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient();
-  }
-  prisma = global.prisma;
-}
-
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") return res.status(405).json({ error: "Méthode non autorisée" });
-
+export async function GET() {
   try {
     const commentaires = await prisma.commentaire.findMany({
       orderBy: { date: "desc" },
       select: {
         id: true,
-        article_source: true, // Replace 'article_id' with the correct field name from your Prisma schema
+        article_source: true, // Assurez-vous que ce champ correspond à votre schéma Prisma
         commentataire: true,
         date: true,
         texte: true,
@@ -29,9 +18,9 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    res.status(200).json(commentaires);
+    return NextResponse.json(commentaires, { status: 200 });
   } catch (error) {
     console.error("Erreur API:", error);
-    res.status(500).json({ error: "Erreur lors de la récupération des commentaires" });
+    return NextResponse.json({ error: "Erreur lors de la récupération des commentaires" }, { status: 500 });
   }
 }

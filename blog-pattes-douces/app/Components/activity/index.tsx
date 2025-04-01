@@ -16,13 +16,29 @@ type Article = {
 };
 
 type Commentaires = {
-  id: string;
-  id_article: string;
-  id_user: string;
-  date: string;
-  texte: string;
-  reaction1: string[];
-  reaction2: string[];
+  id: string; // Identifiant unique du commentaire
+  texte: string; // Contenu du commentaire
+  date: string; // Date de création du commentaire
+  reaction1: string[]; // Liste des utilisateurs ayant réagi avec "reaction1"
+  reaction2: string[]; // Liste des utilisateurs ayant réagi avec "reaction2"
+  article_source: {
+    id: string; // Identifiant de l'article
+    titre: string; // Titre de l'article
+    texte: string; // Contenu de l'article
+    image?: string; // Image associée à l'article
+    date: string; // Date de création de l'article
+    vue: string[]; // Liste des utilisateurs ayant vu l'article
+    reaction1: string[]; // Liste des utilisateurs ayant réagi avec "reaction1"
+    reaction2: string[]; // Liste des utilisateurs ayant réagi avec "reaction2"
+    auteurId: string; // Identifiant de l'auteur de l'article
+  };
+  commentataire: {
+    id: string; // Identifiant de l'utilisateur ayant écrit le commentaire
+    pseudo: string; // Pseudo de l'utilisateur
+    biographie?: string; // Biographie de l'utilisateur
+    email: string; // Email de l'utilisateur
+    password: string; // Mot de passe hashé de l'utilisateur
+  };
 };
 
 export default function Activity({ userId }: { userId: string }) {
@@ -34,7 +50,7 @@ export default function Activity({ userId }: { userId: string }) {
   useEffect(() => {
     if (!userId) return; // Vérifie que userId est défini
 
-    userId = localStorage.getItem("Id_user") || "";
+    userId = localStorage.getItem("user_id") || "";
     const fetchArticles = async () => {
       try {
         const response = await fetch("/api/article");
@@ -47,7 +63,13 @@ export default function Activity({ userId }: { userId: string }) {
         if (!allCommentaires.ok) throw new Error("Erreur API commentaires");
 
         const commentairesData: Commentaires[] = await allCommentaires.json();
-        setCommentaires(commentairesData.filter(comment => comment.id_user === userId));
+        console.log("userId :", userId);
+        console.log("Commentaires récupérés :", commentairesData);
+
+        const filteredCommentaires = commentairesData.filter(comment => comment.commentataire.id === userId);
+        console.log("Commentaires filtrés :", filteredCommentaires);
+
+        setCommentaires(filteredCommentaires);
 
         const LikedArticles = await fetch("/api/article");
         if (!LikedArticles.ok) throw new Error("Erreur API articles");
