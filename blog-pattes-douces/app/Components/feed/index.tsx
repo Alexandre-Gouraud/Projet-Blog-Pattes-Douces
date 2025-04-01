@@ -7,14 +7,17 @@ type Article = {
   texte: string;
   image?: string;
   date: string;
-  vue: any[]; // Typage plus clair
+  vue: any[];
   reaction1: any[];
   reaction2: any[];
 };
 
 export default function Feedhome() {
   const [pseudo, setPseudo] = useState<string | null>(null);
-    
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [commentText, setCommentText] = useState<string>(""); // État pour le texte du commentaire
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null); // État pour l'article sélectionné
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedPseudo = localStorage.getItem("pseudo");
@@ -22,23 +25,56 @@ export default function Feedhome() {
     }
   }, []);
 
-  const [articles, setArticles] = useState<Article[]>([]);
-
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch("/api/article"); // fetch pour l'API article
-        if (!response) throw new Error("Erreur lors du chargement des articles");
-        
+        const response = await fetch("/api/article");
+        if (!response.ok) throw new Error("Erreur lors du chargement des articles");
+
         const data: Article[] = await response.json();
         setArticles(data);
       } catch (error) {
         console.error(error);
       }
     };
-    
+
     fetchArticles();
   }, []);
+
+  const handleAddComment = async (articleId: string) => {
+    if (!commentText.trim()) {
+      alert("Le commentaire ne peut pas être vide.");
+      return;
+    }
+
+    const userId = localStorage.getItem("user_id"); // Récupère l'ID de l'utilisateur connecté
+    if (!userId) {
+      alert("Vous devez être connecté pour ajouter un commentaire.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/commentaires", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_article: articleId, // Correspond à article_sourceId dans Prisma
+          texte: commentText,
+          commentataireId: userId, // Ajoute l'ID de l'utilisateur connecté
+        }),
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de l'ajout du commentaire");
+
+      alert("Commentaire ajouté avec succès !");
+      setCommentText(""); // Réinitialise le champ de texte
+      setSelectedArticleId(null); // Ferme le champ de commentaire
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du commentaire :", error);
+    }
+  };
 
   return (
     <div className="p-8">
@@ -62,13 +98,13 @@ export default function Feedhome() {
             <p className="text-sm text-gray-500">
               Publié le {new Date(article.date).toLocaleDateString()}
             </p>
-            
+
             <div className="flex space-x-4">
               <p className="text-sm text-green-400">Vues : {article.vue.length}</p>
               <p className="text-sm text-blue-400">Like : {article.reaction1.length}</p>
               <p className="text-sm text-red-400">Dislike : {article.reaction2.length}</p>
             </div>
-            </div>
+          </div>
         ))}
       </div>
     </div>
