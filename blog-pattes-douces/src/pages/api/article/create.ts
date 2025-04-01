@@ -7,11 +7,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== "POST") return res.status(405).json({ error: "Méthode non autorisée" });
 
   try {
-    const { id_user, titre, texte, image } = req.body;
+    const { auteurId, titre, texte, image } = req.body;
 
     const article = await prisma.article.create({
       data: {
-        id_user,
+        auteurId,
         titre,
         texte,
         image,
@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         vue: [],
         reaction1: [],
         reaction2: [],
-        commentaires: [],
+        // commentaires: [],
       },
     });
 

@@ -10,7 +10,14 @@ type Article = {
   vue: any[]; // Typage plus clair
   reaction1: any[];
   reaction2: any[];
+  auteur: User
 };
+
+type User={
+  id: string;
+  pseudo: string;
+  email: string;
+}
 
 export default function Feedhome() {
   const [pseudo, setPseudo] = useState<string | null>(null);
@@ -46,7 +53,7 @@ export default function Feedhome() {
       <div className="space-y-6">
         {articles.map((article) => (
           <div key={article.id} className="border p-4 rounded-lg shadow-md bg-white">
-            <h2 className="text-xl font-semibold">{pseudo}</h2>
+            <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && (

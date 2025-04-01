@@ -8,6 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const articles = await prisma.article.findMany({
+      include: { auteur: true }, 
       orderBy: { date: "desc" },
     });
 

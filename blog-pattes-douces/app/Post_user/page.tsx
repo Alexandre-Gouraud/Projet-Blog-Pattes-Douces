@@ -17,7 +17,7 @@ type Article = {
 
 export default function Post_user() { // Composant pour afficher les articles d'un utilisateur
     const [articles, setArticles] = useState<Article[]>([]);
-    const pseudo = typeof window !== "undefined" ? localStorage.getItem("pseudo") : null; // Récupération de l'id_user depuis le localStorage
+    const pseudo = typeof window !== "undefined" ? localStorage.getItem("pseudo") : null; // Récupération du pseudo depuis le localStorage
     const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null; // Récupération de l'id_user depuis le localStorage
 
     useEffect(() => { // Récupération des articles de l'utilisateur
