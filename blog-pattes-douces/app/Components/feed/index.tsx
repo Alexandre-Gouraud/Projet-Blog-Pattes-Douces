@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 type Article = {
   id: string;
+  auteur: User
   titre: string;
   texte: string;
   image?: string;
@@ -12,11 +13,17 @@ type Article = {
   reaction2: any[];
 };
 
+type User = {
+  id: string;
+  pseudo: string;
+  email: string;
+}
+
 export default function Feedhome() {
   const [pseudo, setPseudo] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
-  const [commentText, setCommentText] = useState<string>(""); // État pour le texte du commentaire
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null); // État pour l'article sélectionné
+  const [commentText, setCommentText] = useState<string>(""); 
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null); 
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -47,7 +54,7 @@ export default function Feedhome() {
       return;
     }
 
-    const userId = localStorage.getItem("user_id"); // Récupère l'ID de l'utilisateur connecté
+    const userId = localStorage.getItem("user_id"); 
     if (!userId) {
       alert("Vous devez être connecté pour ajouter un commentaire.");
       return;
@@ -60,17 +67,17 @@ export default function Feedhome() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id_article: articleId, // Correspond à article_sourceId dans Prisma
+          id_article: articleId, 
           texte: commentText,
-          commentataireId: userId, // Ajoute l'ID de l'utilisateur connecté
+          commentataireId: userId, 
         }),
       });
 
       if (!response.ok) throw new Error("Erreur lors de l'ajout du commentaire");
 
       alert("Commentaire ajouté avec succès !");
-      setCommentText(""); // Réinitialise le champ de texte
-      setSelectedArticleId(null); // Ferme le champ de commentaire
+      setCommentText(""); 
+      setSelectedArticleId(null); 
     } catch (error) {
       console.error("Erreur lors de l'ajout du commentaire :", error);
     }
@@ -81,18 +88,18 @@ export default function Feedhome() {
       <h1 className="text-3xl font-bold mb-4">Articles récents</h1>
       <div className="space-y-6">
         {articles.map((article) => (
-            <div
+          <div
             key={article.id}
-            className="block transform transition-transform duration-300 hover:scale-105 bg-white p-4 rounded-md shadow-md"
-            >
-            <h2 className="text-xl font-semibold">{pseudo}</h2>
+            className="block transform transition-transform duration-300 hover:scale-102 bg-white p-4 rounded-md shadow-md"
+          >
+            <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && (
               <img
-              src={article.image}
-              alt={article.titre}
-              className="mt-2 rounded-md"
+                src={article.image}
+                alt={article.titre}
+                className="mt-2 rounded-md"
               />
             )}
             <p className="text-sm text-gray-500">
@@ -100,10 +107,34 @@ export default function Feedhome() {
             </p>
 
             <div className="flex space-x-4">
-              <p className="text-sm text-green-400">Vues : {article.vue.length}</p>
+              <p className="text-sm text-gray-400">Vues : {article.vue.length}</p>
               <p className="text-sm text-blue-400">Like : {article.reaction1.length}</p>
               <p className="text-sm text-red-400">Dislike : {article.reaction2.length}</p>
             </div>
+
+            <button
+              onClick={() => setSelectedArticleId(article.id)}
+              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
+            >
+              Ajouter un commentaire
+            </button>
+
+            {selectedArticleId === article.id && (
+              <div className="mt-4">
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="Écrivez votre commentaire ici..."
+                  className="w-full p-2 border rounded-md"
+                />
+                <button
+                  onClick={() => handleAddComment(article.id)}
+                  className="mt-2 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
+                >
+                  Envoyer
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
