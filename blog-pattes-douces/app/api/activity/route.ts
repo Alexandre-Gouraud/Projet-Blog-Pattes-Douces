@@ -11,15 +11,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const article = await prisma.article.create({
       data: {
-        id_user,
-        titre,
-        texte,
-        image,
-        date: new Date(),
-        vue: [],
-        reaction1: [],
-        reaction2: [],
-        commentaires: [],
+      auteurId: id_user,
+      titre,
+      texte,
+      image,
+      date: new Date(),
+      vue: [],
+      reaction1: [],
+      reaction2: [],
       },
     });
 
