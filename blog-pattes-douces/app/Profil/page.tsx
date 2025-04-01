@@ -7,8 +7,9 @@ import Header from "../Components/navigation/Header";
 import Post_user from "../Post_user/page";
 
 const Profil = () => {
+  const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
   const [pseudo, setPseudo] = useState<string | null>(null);
-
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedPseudo = localStorage.getItem("pseudo");
