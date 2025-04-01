@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       orderBy: { date: "desc" },
       select: {
         id: true,
-        id_user: true,
+        auteurId: true,
         titre: true,
         date: true,
         vue: true,

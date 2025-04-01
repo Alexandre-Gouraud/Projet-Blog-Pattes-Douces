@@ -16,12 +16,12 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") return res.status(405).json({ error: "Méthode non autorisée" });
 
   try {
-    const commentaires = await prisma.commentaires.findMany({
+    const commentaires = await prisma.commentaire.findMany({
       orderBy: { date: "desc" },
       select: {
         id: true,
-        id_article: true,
-        id_user: true,
+        article_source: true, // Replace 'article_id' with the correct field name from your Prisma schema
+        commentataire: true,
         date: true,
         texte: true,
         reaction1: true,
