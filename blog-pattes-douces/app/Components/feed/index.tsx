@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 type Article = {
   id: string;
+  auteur: User
   titre: string;
   texte: string;
   image?: string;
@@ -11,6 +12,12 @@ type Article = {
   reaction1: any[];
   reaction2: any[];
 };
+
+type User = {
+  id: string;
+  pseudo: string;
+  email: string;
+}
 
 export default function Feedhome() {
   const [pseudo, setPseudo] = useState<string | null>(null);
@@ -85,7 +92,7 @@ export default function Feedhome() {
             key={article.id}
             className="block transform transition-transform duration-300 hover:scale-102 bg-white p-4 rounded-md shadow-md"
           >
-            <h2 className="text-xl font-semibold">{pseudo}</h2>
+            <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
             {article.image && (
