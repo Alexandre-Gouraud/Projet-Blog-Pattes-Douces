@@ -2,18 +2,16 @@ import React from "react";
 import { useEffect, useState } from "react";
 import DashboardComponent from "../Components/dashboard";
 import Graph from "../Components/Stats/metrics/graph";
-import StatsMetrics from "../Components/Stats/metrics";
 import Navbar from "../Components/navigation/Navbar_connecte";
+import Post_user from "../Components/Post_user";
 
 const Dashboard = () => {
   return (
     <>
     <Navbar />
-    <Graph />
+    <Post_user />
     <DashboardComponent />
-    <StatsMetrics />
-    
-      
+    <Graph /> 
     </>
   );
 };

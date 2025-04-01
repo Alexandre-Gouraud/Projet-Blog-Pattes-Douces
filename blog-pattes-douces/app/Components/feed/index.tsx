@@ -24,6 +24,7 @@ export default function Feedhome() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [commentText, setCommentText] = useState<string>("");
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false); // État pour gérer l'affichage de l'animation
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -40,6 +41,7 @@ export default function Feedhome() {
 
         const data: Article[] = await response.json();
         setArticles(data);
+        setIsLoaded(true); // Définir l'état sur true lorsque les données sont chargées
       } catch (error) {
         console.error(error);
       }
@@ -82,6 +84,33 @@ export default function Feedhome() {
       console.error("Erreur lors de l'ajout du commentaire :", error);
     }
   };
+
+  if (!isLoaded) {
+    // Afficher l'animation de chargement si les données ne sont pas chargées
+    return (
+      <div className="p-8">
+        <h1 className="text-3xl font-bold mb-4">Chargement des articles...</h1>
+        <div className="space-y-6">
+          {/* Affiche plusieurs blocs de chargement */}
+          {[...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="animate-pulse bg-white p-4 rounded-md shadow-md"
+            >
+              <div className="mb-4 h-4 w-1/3 bg-gray-300 rounded"></div>
+              <div className="h-6 w-1/2 bg-gray-300 rounded mb-4"></div>
+              <div className="h-24 w-full bg-gray-200 rounded"></div>
+              <div className="mt-4 flex space-x-4">
+                <div className="h-4 w-12 bg-gray-300 rounded"></div>
+                <div className="h-4 w-12 bg-gray-300 rounded"></div>
+                <div className="h-4 w-12 bg-gray-300 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8">

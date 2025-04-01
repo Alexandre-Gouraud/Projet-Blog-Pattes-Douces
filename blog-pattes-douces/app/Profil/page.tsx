@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
 import Header from "../Components/navigation/Header";
-import Post_user from "../Post_user/page";
+import Post_user from "../Components/Post_user";
 import Dashboard from "../Components/dashboard";
 
 const Profil = () => {
@@ -67,18 +67,18 @@ const Profil = () => {
           Bienvenue <span className="font-semibold">{pseudo}</span> !
         </p>
       </div>
-      <Post_user />
       <Dashboard />
+      <Post_user />
       <div className="flex justify-center mt-4 space-x-4">
         <button
           onClick={handleLogout}
-          className="bg-[#FFB371] text-white px-4 py-2 rounded hover:bg-[#D9D9D9] hover:text-[#444444] transition-colors"
+          className="border to-black p-4 rounded-lg shadow-md bg-[#FFB371] text-white hover:bg-[#D9D9D9] hover:text-[#444444]  transform transition-all duration-200 hover:scale-105 hover:shadow-xl"
         >
           Se déconnecter
         </button>
         <button
-        onClick={handleDeleteAccount}
-          className="bg-[#FFB371] text-white px-4 py-2 rounded hover:bg-[#D9D9D9] hover:text-[#444444] transition-colors"
+          onClick={handleDeleteAccount}
+          className="border to-black p-4 rounded-lg shadow-md bg-[#FFB371] text-white hover:bg-[#D9D9D9] hover:text-[#444444]  transform transition-all duration-200 hover:scale-105 hover:shadow-xl"
         >
           Supprimer le compte
         </button>
