@@ -83,8 +83,7 @@ const Profil = () => {
             <main
               className="flex-1 p-8"
               style={{
-                background:
-                  "linear-gradient(90deg, hsla(28, 100%, 72%, 1) 0%, hsla(28, 38%, 43%, 1) 100%)",
+              backgroundColor: "#928b99",
               }}
             >
               <SidebarProvider>
