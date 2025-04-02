@@ -99,12 +99,12 @@ export default function Post_user() {
 
                             <h2 className="text-xl font-semibold">{article.titre}</h2>
                             <p className="text-gray-700">{article.texte}</p>
-                            {article.image && (
+                            {/* {article.image && (
                                 <img
                                     src={article.image}
                                     alt={article.titre}
                                     className="mt-2 rounded-md" />
-                            )}
+                            )} */}
                             <p className="text-sm text-gray-500">
                                 Publié le {new Date(article.date).toLocaleDateString()}
                             </p>

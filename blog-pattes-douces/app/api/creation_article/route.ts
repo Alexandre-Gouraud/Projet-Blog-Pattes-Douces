@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     try {
         // Parse request JSON
-        const { titre, texte, userId } = await request.json();
+        const { titre, texte, userId, imageUrl } = await request.json();
 
         // Validate input
         if (!titre || !texte || !userId) {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
             data: {
                 titre,
                 texte,
-                image: undefined,
+                image: imageUrl,
                 vue: [],
                 reaction1: [],
                 reaction2: [],
