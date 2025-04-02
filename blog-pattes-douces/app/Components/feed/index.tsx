@@ -87,7 +87,7 @@ export default function Feedhome() {
             <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
-            {article.image && <img src={article.image} alt={article.titre} className="mt-2 rounded-md" />}
+            {/* {article.image && <img src={article.image} alt={article.titre} className="mt-2 rounded-md" />} */}
             <p className="text-sm text-gray-500">Publié le {new Date(article.date).toLocaleDateString()}</p>
             <div className="flex space-x-4 mt-2">
               <p className="text-sm text-gray-400">
