@@ -5,6 +5,7 @@ import Link from "next/link";
 import Feed from "../Feed/page";
 import Profil from "../Profil/page";
 import Dashboard from "../Components/dashboard";
+import Activity from "../Components/activity/page";
 
 import {
   HomeIcon,
@@ -16,6 +17,7 @@ import {
   CubeIcon,
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon,
+  BookmarkSquareIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
@@ -27,7 +29,7 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { href: "/", icon: <HomeIcon className="h-6 w-6" />, label: "Accueil" },
+    { href: "/Feed", icon: <HomeIcon className="h-6 w-6" />, label: "Accueil" },
     {
       href: "/Profil",
       icon: <UserCircleIcon className="h-6 w-6" />,
@@ -42,6 +44,11 @@ const Sidebar = () => {
       href: "/Feed",
       icon: <DocumentDuplicateIcon className="h-6 w-6" />,
       label: "Articles",
+    },
+    {
+      href: "/Activity",
+      icon: <BookmarkSquareIcon className="h-6 w-6" />,
+      label: "Activité et Historique",
     },
     // {
     //   href: "/feed",
