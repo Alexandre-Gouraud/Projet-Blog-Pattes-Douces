@@ -10,9 +10,9 @@ type Article = {
   texte: string;
   image?: string;
   date: string;
-  vue: any[];
-  reaction1: any[];
-  reaction2: any[];
+  vue: string[]; // Assuming these are user IDs
+  reaction1: string[];
+  reaction2: string[];
   commentaires: { id: string }[];
 };
 
@@ -36,19 +36,24 @@ export default function Feedhome() {
         setArticles(data);
         setIsLoaded(true);
       } catch (error) {
-        console.error(error);
+        console.error("Erreur lors du chargement des articles :", error);
       }
     };
 
     fetchArticles();
   }, []);
 
-  const handleAddView = async (articleId: string) => {
-    const userId = localStorage.getItem("user_id");
+  const handleAddView = async (id: string) => {
+    let userId: string | null = null;
+    try {
+      userId = localStorage.getItem("user_id");
+    } catch (error) {
+      console.error("Erreur lors de l'accès à localStorage :", error);
+    }
     if (!userId) return;
 
     try {
-      const response = await fetch(`/api/AddView/${articleId}`, {
+      const response = await fetch(`/api/AddView/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
@@ -59,8 +64,8 @@ export default function Feedhome() {
       // Met à jour localement pour éviter un rechargement
       setArticles((prevArticles) =>
         prevArticles.map((article) =>
-          article.id === articleId
-            ? { ...article, vue: [...article.vue, userId] }
+          article.id === id
+            ? { ...article, vue: [...article.vue, userId!] }
             : article
         )
       );
@@ -87,6 +92,7 @@ export default function Feedhome() {
             <h2 className="text-xl font-semibold">{article.auteur?.pseudo || "Inconnu"}</h2>
             <h2 className="text-xl font-semibold">{article.titre}</h2>
             <p className="text-gray-700">{article.texte}</p>
+            {/* Uncomment the image if needed */}
             {/* {article.image && <img src={article.image} alt={article.titre} className="mt-2 rounded-md" />} */}
             <p className="text-sm text-gray-500">Publié le {new Date(article.date).toLocaleDateString()}</p>
             <div className="flex space-x-4 mt-2">
