@@ -35,9 +35,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/Articles_users">
-                  <p>Mes articles</p>
-                </Link>
+                
               </li>
             </ul>
           </div>

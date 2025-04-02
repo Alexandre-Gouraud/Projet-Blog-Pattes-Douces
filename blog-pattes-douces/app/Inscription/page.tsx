@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
+import Navbar from "../Components/navigation/Navbar";
 
 export default function Inscription() {
     const [error, setError] = useState<string | null>(null);
@@ -68,7 +69,7 @@ export default function Inscription() {
     };
 
     return (
-        <><NavbarAff />
+        <><Navbar/>
             <div className="min-h flex flex-col items-center justify-center mt-10">
                 <h1 className="text-4xl font-bold text-[#996C44] mb-6">Inscription</h1>
                 <form

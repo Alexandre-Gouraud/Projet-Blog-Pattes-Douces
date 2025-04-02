@@ -1,9 +1,10 @@
 import prisma from "@/src/db/prisma1"
-import { revalidatePath } from "next/cache";
+// import { revalidatePath } from "next/cache";
 import Form from "next/form";
 import { redirect } from "next/navigation";
+import React, { useState, useEffect } from "react";
 
-
+// const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
 export default function Creation_article() {
 
   async function createPost(formData: FormData) {
@@ -11,34 +12,42 @@ export default function Creation_article() {
     // récupère les valeurs des inputs
     const titre = formData.get("titre") as string;
     const texte = formData.get("texte") as string;
+ 
+    const [userId, setUserId] = useState<string | null>(null);
 
+  // Fetch userId from localStorage after the component mounts
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserId(localStorage.getItem("user_id"));
+    }
+  }, []);
   
     await prisma.article.create({
       data: {
-      auteurId:"67eab2c1bbb0b4f399cca109",
-      titre, 
-      texte,
-      image:null,
-      
-      vue:[],
-      reaction1:[],
-      reaction2:[],
-      // commentaires:[]
+        titre,
+        texte,
+        image: undefined,
+        vue: [],
+        reaction1: [],
+        reaction2: [],
+        auteur: {
+          connect: { id: userId as string},
+        },
       },
     });
 
      
    
 
-    revalidatePath("/Articles_users");
-    redirect("/Articles_users");
+    // revalidatePath("/Profil");
+    // redirect("/Profil");
 
   
   }
  
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Créer un nouveau post</h1>
+      <h1 className="text-2xl font-bold mb-6">Créer un nouveau post : {userId ?? "erreur"}</h1>
       <Form action={createPost} className="space-y-6">
         {/* titre */}
         <div>
