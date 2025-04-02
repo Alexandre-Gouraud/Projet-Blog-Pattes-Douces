@@ -13,7 +13,7 @@ const Header = () => {
       <div
         className="w-full h-20 flex justify-center items-center"
         style={{
-          background: "white",
+          background: "#E5E5E1",
         }}
       >
         <h1><em>Pattes Douces</em></h1>

@@ -71,12 +71,12 @@ const Sidebar = () => {
     <div
       className={`${
         collapsed ? "w-16" : "w-64"
-      } bg-gray-800 h-screen fixed flex flex-col transition-all duration-300`}
+      } bg-[#E5E5DF] h-screen fixed flex flex-col transition-all duration-300`}
     >
       {/* Header de la sidebar */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-700">
         {!collapsed && (
-          <h1 className="text-white font-bold text-xl truncate">Pattes Douces</h1>
+          <h1 className="text-Black font-bold text-xl truncate">Pattes Douces</h1>
         )}
         {/* <button
           onClick={toggleSidebar}
@@ -100,11 +100,11 @@ const Sidebar = () => {
                 href={item.href}
                 className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 group"
               >
-                <div className="text-gray-400 group-hover:text-white">
+                <div className="text-gray-400 group-hover:text-black">
                   {item.icon}
                 </div>
                 {!collapsed && (
-                  <span className="text-white text-sm">{item.label}</span>
+                  <span className="text-black text-sm">{item.label}</span>
                 )}
               </Link>
             </li>
@@ -115,7 +115,7 @@ const Sidebar = () => {
       {/* Footer (optionnel) */}
       <footer className="px-4 py-4 border-t border-gray-700 mt-auto">
         {!collapsed && (
-          <p className="text-gray-500 text-xs">&copy; 2025 Pattes Douces</p>
+          <p className="text-black-500 text-xs">&copy; 2025 Pattes Douces</p>
         )}
       </footer>
     </div>

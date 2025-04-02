@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
 import { useEffect, useState } from "react";
-import Sidebar from "../layout/AppSidebar";
+import AffSidebar from "../layout/AfficherSidebar";
 import Header from "../layout/AppHeader";
 import Footer from "../layout/navigation/Footer";
 
@@ -12,6 +14,7 @@ import Graph from "../Components/Stats/metrics/graph";
 import Navbar from "../layout/navigation/Navbar";
 
 import Post_user from "../Components/Post_user";
+import AfficherSidebar from "../layout/AfficherSidebar";
 
 const Dashboard = () => {
   return (
@@ -22,7 +25,7 @@ const Dashboard = () => {
       {/* Wrapper pour la sidebar et le contenu principal */}
       <div className="flex">
         {/* Sidebar */}
-        <Sidebar />
+        <AffSidebar />
 
         {/* Contenu principal, décalé par la sidebar */}
         <div className="ml-64 flex-1 flex flex-col min-h-screen">

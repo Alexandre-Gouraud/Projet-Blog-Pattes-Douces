@@ -26,7 +26,7 @@ const AppHeader: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-[9999] w-full bg-white border-b border-gray-200 dark:bg-gray-200 dark:border-gray-200">
+    <header className="sticky top-0 z-[9999] w-full bg-[#E5E5DF] border-b border-gray-200">
       <div className="flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4">
         {/* Toggle Button & Logo */}
         <div className="flex items-center gap-4">
@@ -89,13 +89,13 @@ const AppHeader: React.FC = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="hidden lg:block lg:max-w-md w-full">
+        <div className="hidden lg:block lg:max-w-md w-full bg-[#E5E5E1]-50 dark:bg-gray-900 rounded-lg shadow-sm">
           <form className="relative">
             <input
               ref={inputRef}
               type="text"
               placeholder="Search or type command..."
-              className="w-full h-11 pl-12 text-sm text-gray-800 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full h-11 pl-12 text-sm text-[#E5E5E1]-800 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
             <span className="absolute inset-y-0 left-4 flex items-center text-gray-500 dark:text-gray-400">
               <svg
@@ -116,9 +116,8 @@ const AppHeader: React.FC = () => {
             </span>
             <button
               type="button"
-              className="absolute inset-y-0 right-4 text-sm text-gray-400 dark:text-gray-500"
+              className="absolute inset-y-0 right-4 text-sm text-[#E5E5E1]-400 dark:text-gray-500"
             >
-              ⌘ + K
             </button>
           </form>
         </div>
