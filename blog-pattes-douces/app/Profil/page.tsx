@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Footer from "../Components/navigation/Footer";
-import Header from "../Components/navigation/Header";
+import DashboardComponent from "../Components/dashboard";
 import Post_user from "../Post_user/page";
 
 import Sidebar from "../layout/AppSidebar";
@@ -88,6 +88,7 @@ const Profil = () => {
             >
               <SidebarProvider>
                 <Post_user />
+                <DashboardComponent />
                 <div className="flex justify-center mt-4 space-x-4">
                   <button
                     onClick={handleLogout}

@@ -16,6 +16,7 @@ import {
   CubeIcon,
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
@@ -51,6 +52,11 @@ const Sidebar = () => {
       href: "/dashboard",
       icon: <ChartBarSquareIcon className="h-6 w-6" />,
       label: "Statistiques",
+    },
+    {
+      href: "/Connexion",
+      icon: <ArrowRightOnRectangleIcon className="h-6 w-6" />,
+      label: "Se Connecter",
     },
   ];
 
