@@ -1,30 +1,37 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Méthode non autorisée" });
-
+// Handle POST requests to create a new commentaire
+export async function POST(req: Request) {
   try {
-    const { auteurId, titre, texte, image } = req.body;
+    const body = await req.json();
+    const { id_user, id_article, texte } = body;
 
-    const article = await prisma.article.create({
+    const commentaire = await prisma.commentaire.create({
       data: {
-        auteurId,
-        titre,
-        texte,
-        image,
-        date: new Date(),
-        vue: [],
-        reaction1: [],
-        reaction2: [],
-        // commentaires: [],
+      commentataireId: id_user, // Updated to match the schema
+      article_sourceId: id_article, // Updated to match the schema
+      texte,
+      date: new Date(),
       },
     });
 
-    res.status(201).json(article);
+    return NextResponse.json(commentaire, { status: 201 });
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la création de l'article" });
+    console.error("Error creating commentaire:", error);
+    return NextResponse.json({ error: "Erreur lors de la création du commentaire" }, { status: 500 });
+  }
+}
+
+// Handle GET requests to fetch all commentaires
+export async function GET() {
+  try {
+    const commentaire = await prisma.commentaire.findMany();
+    return NextResponse.json(commentaire, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching commentaires:", error);
+    return NextResponse.json({ error: "Erreur lors de la récupération des commentaires" }, { status: 500 });
   }
 }
