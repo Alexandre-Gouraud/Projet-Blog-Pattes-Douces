@@ -65,7 +65,7 @@ const Sidebar = () => {
         {!collapsed && (
           <h1 className="text-white font-bold text-xl truncate">Pattes Douces</h1>
         )}
-        <button
+        {/* <button
           onClick={toggleSidebar}
           className="text-gray-400 hover:text-white focus:outline-none"
           aria-label="Toggle Sidebar"
@@ -75,7 +75,7 @@ const Sidebar = () => {
           ) : (
             <ChevronDoubleLeftIcon className="h-6 w-6" />
           )}
-        </button>
+        </button> */}
       </div>
 
       {/* Navigation */}
@@ -102,7 +102,7 @@ const Sidebar = () => {
       {/* Footer (optionnel) */}
       <footer className="px-4 py-4 border-t border-gray-700 mt-auto">
         {!collapsed && (
-          <p className="text-gray-500 text-xs">&copy; 2023 Pattes Douces</p>
+          <p className="text-gray-500 text-xs">&copy; 2025 Pattes Douces</p>
         )}
       </footer>
     </div>
