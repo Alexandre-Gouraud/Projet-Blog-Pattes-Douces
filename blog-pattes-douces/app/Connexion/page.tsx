@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Navbar from "../layout/navigation/Navbar";
-import NavbarAff from "../layout/navigation/Navbar_aff";
-import Navbar_connecte from "../layout/navigation/Navbar_connecte";
-import Header from "../layout/navigation/Header";
-import Footer from "../layout/navigation/Footer";
-import Posts from "../Components/Posts/Posts";
-import Feedhome from "../Components/feed";
+import Header from "../layout/AppHeader";
+import Footer from "../Components/navigation/Footer";
+
+import Sidebar from "../layout/AppSidebar";
+import { SidebarProvider } from "@/src/context/SidebarContext";
 
 export default function Connexion() {
     const [error, setError] = useState<string | null>(null);
@@ -64,51 +62,67 @@ export default function Connexion() {
             console.error("Erreur lors de la connexion :", error);
             setError("Erreur lors de la connexion.");
         }
-
     };
 
     return (
-        <>
-            <NavbarAff />
-            <div className="min-h flex flex-col items-center justify-center mt-10">
-                <h1 className="text-4xl font-bold text-[#996C44] mb-6">Connexion</h1>
-                <form
-                    onSubmit={handleSubmit }
-                    className="bg-[#D9D9D9] p-8 rounded-lg shadow-md w-full max-w-md"
-                >
-                    <div className="mb-4">
-                        <input
-                            type="text"
-                            name="pseudo"
-                            placeholder="Pseudo"
-                            className="w-full p-3 border border-[#996C44] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFB371]"
-                        />
+
+                <div className="flex">
+                    <Sidebar />
+                    <div className="ml-64 flex-1 flex flex-col min-h-screen">
+                        <Header />
+                        <main
+                            className="flex-1 p-8"
+                            style={{
+                                background:
+                                    "linear-gradient(90deg, hsla(28, 100%, 72%, 1) 0%, hsla(28, 38%, 43%, 1) 100%)",
+                            }}
+                        >
+                            <SidebarProvider>
+                                <div className="min-h flex flex-col items-center justify-center mt-10">
+                                    <h1 className="text-4xl font-bold text-[#996C44] mb-6">Connexion</h1>
+                                    <form
+                                        onSubmit={handleSubmit}
+                                        className="bg-[#D9D9D9] p-8 rounded-lg shadow-md w-full max-w-md"
+                                    >
+                                        <div className="mb-4">
+                                            <input
+                                                type="text"
+                                                name="pseudo"
+                                                placeholder="Pseudo"
+                                                className="w-full p-3 border border-[#996C44] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFB371]"
+                                            />
+                                        </div>
+                                        <div className="mb-4">
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                placeholder="Password"
+                                                required
+                                                className="w-full p-3 border border-[#996C44] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFB371]"
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            className="w-full bg-[#FFB371] text-white py-3 rounded-lg hover:bg-[#996C44] transition-colors"
+                                        >
+                                            Login
+                                        </button>
+                                    </form>
+                                    {error && <p className="text-red-500 mt-4">{error}</p>}
+                                    <p className="mt-6 text-[#444444]">
+                                        Première fois sur Pattes Douces ?{" "}
+                                        <a
+                                            href="../Inscription"
+                                            className="text-[#996C44] underline hover:text-[#FFB371]"
+                                        >
+                                            Inscris-toi
+                                        </a>
+                                    </p>
+                                </div>
+                            </SidebarProvider>
+                        </main>
+                        <Footer />
                     </div>
-                    <div className="mb-4">
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            required
-                            className="w-full p-3 border border-[#996C44] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFB371]"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-[#FFB371] text-white py-3 rounded-lg hover:bg-[#996C44] transition-colors"
-                    >
-                        Login
-                    </button>
-                </form>
-                {error && <p className="text-red-500 mt-4">{error}</p>}
-                <p className="mt-6 text-[#444444]">
-                    Première fois sur Pattes Douces ?{" "}
-                    <a href="../Inscription" className="text-[#996C44] underline hover:text-[#FFB371]">
-                        Inscris-toi
-                    </a>
-                </p>
-            </div>
-            <Footer />
-        </>
+                </div>
     );
 }

@@ -2,6 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Feed from "../Feed/page";
+import Profil from "../Profil/page";
+import Dashboard from "../Components/dashboard";
+import Activity from "../Components/activity/page";
+
 import {
   HomeIcon,
   CalendarIcon,
@@ -12,6 +17,8 @@ import {
   CubeIcon,
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon,
+  BookmarkSquareIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
@@ -22,31 +29,41 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { href: "/", icon: <HomeIcon className="h-6 w-6" />, label: "Accueil" },
+    { href: "/Feed", icon: <HomeIcon className="h-6 w-6" />, label: "Accueil" },
     {
-      href: "/calendar",
-      icon: <CalendarIcon className="h-6 w-6" />,
-      label: "Calendrier",
-    },
-    {
-      href: "/profile",
+      href: "/Profil",
       icon: <UserCircleIcon className="h-6 w-6" />,
       label: "Profil",
     },
     {
-      href: "/documents",
+      href: "https://calendar.google.com/calendar",
+      icon: <CalendarIcon className="h-6 w-6" />,
+      label: "Calendrier",
+    },
+    {
+      href: "/Feed",
       icon: <DocumentDuplicateIcon className="h-6 w-6" />,
-      label: "Documents",
+      label: "Articles",
     },
     {
-      href: "/projects",
-      icon: <CubeIcon className="h-6 w-6" />,
-      label: "Projets",
+      href: "/Activity",
+      icon: <BookmarkSquareIcon className="h-6 w-6" />,
+      label: "Activité et Historique",
     },
+    // {
+    //   href: "/feed",
+    //   icon: <CubeIcon className="h-6 w-6" />,
+    //   label: "Projets",
+    // },
     {
-      href: "/stats",
+      href: "/dashboard",
       icon: <ChartBarSquareIcon className="h-6 w-6" />,
       label: "Statistiques",
+    },
+    {
+      href: "/Connexion",
+      icon: <ArrowRightOnRectangleIcon className="h-6 w-6" />,
+      label: "Se Connecter",
     },
   ];
 
@@ -61,7 +78,7 @@ const Sidebar = () => {
         {!collapsed && (
           <h1 className="text-white font-bold text-xl truncate">Pattes Douces</h1>
         )}
-        <button
+        {/* <button
           onClick={toggleSidebar}
           className="text-gray-400 hover:text-white focus:outline-none"
           aria-label="Toggle Sidebar"
@@ -71,7 +88,7 @@ const Sidebar = () => {
           ) : (
             <ChevronDoubleLeftIcon className="h-6 w-6" />
           )}
-        </button>
+        </button> */}
       </div>
 
       {/* Navigation */}
@@ -98,7 +115,7 @@ const Sidebar = () => {
       {/* Footer (optionnel) */}
       <footer className="px-4 py-4 border-t border-gray-700 mt-auto">
         {!collapsed && (
-          <p className="text-gray-500 text-xs">&copy; 2023 Pattes Douces</p>
+          <p className="text-gray-500 text-xs">&copy; 2025 Pattes Douces</p>
         )}
       </footer>
     </div>

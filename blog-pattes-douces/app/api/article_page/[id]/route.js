@@ -49,7 +49,7 @@ export async function GET(request, { params }) {
     if (!article) {
       return NextResponse.json({ error: "Article non trouvé" }, { status: 404 });
     }
-
+    
     return NextResponse.json(article);
   } catch (error) {
     console.error("Erreur lors de la récupération de l'article :", error);
