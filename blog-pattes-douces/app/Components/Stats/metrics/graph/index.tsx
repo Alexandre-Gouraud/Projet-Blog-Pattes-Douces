@@ -4,24 +4,84 @@ import React, { useEffect, useState } from "react";
 
 type Article = {
   id: string;
+  auteurId: string;
   titre: string;
-  vue: number[];
-  reaction1: number[];
-  reaction2: number[];
+  texte: string;
+  image?: string;
+  date: string;
+  vue: any[];
+  reaction1: any[];
+  reaction2: any[];
 };
 
 type Commentaires = {
-  id: string;
-  texte?: string;
+  id: string; // Identifiant unique du commentaire
+  texte: string; // Contenu du commentaire
+  date: string; // Date de création du commentaire
+  reaction1: string[]; // Liste des utilisateurs ayant réagi avec "reaction1"
+  reaction2: string[]; // Liste des utilisateurs ayant réagi avec "reaction2"
+  article_source: {
+    id: string; // Identifiant de l'article
+    titre: string; // Titre de l'article
+    texte: string; // Contenu de l'article
+    image?: string; // Image associée à l'article
+    date: string; // Date de création de l'article
+    vue: string[]; // Liste des utilisateurs ayant vu l'article
+    reaction1: string[]; // Liste des utilisateurs ayant réagi avec "reaction1"
+    reaction2: string[]; // Liste des utilisateurs ayant réagi avec "reaction2"
+    auteurId: string; // Identifiant de l'auteur de l'article
+  };
+  commentataire: {
+    id: string; // Identifiant de l'utilisateur ayant écrit le commentaire
+    pseudo: string; // Pseudo de l'utilisateur
+    biographie?: string; // Biographie de l'utilisateur
+    email: string; // Email de l'utilisateur
+    password: string; // Mot de passe hashé de l'utilisateur
+  };
 };
 
-export default function Statistics() {
+export default function Post_user() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [commentaires, setCommentaires] = useState<Commentaires[]>([]);
+  const pseudo = typeof window !== "undefined" ? localStorage.getItem("pseudo") : null;
+  const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
+
+  useEffect(() => {
+    const fetchArticles = async (): Promise<void> => {
+      try {
+
+        // Ajout de la vérification de l'utilisateur
+        const response = await fetch("/api/article");
+        if (!response) throw new Error("Erreur lors du chargement de vos articles");
+
+        // Vérification de la réponse de l'API
+        const data: Article[] = await response.json();
+        const userArticles = data.filter((article) => article.auteurId === userId);
+        setArticles(userArticles);
+        
+        // Ajout des requetes API pour les commentaires
+
+        const allCommentaires = await fetch("/api/commentaires");
+        if (!allCommentaires.ok) throw new Error("Erreur API commentaires");
+
+        const commentairesData: Commentaires[] = await allCommentaires.json();
+        const userArticleIds = articles.map((article) => article.id);
+        const filteredCommentaires = commentairesData.filter(
+          (comment) => userArticleIds.includes(comment.article_source.id)
+        );
+        setCommentaires(filteredCommentaires);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchArticles();
+  }, [userId]);
 
   const totalVues = articles.reduce((total, article) => total + article.vue.length, 0);
   const totalReactions =
-    articles.reduce((total, article) => total + article.reaction1.length + article.reaction2.length, 0);
+  articles.reduce((total, article) => total + article.reaction1.length + article.reaction2.length, 0);
   const totalLikes = articles.reduce((total, article) => total + article.reaction1.length, 0);
   const totalDislikes = articles.reduce((total, article) => total + article.reaction2.length, 0);
 
@@ -32,12 +92,15 @@ export default function Statistics() {
 
   useEffect(() => {
     const dummyArticles = [
-      { id: "1", titre: "Article 1", vue: [1, 2, 3], reaction1: [1, 2], reaction2: [] },
-      { id: "2", titre: "Article 2", vue: [1, 2], reaction1: [2], reaction2: [1] },
+      { id: "1", auteurId: "user1", titre: "Article 1", texte: "Texte de l'article 1", date: "2023-01-01", vue: [1, 2, 3], reaction1: [1, 2], reaction2: [] },
+      { id: "2", auteurId: "user2", titre: "Article 2", texte: "Texte de l'article 2", date: "2023-01-02", vue: [1, 2], reaction1: [2], reaction2: [1] },
     ];
     setArticles(dummyArticles);
 
-    const dummyComments = [{ id: "1" }, { id: "2" }];
+    const dummyComments = [
+      { id: "1", texte: "Commentaire 1", date: "2023-01-01", reaction1: [], reaction2: [], article_source: { id: "1", titre: "Article 1", texte: "Texte de l'article 1", date: "2023-01-01", vue: [], reaction1: [], reaction2: [], auteurId: "user1" }, commentataire: { id: "user1", pseudo: "User1", email: "user1@example.com", password: "hashedpassword" } },
+      { id: "2", texte: "Commentaire 2", date: "2023-01-02", reaction1: [], reaction2: [], article_source: { id: "2", titre: "Article 2", texte: "Texte de l'article 2", date: "2023-01-02", vue: [], reaction1: [], reaction2: [], auteurId: "user2" }, commentataire: { id: "user2", pseudo: "User2", email: "user2@example.com", password: "hashedpassword" } },
+    ];
     setCommentaires(dummyComments);
   }, []);
 
@@ -71,12 +134,8 @@ export default function Statistics() {
               <span className="text-sm">Likes ({Math.round(likesPercentage)}%)</span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="w-4 h-4 bg-red-500 rounded-full"></span>
-              <span className="text-sm">Dislikes ({Math.round(dislikesPercentage)}%)</span>
-            </div>
-            <div className="flex items-center space-x-2">
               <span className="w-4 h-4 bg-orange-500 rounded-full"></span>
-              <span className="text-sm">Réactions ({Math.round(reactionsPercentage)}%)</span>
+              <span className="text-sm">Dislikes ({Math.round(dislikesPercentage)}%)</span>
             </div>
           </div>
         </div>
