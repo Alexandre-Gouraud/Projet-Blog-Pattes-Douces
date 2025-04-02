@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import useRouter from "next/router";
+import { useRouter } from "next/navigation";
+import { DateTime } from "next-auth/providers/kakao";
 
 type Article = {
     id: string;
     auteurId: string;
     titre: string;
     texte: string;
-    image?: string;
+    image?: DateTime;
     date: string;
     vue: any[];
     reaction1: any[];
@@ -17,7 +18,7 @@ type Article = {
 
 export default function Post_user() {
     const [articles, setArticles] = useState<Article[]>([]);
-    const pseudo = typeof window !== "undefined" ? localStorage.getItem("pseudo") : null;
+    const router = useRouter();
     const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
     const [isLoaded, setIsLoaded] = useState(false); // État pour gérer l'affichage de l'animation
 
@@ -38,6 +39,28 @@ export default function Post_user() {
 
         fetchArticles();
     }, []);
+
+
+    async function supprimer_article(id_article: string) {
+        try {
+            
+          const response = await fetch(`/api/articles_user/supprimer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id_article }),
+          });
+    
+          if (!response.ok) throw new Error("Erreur lors de la suppression");
+    
+          // mise à jour de la liste et de la page
+          setArticles((ancien_articles)=>ancien_articles.filter((article) => article.id !== id_article));
+          
+          router.refresh(); 
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
 
     if (!isLoaded) {
         // Afficher l'animation de chargement si les données ne sont pas chargées
@@ -71,17 +94,16 @@ export default function Post_user() {
             <h1 className="text-3xl font-bold mb-4">Voici vos derniers articles</h1>
             <div className="space-y-6">
                 {articles.map((article) => (
-                    <a key={article.id} href={`/Article_page/${article.id}`} className="block">
+                    <><a key={article.id} href={`/Article_page/${article.id}`} className="block">
                         <div className="border p-4 rounded-lg shadow-md bg-white transform transition-transform duration-300 hover:scale-102">
-                            <h2 className="text-xl font-semibold">{pseudo}</h2>
+
                             <h2 className="text-xl font-semibold">{article.titre}</h2>
                             <p className="text-gray-700">{article.texte}</p>
                             {article.image && (
                                 <img
                                     src={article.image}
                                     alt={article.titre}
-                                    className="mt-2 rounded-md"
-                                />
+                                    className="mt-2 rounded-md" />
                             )}
                             <p className="text-sm text-gray-500">
                                 Publié le {new Date(article.date).toLocaleDateString()}
@@ -94,8 +116,20 @@ export default function Post_user() {
                             </div>
                         </div>
                     </a>
+                    <button
+                        type="button"
+                        onClick={() => supprimer_article(article.id)}
+                        className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >Supprimer </button>
+                </>
                 ))}
             </div>
+            <a href="../Creation_article">
+                <button type="button"
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                >Créer un article</button>
+            </a>
+
         </div>
     );
 }
