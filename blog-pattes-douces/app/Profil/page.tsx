@@ -7,6 +7,7 @@ import Post_user from "../Post_user/page";
 
 import Sidebar from "../layout/AppSidebar";
 import { SidebarProvider } from "@/src/context/SidebarContext";
+import AfficherSidebar from "../layout/AfficherSidebar";
 
 const Profil = () => {
   const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
@@ -66,7 +67,7 @@ const Profil = () => {
         {/* Wrapper pour la sidebar et le contenu principal */}
         <div className="flex">
           {/* Sidebar */}
-          <Sidebar />
+          <AfficherSidebar />
 
           {/* Contenu principal, décalé par la sidebar */}
           <div className="ml-64 flex-1 flex flex-col min-h-screen">
