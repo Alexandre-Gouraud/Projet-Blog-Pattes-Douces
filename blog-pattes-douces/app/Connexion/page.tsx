@@ -7,7 +7,6 @@ import Footer from "../Components/navigation/Footer";
 import Sidebar from "../layout/AppSidebar";
 import { SidebarProvider } from "@/src/context/SidebarContext";
 import AfficherSidebar from "../layout/AfficherSidebar";
-
 export default function Connexion() {
     const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +28,9 @@ export default function Connexion() {
             const { user_id } = await response.json();
             localStorage.setItem("user_id", user_id);
             console.log("ID utilisateur récupéré :", user_id);
+            if (user_id === "67ed173fd7c7e1aab9bcfe76") {
+                window.location.href = "/admin";
+            }
         } catch (error) {
             console.error("Erreur lors de la récupération de l'ID utilisateur :", error);
             setError("Erreur lors de la récupération de l'ID utilisateur.");

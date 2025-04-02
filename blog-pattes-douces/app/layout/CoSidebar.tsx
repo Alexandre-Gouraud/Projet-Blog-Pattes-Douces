@@ -35,11 +35,11 @@ const CoSidebar = () => {
             icon: <UserCircleIcon className="h-6 w-6" />,
             label: "Profil",
         },
-        {
-            href: "https://calendar.google.com/calendar",
-            icon: <CalendarIcon className="h-6 w-6" />,
-            label: "Calendrier",
-        },
+        // {
+        //     href: "https://calendar.google.com/calendar",
+        //     icon: <CalendarIcon className="h-6 w-6" />,
+        //     label: "Calendrier",
+        // },
         {
             href: "/Feed",
             icon: <DocumentDuplicateIcon className="h-6 w-6" />,
@@ -73,7 +73,7 @@ const CoSidebar = () => {
                 {!collapsed && (
                     <h1 className="text-white font-bold text-xl truncate">Pattes Douces</h1>
                 )}
-                <button
+                {/* <button
                     onClick={toggleSidebar}
                     className="text-gray-400 hover:text-white focus:outline-none"
                     aria-label="Toggle Sidebar"
@@ -83,7 +83,7 @@ const CoSidebar = () => {
                     ) : (
                         <ChevronDoubleLeftIcon className="h-6 w-6" />
                     )}
-                </button>
+                </button> */}
             </div>
 
             {/* Navigation */}

@@ -35,11 +35,11 @@ const Sidebar = () => {
       icon: <UserCircleIcon className="h-6 w-6" />,
       label: "Profil",
     },
-    {
-      href: "https://calendar.google.com/calendar",
-      icon: <CalendarIcon className="h-6 w-6" />,
-      label: "Calendrier",
-    },
+    // {
+    //   href: "https://calendar.google.com/calendar",
+    //   icon: <CalendarIcon className="h-6 w-6" />,
+    //   label: "Calendrier",
+    // },
     {
       href: "/Feed",
       icon: <DocumentDuplicateIcon className="h-6 w-6" />,
