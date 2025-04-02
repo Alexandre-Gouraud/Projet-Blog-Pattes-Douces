@@ -7,6 +7,7 @@ import Footer from "../Components/navigation/Footer";
 import Header from "../layout/AppHeader";
 import Sidebar from "../layout/AppSidebar";
 import { SidebarProvider } from "@/src/context/SidebarContext";
+import AfficherSidebar from "../layout/AfficherSidebar";
 
 export default function Inscription() {
     const [error, setError] = useState<string | null>(null);
@@ -73,7 +74,7 @@ export default function Inscription() {
 
     return (
         <div className="flex">
-            <Sidebar />
+            <AfficherSidebar />
             <div className="ml-64 flex-1 flex flex-col min-h-screen">
                 <Header />
                 <main

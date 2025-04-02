@@ -6,6 +6,7 @@ import Footer from "../Components/navigation/Footer";
 
 import Sidebar from "../layout/AppSidebar";
 import { SidebarProvider } from "@/src/context/SidebarContext";
+import AfficherSidebar from "../layout/AfficherSidebar";
 
 export default function Connexion() {
     const [error, setError] = useState<string | null>(null);
@@ -67,7 +68,7 @@ export default function Connexion() {
     return (
 
                 <div className="flex">
-                    <Sidebar />
+                    <AfficherSidebar />
                     <div className="ml-64 flex-1 flex flex-col min-h-screen">
                         <Header />
                         <main

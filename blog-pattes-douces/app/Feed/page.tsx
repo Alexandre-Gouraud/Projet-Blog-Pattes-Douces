@@ -16,6 +16,7 @@ import Footer from "../layout/navigation/Footer";
 import Feedhome from "../Components/feed";
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/src/context/SidebarContext";
+import AfficherSidebar from "../layout/AfficherSidebar";
 
 const Feed = () => {
   return (
@@ -23,7 +24,7 @@ const Feed = () => {
       {/* Wrapper pour la sidebar et le contenu principal */}
       <div className="flex">
         {/* Sidebar */}
-        <Sidebar />
+        <AfficherSidebar />
 
         {/* Contenu principal, décalé par la sidebar */}
         <div className="ml-64 flex-1 flex flex-col min-h-screen">
