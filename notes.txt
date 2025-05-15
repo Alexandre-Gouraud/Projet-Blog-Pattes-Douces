@@ -1,3 +1,0 @@
-Audio :
-    Avec MediaThemeTailwindAudio, pour ajouter une audio depuis notre librairie, 
-    il faut mettre le fichier audio dans le dossier "public"
