@@ -1,0 +1,64 @@
+version: 2
+
+updates:
+  # Dépendances applicatives (pnpm-lock.yaml est auto-détecté par l'écosystème "npm")
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    groups:
+      # Minor/patch groupés par lot pour limiter le nombre de PR (et donc
+      # d'exécutions CI) ; les majeures restent individuelles pour revue.
+      production-dependencies:
+        dependency-type: 'production'
+        update-types: ['minor', 'patch']
+      development-dependencies:
+        dependency-type: 'development'
+        update-types: ['minor', 'patch']
+    ignore:
+      # Majeures connues incompatibles avec la stack actuelle au 2026-07-28
+      # (cassent lint/build — cf. .claude ou historique de PR pour le détail).
+      # À retirer une fois eslint-config-next / vite compatibles.
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@vitejs/plugin-react'
+        update-types: ['version-update:semver-major']
+
+  # Actions utilisées dans .github/workflows/*.yml
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    labels:
+      - 'ci'
+      - 'dependencies'
+    commit-message:
+      prefix: 'ci(deps)'
+    groups:
+      github-actions:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+
+  # Image de base du Dockerfile
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    labels:
+      - 'docker'
+      - 'dependencies'
+    commit-message:
+      prefix: 'chore(docker)'

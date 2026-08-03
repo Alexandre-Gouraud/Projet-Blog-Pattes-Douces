@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "../../../src/db/prisma";
+import { prisma } from "../../db/prisma";
 
 // Gestionnaire pour les requêtes GET
 export async function GET(req: Request) {
