@@ -11,8 +11,8 @@ updates:
     labels:
       - 'dependencies'
     commit-message:
-      prefix: 'chore(deps)'
-      prefix-development: 'chore(deps-dev)'
+      prefix: 'chore (deps) :'
+      prefix-development: 'chore (deps-dev) :'
     groups:
       # Minor/patch groupés par lot pour limiter le nombre de PR (et donc
       # d'exécutions CI) ; les majeures restent individuelles pour revue.
@@ -44,7 +44,7 @@ updates:
       - 'ci'
       - 'dependencies'
     commit-message:
-      prefix: 'ci(deps)'
+      prefix: 'CI (deps) :'
     groups:
       github-actions:
         patterns: ['*']
@@ -61,4 +61,4 @@ updates:
       - 'docker'
       - 'dependencies'
     commit-message:
-      prefix: 'chore(docker)'
+      prefix: 'chore (docker) :'
