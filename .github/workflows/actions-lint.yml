@@ -1,0 +1,54 @@
+name: Actions & CI Files
+
+on:
+  push:
+    branches: [main, development]
+    paths: &ci-files
+      - '.github/workflows/**'
+      - '.github/dependabot.yml'
+  pull_request:
+    branches: [main, development]
+    paths: *ci-files
+  schedule:
+    - cron: '0 5 * * 0'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  actionlint:
+    name: Lint workflows (actionlint)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run actionlint
+        uses: reviewdog/action-actionlint@c7a5aeedf31e8e29da23ccd5bd48a75955d344ca # v1.73.1
+        with:
+          reporter: github-pr-review
+
+  zizmor:
+    name: Security scan (zizmor)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
