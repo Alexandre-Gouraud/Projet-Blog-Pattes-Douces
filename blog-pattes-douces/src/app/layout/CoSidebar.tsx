@@ -1,26 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
     HomeIcon,
-    CalendarIcon,
     UserCircleIcon,
     DocumentDuplicateIcon,
     BookmarkSquareIcon,
     ChartBarSquareIcon,
-    ArrowRightOnRectangleIcon,
-    ChevronDoubleRightIcon,
-    ChevronDoubleLeftIcon,
     ArrowLeftStartOnRectangleIcon
 } from "@heroicons/react/24/outline";
 
 const CoSidebar = () => {
-    const [collapsed, setCollapsed] = useState(false);
-
-    const toggleSidebar = () => {
-        setCollapsed(!collapsed);
-    };
+    const [collapsed] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem("pseudo");

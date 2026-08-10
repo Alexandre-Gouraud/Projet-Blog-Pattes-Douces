@@ -2,23 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import NavbarAff from "../../Components/navigation/Navbar_aff";
 import Footer from "../../Components/navigation/Footer";
 import { EyeIcon, HandThumbUpIcon, HandThumbDownIcon } from "@heroicons/react/24/solid";
-
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
 
 // import Navbar from "../layout/navigation/Navbar";
 // import NavbarAff from "../layout/navigation/Navbar_aff";
 // import Navbar_connecte from "../layout/navigation/Navbar_connecte";
 // import Posts from "../Components/Posts/Posts";
 
-import Sidebar from "../../layout/AppSidebar";
 import Header from "../../layout/AppHeader";
 
-import { SidebarProvider } from "@/src/context/SidebarContext";
 import AfficherSidebar from "../../layout/AfficherSidebar";
 
 type Article = {
@@ -80,32 +73,6 @@ export default function Articlepage() {
 
         fetchArticle();
     }, [id]);
-
-    const handleAddView = async () => {
-        const userId = localStorage.getItem("user_id");
-        if (!userId) {
-            alert("Vous devez être connecté pour ajouter une vue.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/AddView/${id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userId }),
-            });
-
-            if (!response.ok) throw new Error("Erreur lors de l'ajout de la vue");
-
-            const updatedArticle = await fetch(`/api/article_page/${id}`).then((res) => res.json());
-            setArticle(updatedArticle);
-        } catch (error) {
-            console.error("Erreur lors de l'ajout de la vue :", error);
-            alert("Une erreur est survenue lors de l'ajout de la vue.");
-        }
-    };
 
     const handleAddLike = async () => {
         const userId = localStorage.getItem("user_id");

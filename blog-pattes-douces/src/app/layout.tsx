@@ -1,8 +1,3 @@
-import Navbar from "./Components/navigation/Navbar";
-import Footer from "./Components/navigation/Footer";
-import Posts from "./Components/Posts/Posts";
-import Feedhome from "./Components/feed";
-
 import "./globals.css";
 import { Inter } from "next/font/google";
 

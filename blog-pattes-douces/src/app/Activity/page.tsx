@@ -1,15 +1,9 @@
 "use client";
-import React from "react";
-import Link from "next/link";
 import Activity from "../Components/activity";
-import Navbar from "../Components/navigation/Navbar";
 import Footer from "../Components/navigation/Footer";
 import Header from "../layout/AppHeader";
-import NavbarAff from "../Components/navigation/Navbar_aff";
 
 import Sidebar from "../layout/AppSidebar";
-import { SidebarProvider } from "@/src/context/SidebarContext";
-import { useState, useEffect } from "react";
 
 const Act = () => {
   return (

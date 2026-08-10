@@ -1,4 +1,3 @@
-import React from "react";
 // import Link from "next/link";
 // import Feedhome from "../../feed/Feedhome";
 // import Profile from "../../../Profile/page";

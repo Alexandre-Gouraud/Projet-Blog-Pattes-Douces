@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import NavbarAff from "../Components/navigation/Navbar_aff";
 import Footer from "../Components/navigation/Footer";
 
 import Header from "../layout/AppHeader";
-import Sidebar from "../layout/AppSidebar";
 import { SidebarProvider } from "@/src/context/SidebarContext";
 import AfficherSidebar from "../layout/AfficherSidebar";
 

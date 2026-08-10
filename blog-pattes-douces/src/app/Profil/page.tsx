@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Footer from "../Components/navigation/Footer";
 import DashboardComponent from "../Components/dashboard";
 import Post_user from "../Post_user/page";
 
-import Sidebar from "../layout/AppSidebar";
 import { SidebarProvider } from "@/src/context/SidebarContext";
 import AfficherSidebar from "../layout/AfficherSidebar";
 

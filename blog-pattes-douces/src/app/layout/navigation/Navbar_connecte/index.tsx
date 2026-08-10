@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";

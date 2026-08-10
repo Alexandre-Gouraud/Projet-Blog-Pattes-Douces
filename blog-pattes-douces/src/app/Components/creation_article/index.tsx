@@ -2,13 +2,11 @@
 
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import Footer from "../navigation/Footer";
-import Navbar from "../navigation/Navbar";
 import type { PutBlobResult } from '@vercel/blob';
 
 export default function Creation_article() {
     const inputFileRef = useRef<HTMLInputElement>(null);
-    const [blob, setBlob] = useState<PutBlobResult | null>(null);
+    const [, setBlob] = useState<PutBlobResult | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {

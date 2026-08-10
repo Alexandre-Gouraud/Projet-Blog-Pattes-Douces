@@ -20,7 +20,7 @@ type User = {
 }
 
 export default function Feedhome() {
-  const [pseudo, setPseudo] = useState<string | null>(null);
+  const [, setPseudo] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [commentText, setCommentText] = useState<string>(""); 
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null); 

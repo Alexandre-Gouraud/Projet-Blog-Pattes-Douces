@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Article = {
   id: string;
@@ -42,8 +42,7 @@ type Commentaires = {
 
 export default function Post_user() {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [commentaires, setCommentaires] = useState<Commentaires[]>([]);
-  const pseudo = typeof window !== "undefined" ? localStorage.getItem("pseudo") : null;
+  const [, setCommentaires] = useState<Commentaires[]>([]);
   const userId = typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
 
   useEffect(() => {
@@ -88,7 +87,6 @@ export default function Post_user() {
   const totalInteractions = totalLikes + totalDislikes + totalReactions;
   const likesPercentage = (totalLikes / totalInteractions) * 100 || 0;
   const dislikesPercentage = (totalDislikes / totalInteractions) * 100 || 0;
-  const reactionsPercentage = (totalReactions / totalInteractions) * 100 || 0;
 
   useEffect(() => {
     const dummyArticles = [

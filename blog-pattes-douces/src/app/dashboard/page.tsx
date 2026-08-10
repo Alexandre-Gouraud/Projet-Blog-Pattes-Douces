@@ -1,20 +1,15 @@
 "use client";
 
-import React from "react";
-import { useEffect, useState } from "react";
 import AffSidebar from "../layout/AfficherSidebar";
 import Header from "../layout/AppHeader";
 import Footer from "../layout/navigation/Footer";
 
-import Feedhome from "../Components/feed";
 import { SidebarProvider } from "@/src/context/SidebarContext";
 
 import DashboardComponent from "../Components/dashboard";
 import Graph from "../Components/Stats/metrics/graph";
-import Navbar from "../layout/navigation/Navbar";
 
 import Post_user from "../Components/Post_user";
-import AfficherSidebar from "../layout/AfficherSidebar";
 
 const Dashboard = () => {
   return (

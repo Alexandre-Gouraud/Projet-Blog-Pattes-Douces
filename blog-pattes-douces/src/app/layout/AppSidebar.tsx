@@ -1,32 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import Feed from "../Feed/page";
-import Profil from "../Profil/page";
-import Dashboard from "../Components/dashboard";
-import Activity from "../Components/activity/page";
 
 import {
   HomeIcon,
-  CalendarIcon,
   UserCircleIcon,
   DocumentDuplicateIcon,
-  ClipboardDocumentIcon,
   ChartBarSquareIcon,
-  CubeIcon,
-  ChevronDoubleRightIcon,
-  ChevronDoubleLeftIcon,
   BookmarkSquareIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
+  const [collapsed] = useState(false);
 
   const menuItems = [
     { href: "/Feed", icon: <HomeIcon className="h-6 w-6" />, label: "Accueil" },

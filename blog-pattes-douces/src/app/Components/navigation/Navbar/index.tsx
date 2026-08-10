@@ -1,9 +1,4 @@
-import React from "react";
 import Link from "next/link";
-import Feedhome from "../../feed";
-import Profile from "../../../Profil/page";
-import Feed from "../../../Feed/page";
-import Activity from "../../../Activity/page";
 // import Dashboard from "../../dashboard/page";
 // import Logo from "./Components/Navbar/Logo";
 // import Button from "./Components/Navbar/Navbar";

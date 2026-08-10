@@ -1,20 +1,14 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-
 // import Navbar from "../layout/navigation/Navbar";
 // import NavbarAff from "../layout/navigation/Navbar_aff";
 // import Navbar_connecte from "../layout/navigation/Navbar_connecte";
 // import Posts from "../Components/Posts/Posts";
 
-import Sidebar from "../layout/AppSidebar";
 import Header from "../layout/AppHeader";
 import Footer from "../layout/navigation/Footer";
 
 import Feedhome from "../Components/feed";
-import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/src/context/SidebarContext";
 import AfficherSidebar from "../layout/AfficherSidebar";
 

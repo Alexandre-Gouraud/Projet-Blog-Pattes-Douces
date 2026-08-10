@@ -3,11 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Feed from "../Feed/page";
 import Logo from "../assets/Pattes_Douces_logo.png";
 
 const AppHeader: React.FC = () => {
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Gestion des raccourcis clavier pour la barre de recherche

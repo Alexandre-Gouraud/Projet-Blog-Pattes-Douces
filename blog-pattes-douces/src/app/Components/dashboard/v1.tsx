@@ -20,7 +20,7 @@ type Article = {
 
 export default function Dashboard() {
   const [auteurId, setAuteurId] = useState<string>("");
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [, setArticles] = useState<Article[]>([]);
 
   const user_id = localStorage.getItem("user_id") || ""; // Récupérer l'ID de l'utilisateur connecté depuis le localStorage
   // Vérifier si l'utilisateur est connecté

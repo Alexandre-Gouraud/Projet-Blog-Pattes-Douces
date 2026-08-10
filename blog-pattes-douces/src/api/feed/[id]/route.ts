@@ -28,8 +28,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: "Erreur lors de la récupération des articles" });
   }
 }
-
-function setArticle(updatedArticle: any) {
-  throw new Error("Function not implemented.");
-}
-
