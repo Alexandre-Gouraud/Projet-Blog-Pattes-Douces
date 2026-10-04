@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 
 const Header: React.FC = () => {
-  const [isMobileMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Gestion des raccourcis clavier pour la barre de recherche
@@ -29,45 +28,6 @@ const Header: React.FC = () => {
       <div className="flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4">
         {/* Toggle Button & Logo */}
         <div className="flex items-center gap-4">
-          {/* Menu toggle for smaller screens */}
-          {/* <button
-            onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-            className="block lg:hidden p-2 text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 dark:text-gray-400 dark:focus:ring-gray-600"
-            aria-label="Toggle Menu"
-          >
-            {isMobileMenuOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-            )}
-          </button> */}
-
           {/* Logo */}
             <Link href={ROUTES.feed} className="flex items-center">
             <Image
@@ -185,21 +145,6 @@ const Header: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Dropdown */}
-      {isMobileMenuOpen && (
-        <div className="block bg-gray-50 dark:bg-gray-900 lg:hidden">
-          <Link href={ROUTES.home} className="block px-4 py-2 text-gray-700 dark:text-gray-300">
-            Home
-          </Link>
-          <button className="block px-4 py-2 text-gray-700 dark:text-gray-300">
-            Settings
-          </button>
-          <button className="block px-4 py-2 text-gray-700 dark:text-gray-300">
-            Logout
-          </button>
-        </div>
-      )}
     </header>
   );
 };
