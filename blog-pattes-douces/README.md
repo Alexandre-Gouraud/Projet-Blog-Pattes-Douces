@@ -19,6 +19,11 @@ likes, dislikes) et commentaires.
 > pourrait plus se connecter a la base. Ne pas le monter en version sans changer
 > de base. Les majeures de Prisma sont aussi ignorees par `.github/dependabot.yml`.
 
+> **Override `deepmerge-ts` (`pnpm.overrides` dans `package.json`).** Prisma 6
+> fige `deepmerge-ts` en 7.1.5, vulnerable (GHSA stack exhaustion). La 8.x est
+> forcee : `prisma validate` et `prisma generate` ont ete verifies avec. A
+> retirer si Prisma 6 publie une version qui l'embarque.
+
 > **TypeScript est volontairement en 6.x.** `typescript-eslint` ne supporte pas
 > encore TypeScript 7, ce qui fait echouer `pnpm lint` au demarrage. C'est aussi
 > ce que documente le garde-fou `typescript` de `.github/dependabot.yml`.
