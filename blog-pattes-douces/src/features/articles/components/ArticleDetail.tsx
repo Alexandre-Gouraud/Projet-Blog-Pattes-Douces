@@ -1,42 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { EyeIcon, HandThumbUpIcon, HandThumbDownIcon } from "@heroicons/react/24/solid";
 import { createComment, dislikeArticle, fetchArticle, likeArticle } from "@/lib/api-client";
 import { getUserId } from "@/lib/auth/session";
-
-type Article = {
-    id: string;
-    titre: string;
-    texte: string;
-    image?: string;
-    date: string;
-    vue: any[];
-    reaction1: any[];
-    reaction2: any[];
-    auteurId: string;
-    auteur?: {
-        id: string;
-        pseudo: string;
-    };
-    commentaires: {
-        id: string;
-        texte: string;
-        date: string;
-        commentataireId: string;
-        commentataire?: {
-            id: string;
-            pseudo: string;
-        };
-        article_sourceId: string;
-    }[];
-};
+import type { ArticleWithComments } from "@/types";
 
 export default function ArticleDetail({ articleId: id }: { articleId: string }) {
     const router = useRouter();
 
-    const [article, setArticle] = useState<Article | null>(null);
+    const [article, setArticle] = useState<ArticleWithComments | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [commentText, setCommentText] = useState<string>("");
@@ -47,7 +22,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
             setLoading(true);
 
             try {
-                setArticle((await fetchArticle(id)) as unknown as Article);
+                setArticle(await fetchArticle(id));
             } catch (error) {
                 setError((error as Error).message);
             } finally {
@@ -68,7 +43,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
         try {
             await likeArticle(id, userId);
 
-            setArticle((await fetchArticle(id)) as unknown as Article);
+            setArticle(await fetchArticle(id));
         } catch (error) {
             console.error("Erreur lors de l'ajout du like :", error);
             alert("Une erreur est survenue lors de l'ajout du like.");
@@ -85,7 +60,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
         try {
             await dislikeArticle(id, userId);
 
-            setArticle((await fetchArticle(id)) as unknown as Article);
+            setArticle(await fetchArticle(id));
         } catch (error) {
             console.error("Erreur lors de l'ajout du dislike :", error);
             alert("Une erreur est survenue lors de l'ajout du dislike.");
@@ -110,7 +85,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
             alert("Commentaire ajouté avec succès !");
             setCommentText("");
 
-            setArticle((await fetchArticle(id)) as unknown as Article);
+            setArticle(await fetchArticle(id));
         } catch (error) {
             console.error("Erreur lors de l'ajout du commentaire :", error);
         }
@@ -140,9 +115,12 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
                                 </p>
                                 {article.image && (
                                     <div className="flex justify-center mb-6">
-                                        <img
+                                        <Image
                                             src={article.image}
                                             alt={article.titre}
+                                            width={1200}
+                                            height={800}
+                                            sizes="(max-width: 1024px) 100vw, 1024px"
                                             className="rounded-lg max-w-full h-auto"
                                         />
                                     </div>

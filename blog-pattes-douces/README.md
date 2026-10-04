@@ -56,6 +56,8 @@ L'application demarre sur http://localhost:3000.
 ```
 src/
 ├── app/                  Routage uniquement : pages et layouts en Server Components
+│   ├── error.tsx         Error boundary (Client Component)
+│   ├── not-found.tsx     Page 404
 │   ├── (auth)/           login, register            -> AppShell
 │   ├── (main)/           feed, articles, profile... -> AppShell
 │   └── api/              API REST (route handlers)
@@ -67,15 +69,14 @@ src/
 │   ├── profile/          ProfileView
 │   └── activity/         ActivityList
 ├── components/
-│   ├── layout/           AppShell, Header, Sidebar, Footer, Navbar, Banner
-│   └── ui/               Briques reutilisables
-├── context/              SidebarContext
+│   └── layout/           AppShell, Header, Sidebar, Footer, Navbar, Banner
 ├── lib/
 │   ├── prisma.ts         Singleton Prisma (seule instanciation du projet)
 │   ├── routes.ts         Toutes les URL, pages et API
 │   ├── api-client.ts     Tous les appels reseau
 │   └── auth/session.ts   Identite de l'utilisateur courant
-└── types/                Types partages, alignes sur Prisma
+├── types/                Types partages, alignes sur Prisma
+└── proxy.ts              Redirige /Feed et /Activity (casse seule) vers les nouvelles URL
 ```
 
 Conventions : dossiers et routes en **anglais**, en minuscules et en

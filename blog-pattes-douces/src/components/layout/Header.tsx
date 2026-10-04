@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 
-const AppHeader: React.FC = () => {
+const Header: React.FC = () => {
   const [isMobileMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -204,4 +204,4 @@ const AppHeader: React.FC = () => {
   );
 };
 
-export default AppHeader;
+export default Header;

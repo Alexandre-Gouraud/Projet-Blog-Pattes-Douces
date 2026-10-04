@@ -5,7 +5,7 @@ import { fetchArticles, fetchComments } from "@/lib/api-client";
 import { getPseudo, getUserId } from "@/lib/auth/session";
 import type { Article, Comment } from "@/types";
 
-export default function Post_user() {
+export default function StatsOverview() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [commentaires, setCommentaires] = useState<Comment[]>([]);
   const pseudo = getPseudo();

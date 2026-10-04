@@ -21,6 +21,12 @@ const legacyRedirects = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    // Images d'articles hebergees sur Vercel Blob (voir /api/uploads).
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**", search: "" },
+    ],
+  },
   async redirects() {
     return legacyRedirects.map((redirect) => ({ ...redirect, permanent: true }));
   },

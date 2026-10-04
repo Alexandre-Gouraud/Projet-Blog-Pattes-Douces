@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { fetchArticles, fetchComments } from "@/lib/api-client";
 import { getUserId } from "@/lib/auth/session";
@@ -55,10 +56,13 @@ export default function ActivityList() {
                 <h2 className="text-xl font-semibold mb-2">{article.titre}</h2>
                 <p className="text-gray-700">{article.texte}</p>
                 {article.image && (
-                  <img
+                  <Image
                     src={article.image}
                     alt={article.titre}
-                    className="mt-4 rounded-md max-h-64 object-cover"
+                    width={800}
+                    height={600}
+                    sizes="(max-width: 768px) 100vw, 66vw"
+                    className="mt-4 rounded-md max-h-64 w-auto object-cover"
                   />
                 )}
                 <p className="text-sm text-gray-500 mt-2">
