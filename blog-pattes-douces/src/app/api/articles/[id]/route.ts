@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/prisma";
+import { badRequest } from "@/lib/http";
+import { isObjectId } from "@/lib/validation";
 
 export async function GET(request: Request, { params }: RouteContext<"/api/articles/[id]">) {
   const { id } = await params;
+  // Un id mal forme ne peut designer aucun article (et ferait planter Prisma).
+  if (!isObjectId(id)) {
+    return NextResponse.json({ error: "Article non trouvé" }, { status: 404 });
+  }
 
   try {
     const article = await prisma.article.findUnique({
@@ -52,12 +58,21 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
 export async function DELETE(request: Request, { params }: RouteContext<"/api/articles/[id]">) {
   try {
     const { id } = await params;
+    if (!isObjectId(id)) {
+      return badRequest("Identifiant invalide");
+    }
 
-    await prisma.commentaire.deleteMany({
-      where: { article_sourceId: id },
-    });
+    // Transaction : les commentaires ne sont pas supprimes si l'article ne l'est pas.
+    const [, deleted] = await prisma.$transaction([
+      prisma.commentaire.deleteMany({
+        where: { article_sourceId: id },
+      }),
+      prisma.article.deleteMany({ where: { id } }),
+    ]);
 
-    await prisma.article.delete({ where: { id } });
+    if (deleted.count === 0) {
+      return NextResponse.json({ success: false, error: "Article non trouvé" }, { status: 404 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

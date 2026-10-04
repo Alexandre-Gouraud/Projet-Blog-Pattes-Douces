@@ -21,15 +21,17 @@ export const ROUTES = {
 export const API = {
   login: "/api/auth/login",
   register: "/api/auth/register",
-  users: "/api/users",
   user: (id: string) => `/api/users/${id}`,
   articles: "/api/articles",
   articlesByAuthor: (authorId: string) => `/api/articles?authorId=${encodeURIComponent(authorId)}`,
+  articlesReactedBy: (userId: string) => `/api/articles?reactedBy=${encodeURIComponent(userId)}`,
   article: (id: string) => `/api/articles/${id}`,
   articleViews: (id: string) => `/api/articles/${id}/views`,
   articleLike: (id: string) => `/api/articles/${id}/like`,
   articleDislike: (id: string) => `/api/articles/${id}/dislike`,
   comments: "/api/comments",
   commentsByArticle: (articleId: string) => `/api/comments?articleId=${encodeURIComponent(articleId)}`,
+  commentsByCommenter: (userId: string) => `/api/comments?commenterId=${encodeURIComponent(userId)}`,
+  commentsOnAuthorArticles: (authorId: string) => `/api/comments?authorId=${encodeURIComponent(authorId)}`,
   uploads: (filename: string) => `/api/uploads?filename=${encodeURIComponent(filename)}`,
 } as const;

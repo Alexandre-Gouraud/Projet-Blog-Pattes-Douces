@@ -20,7 +20,22 @@ const legacyRedirects = [
   { source: "/commentaires", destination: "/comments" },
 ];
 
+/** En-tetes de securite envoyes sur toutes les reponses. */
+const securityHeaders = [
+  // Interdit d'afficher le site dans une iframe (clickjacking).
+  { key: "X-Frame-Options", value: "DENY" },
+  // Le navigateur respecte le Content-Type annonce au lieu de le deviner.
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig: NextConfig = {
+  // Ne pas annoncer la techno du serveur (en-tete X-Powered-By).
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   images: {
     // Images d'articles hebergees sur Vercel Blob (voir /api/uploads).
     remotePatterns: [

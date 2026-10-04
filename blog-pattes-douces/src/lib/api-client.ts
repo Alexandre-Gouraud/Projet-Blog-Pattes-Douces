@@ -38,6 +38,11 @@ export function fetchArticles(authorId?: string) {
   return request<Article[]>(authorId ? API.articlesByAuthor(authorId) : API.articles);
 }
 
+/** Articles likes ou dislikes par l'utilisateur. */
+export function fetchArticlesReactedBy(userId: string) {
+  return request<Article[]>(API.articlesReactedBy(userId));
+}
+
 export function fetchArticle(id: string) {
   return request<ArticleWithComments>(API.article(id));
 }
@@ -66,6 +71,16 @@ export function dislikeArticle(articleId: string, userId: string) {
 
 export function fetchComments(articleId?: string) {
   return request<Comment[]>(articleId ? API.commentsByArticle(articleId) : API.comments);
+}
+
+/** Commentaires ecrits par l'utilisateur. */
+export function fetchCommentsByCommenter(userId: string) {
+  return request<Comment[]>(API.commentsByCommenter(userId));
+}
+
+/** Commentaires recus sur les articles de l'utilisateur. */
+export function fetchCommentsOnAuthorArticles(authorId: string) {
+  return request<Comment[]>(API.commentsOnAuthorArticles(authorId));
 }
 
 export function createComment(payload: { id_article: string; texte: string; commentataireId: string }) {

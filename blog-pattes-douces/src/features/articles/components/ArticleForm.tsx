@@ -18,25 +18,28 @@ export default function ArticleForm() {
         const titre = formData.get("titre") as string;
         const texte = formData.get("texte") as string;
 
-        let imageUrl = "";
-        if (inputFileRef.current?.files?.length) {
-            const file = inputFileRef.current.files[0];
-            const newBlob = (await uploadImage(file)) as PutBlobResult;
-            setBlob(newBlob);
-            imageUrl = newBlob.url;
-        }
-
+        // Verifie la connexion AVANT d'envoyer l'image : sinon l'image serait
+        // stockee sans qu'aucun article ne la reference.
         if (!userId) {
             console.error("Utilisateur non connecté");
             return;
         }
 
         try {
+            let imageUrl = "";
+            if (inputFileRef.current?.files?.length) {
+                const file = inputFileRef.current.files[0];
+                const newBlob = (await uploadImage(file)) as PutBlobResult;
+                setBlob(newBlob);
+                imageUrl = newBlob.url;
+            }
+
             const { message } = await createArticle({ titre, texte, userId, imageUrl });
             alert(message || "Article créé avec succès.");
             window.location.href = ROUTES.profile;
         } catch (err) {
             console.error("Une erreur s'est produite. Veuillez réessayer.", err);
+            alert(err instanceof Error ? err.message : "Une erreur s'est produite. Veuillez réessayer.");
         }
     };
 
@@ -69,7 +72,7 @@ export default function ArticleForm() {
                     </div>
                     <div className="mb-4">
                         <h1>Télécharger votre image:</h1>
-                        <input name="file" ref={inputFileRef} type="file" required />
+                        <input name="file" ref={inputFileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" required />
                     </div>
                     <button
                         type="submit"

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { fetchArticles, fetchComments } from "@/lib/api-client";
+import { fetchArticles, fetchArticlesReactedBy, fetchCommentsByCommenter } from "@/lib/api-client";
 import { getUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 import type { Article, Comment } from "@/types";
@@ -14,25 +14,21 @@ export default function ActivityList() {
   const router = useRouter();
 
   useEffect(() => {
-    const userId = getUserId() || "";
+    const userId = getUserId();
 
     const loadActivity = async () => {
+      if (!userId) return;
       try {
-        const articlesData = await fetchArticles();
-        setArticles(articlesData.filter((article) => article.auteurId === userId));
-
-        const commentsData = await fetchComments();
-        setCommentaires(
-          commentsData.filter((comment) => comment.commentataire.id === userId)
-        );
-
-        setLikedArticles(
-          articlesData.filter(
-            (article) =>
-              article.reaction1.includes(userId) ||
-              article.reaction2.includes(userId)
-          )
-        );
+        // Trois requetes filtrees par l'API, en parallele, au lieu de
+        // telecharger tous les articles et tous les commentaires.
+        const [userArticles, userComments, reactedArticles] = await Promise.all([
+          fetchArticles(userId),
+          fetchCommentsByCommenter(userId),
+          fetchArticlesReactedBy(userId),
+        ]);
+        setArticles(userArticles);
+        setCommentaires(userComments);
+        setLikedArticles(reactedArticles);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
       }

@@ -15,9 +15,11 @@ export default function ArticleFeed() {
     const loadArticles = async () => {
       try {
         setArticles(await fetchArticles());
-        setIsLoaded(true);
       } catch (error) {
         console.error("Erreur lors du chargement des articles :", error);
+      } finally {
+        // Meme en cas d'erreur, on sort de l'etat de chargement.
+        setIsLoaded(true);
       }
     };
 
@@ -34,8 +36,9 @@ export default function ArticleFeed() {
       // Met à jour localement pour éviter un rechargement
       setArticles((prevArticles) =>
         prevArticles.map((article) =>
-          article.id === id
-            ? { ...article, vue: [...article.vue, userId!] }
+          // Le serveur ne compte qu'une vue par utilisateur : idem ici.
+          article.id === id && !article.vue.includes(userId)
+            ? { ...article, vue: [...article.vue, userId] }
             : article
         )
       );

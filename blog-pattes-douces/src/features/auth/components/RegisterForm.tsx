@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { register } from "@/lib/api-client";
 import { ROUTES } from "@/lib/routes";
+import { passwordError } from "@/lib/validation";
 
 export default function RegisterForm() {
     const [error, setError] = useState<string | null>(null);
@@ -17,28 +18,9 @@ export default function RegisterForm() {
         const password = formData.get("password") as string;
         const confirmPassword = formData.get("confirmPassword") as string;
 
-        if (password.length < 8) {
-            setError("Le mot de passe doit contenir au moins 8 caractères.");
-            return;
-        }
-
-        if (!/[A-Z]/.test(password)) {
-            setError("Le mot de passe doit contenir au moins une lettre majuscule.");
-            return;
-        }
-
-        if (!/[a-z]/.test(password)) {
-            setError("Le mot de passe doit contenir au moins une lettre minuscule.");
-            return;
-        }
-
-        if (!/[0-9]/.test(password)) {
-            setError("Le mot de passe doit contenir au moins un chiffre.");
-            return;
-        }
-
-        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-            setError("Le mot de passe doit contenir au moins un caractère spécial.");
+        const invalidPassword = passwordError(password);
+        if (invalidPassword) {
+            setError(invalidPassword);
             return;
         }
 

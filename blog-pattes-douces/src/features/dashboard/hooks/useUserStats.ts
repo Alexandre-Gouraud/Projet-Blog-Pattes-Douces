@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchArticles, fetchComments } from "@/lib/api-client";
+import { fetchArticles, fetchCommentsOnAuthorArticles } from "@/lib/api-client";
 import { useUserId } from "@/lib/auth/session";
 import { ARTICLES_CHANGED_EVENT } from "@/features/articles/events";
 import type { Article, Comment } from "@/types";
@@ -21,13 +21,15 @@ export function useUserStats() {
 
     const load = async (): Promise<void> => {
       try {
-        const [userArticles, allComments] = await Promise.all([fetchArticles(userId), fetchComments()]);
+        // Le filtrage (articles de l'utilisateur, commentaires recus sur ces
+        // articles) est fait par l'API : rien d'inutile n'est telecharge.
+        const [userArticles, receivedComments] = await Promise.all([
+          fetchArticles(userId),
+          fetchCommentsOnAuthorArticles(userId),
+        ]);
         if (cancelled) return;
-        // Filtre sur les articles qui viennent d'etre charges, pas sur l'etat
-        // precedent (qui est vide au premier rendu).
-        const articleIds = new Set(userArticles.map((article) => article.id));
         setArticles(userArticles);
-        setComments(allComments.filter((comment) => articleIds.has(comment.article_source?.id)));
+        setComments(receivedComments);
       } catch (error) {
         console.error(error);
       }

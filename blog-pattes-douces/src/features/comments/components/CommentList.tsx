@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchComments } from "@/lib/api-client";
+import { fetchCommentsByCommenter } from "@/lib/api-client";
 import { getUserId } from "@/lib/auth/session";
 import type { Comment } from "@/types";
 
@@ -17,9 +17,8 @@ export default function CommentList() {
           return;
         }
 
-        const data = await fetchComments();
-        // Filtre les commentaires de l'utilisateur
-        setCommentaires(data.filter((comment) => comment.commentataire.id === userId));
+        // Filtre les commentaires de l'utilisateur (fait par l'API)
+        setCommentaires(await fetchCommentsByCommenter(userId));
       } catch (error) {
         console.error("Erreur :", error);
       } finally {
