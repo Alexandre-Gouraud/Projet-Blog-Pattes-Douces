@@ -3,10 +3,14 @@ version: 2
 updates:
   # Dépendances applicatives (pnpm-lock.yaml est auto-détecté par l'écosystème "npm")
   - package-ecosystem: 'npm'
-    directory: '/'
+    directory: '/blog-pattes-douces'
     schedule:
       interval: 'weekly'
       day: 'monday'
+    # N'adopter une version qu'après 7 jours (laisse le temps aux correctifs
+    # et limite le risque de paquet compromis).
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     labels:
       - 'dependencies'
@@ -23,14 +27,11 @@ updates:
         dependency-type: 'development'
         update-types: ['minor', 'patch']
     ignore:
-      # Majeures connues incompatibles avec la stack actuelle au 2026-07-28
-      # (cassent lint/build — cf. .claude ou historique de PR pour le détail).
-      # À retirer une fois eslint-config-next / vite compatibles.
+      # Majeures à valider manuellement avant adoption : elles peuvent casser
+      # lint/build tant qu'eslint-config-next ne les supporte pas.
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@vitejs/plugin-react'
         update-types: ['version-update:semver-major']
 
   # Actions utilisées dans .github/workflows/*.yml
@@ -39,6 +40,10 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'monday'
+    # N'adopter une version qu'après 7 jours (laisse le temps aux correctifs
+    # et limite le risque de paquet compromis).
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     labels:
       - 'ci'
@@ -49,16 +54,3 @@ updates:
       github-actions:
         patterns: ['*']
         update-types: ['minor', 'patch']
-
-  # Image de base du Dockerfile
-  - package-ecosystem: 'docker'
-    directory: '/'
-    schedule:
-      interval: 'weekly'
-      day: 'monday'
-    open-pull-requests-limit: 5
-    labels:
-      - 'docker'
-      - 'dependencies'
-    commit-message:
-      prefix: 'chore (docker) :'
