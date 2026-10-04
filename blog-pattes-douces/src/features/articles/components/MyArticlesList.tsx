@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { deleteArticle, fetchArticles } from "@/lib/api-client";
 import { getUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
+import { notifyArticlesChanged } from "@/features/articles/events";
 import type { Article } from "@/types";
 
 /**
@@ -16,18 +16,19 @@ import type { Article } from "@/types";
 export default function MyArticlesList() {
     const [articles, setArticles] = useState<Article[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const router = useRouter();
 
     useEffect(() => {
         const userId = getUserId();
 
         const loadArticles = async (): Promise<void> => {
             try {
-                const data = await fetchArticles();
-                setArticles(data.filter((article) => article.auteurId === userId));
-                setIsLoaded(true);
+                // Le filtre par auteur est fait par l'API (?authorId=).
+                if (userId) setArticles(await fetchArticles(userId));
             } catch (error) {
                 console.error(error);
+            } finally {
+                // Meme en cas d'erreur, on sort de l'etat de chargement.
+                setIsLoaded(true);
             }
         };
 
@@ -37,9 +38,9 @@ export default function MyArticlesList() {
     async function handleDelete(articleId: string) {
         try {
             await deleteArticle(articleId);
-            // mise a jour de la liste et de la page
+            // mise a jour de la liste et des statistiques affichees sur la page
             setArticles((previous) => previous.filter((article) => article.id !== articleId));
-            router.refresh();
+            notifyArticlesChanged();
         } catch (error) {
             console.error(error);
         }

@@ -1,36 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { fetchArticles, fetchComments } from "@/lib/api-client";
-import { getPseudo, getUserId } from "@/lib/auth/session";
-import type { Article, Comment } from "@/types";
+import { usePseudo } from "@/lib/auth/session";
+import { useUserStats } from "@/features/dashboard/hooks/useUserStats";
 
 export default function StatsOverview() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [commentaires, setCommentaires] = useState<Comment[]>([]);
-  const pseudo = getPseudo();
-  const userId = getUserId();
-
-  useEffect(() => {
-    const loadStats = async (): Promise<void> => {
-      try {
-        const data = await fetchArticles();
-        setArticles(data.filter((article) => article.auteurId === userId));
-
-        const commentairesData = await fetchComments();
-        // NOTE: lit volontairement l'etat `articles` (vide au premier rendu),
-        // comportement conserve a l'identique lors de la restructuration.
-        const userArticleIds = articles.map((article) => article.id);
-        setCommentaires(
-          commentairesData.filter((comment) => userArticleIds.includes(comment.article_source.id))
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    loadStats();
-  }, [userId]);
+  const { articles, comments, views, likes, dislikes, reactions } = useUserStats();
+  const pseudo = usePseudo();
 
   return (
     <div className="p-8">
@@ -46,21 +21,21 @@ export default function StatsOverview() {
         <div className="flex-1 min-w-[200px] border p-4 rounded-lg shadow-md bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-green-300 opacity-100 hover:opacity-60%">
           <h2 className="text-xl font-semibold">Total de Vues</h2>
           <p className="text-gray-500">
-            {articles.reduce((total, article) => total + article.vue.length, 0)} Vues
+            {views} Vues
           </p>
         </div>
 
         <div className="flex-1 min-w-[200px] border p-4 rounded-lg shadow-md bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-orange-300 opacity-100 hover:opacity-60%">
           <h2 className="text-xl font-semibold">Total de Réactions</h2>
           <p className="text-gray-500">
-            {articles.reduce((total, article) => total + article.reaction1.length + article.reaction2.length,0)}{" "}Réactions
+            {reactions}{" "}Réactions
           </p>
         </div>
 
         <div className="flex-1 min-w-[200px] border p-4 rounded-lg shadow-md bg-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-red-300 opacity-100 hover:opacity-60%">
           <h2 className="text-xl font-semibold">Total de Commentaires</h2>
           <p className="text-gray-500">
-            {commentaires.length} Commentaires
+            {comments.length} Commentaires
           </p>
         </div>
       </div>
@@ -72,20 +47,19 @@ export default function StatsOverview() {
         <div className="flex space-x-4">
           <p className="text-sm text-gray-400">
             Vues :{" "}
-            {articles.reduce((total, article) => total + article.vue.length, 0)}
+            {views}
           </p>
           <p className="text-sm text-blue-400">
             Like :{" "}
-            {articles.reduce((total, article) => total + article.reaction1.length, 0)}
+            {likes}
           </p>
           <p className="text-sm text-red-400">
             Dislike :{" "}
-            {articles.reduce((total, article) => total + article.reaction2.length, 0)}
+            {dislikes}
           </p>
           <p className="text-sm text-purple-400">
             Réactions :{" "}
-            {articles.reduce(
-              (total, article) => total + article.reaction1.length + article.reaction2.length,0)}
+            {reactions}
           </p>
         </div>
       </div>

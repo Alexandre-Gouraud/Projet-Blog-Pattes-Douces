@@ -1,45 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { fetchArticles, fetchComments } from "@/lib/api-client";
-import { getPseudo, getUserId } from "@/lib/auth/session";
-import type { Article, Comment } from "@/types";
+import { useUserStats } from "@/features/dashboard/hooks/useUserStats";
+
+/** Part de `part` dans `total`, en %, sans division par zero (evite les `NaN%`). */
+function percent(part: number, total: number): number {
+  return total > 0 ? (part / total) * 100 : 0;
+}
 
 export default function StatsChart() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [, setCommentaires] = useState<Comment[]>([]);
-  const userId = getUserId();
+  const { views: totalVues, likes: totalLikes, dislikes: totalDislikes, reactions: totalReactions } =
+    useUserStats();
 
-  useEffect(() => {
-    const loadStats = async (): Promise<void> => {
-      try {
-        const data = await fetchArticles();
-        setArticles(data.filter((article) => article.auteurId === userId));
-
-        const commentairesData = await fetchComments();
-        // NOTE: lit volontairement l'etat `articles` (vide au premier rendu),
-        // comportement conserve a l'identique lors de la restructuration.
-        const userArticleIds = articles.map((article) => article.id);
-        setCommentaires(
-          commentairesData.filter((comment) => userArticleIds.includes(comment.article_source.id))
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    loadStats();
-  }, [userId]);
-
-  const totalVues = articles.reduce((total, article) => total + article.vue.length, 0);
-  const totalReactions =
-  articles.reduce((total, article) => total + article.reaction1.length + article.reaction2.length, 0);
-  const totalLikes = articles.reduce((total, article) => total + article.reaction1.length, 0);
-  const totalDislikes = articles.reduce((total, article) => total + article.reaction2.length, 0);
-
-  const totalInteractions = totalLikes + totalDislikes + totalReactions;
-  const likesPercentage = (totalLikes / totalInteractions) * 100 || 0;
-  const dislikesPercentage = (totalDislikes / totalInteractions) * 100 || 0;
+  // Une reaction est soit un like soit un dislike : le total des interactions
+  // est donc le total des reactions (et non likes + dislikes + reactions).
+  const totalInteractions = totalReactions;
+  const likesPercentage = percent(totalLikes, totalInteractions);
+  const dislikesPercentage = percent(totalDislikes, totalInteractions);
 
   // NOTE: un useEffect de donnees factices ecrasait ici les vrais articles.
   // Il a ete retire lors de la restructuration (voir compte rendu).
@@ -56,11 +32,11 @@ export default function StatsChart() {
           <div
             className="relative w-64 h-64 rounded-full"
             style={{
-              background: `conic-gradient(
-                #4CAF50 ${likesPercentage}%,
-                #F44336 ${likesPercentage}% ${likesPercentage + dislikesPercentage}%,
-                #FF9800 ${likesPercentage + dislikesPercentage}% 100%
-              )`,
+              // Sans aucune reaction, le cercle reste gris au lieu d'etre colore.
+              background:
+                totalInteractions > 0
+                  ? `conic-gradient(#4CAF50 0% ${likesPercentage}%, #F44336 ${likesPercentage}% 100%)`
+                  : "#E5E7EB",
             }}
           >
             <div className="absolute inset-12 bg-white rounded-full flex flex-col items-center justify-center">
@@ -74,7 +50,7 @@ export default function StatsChart() {
               <span className="text-sm">Likes ({Math.round(likesPercentage)}%)</span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="w-4 h-4 bg-orange-500 rounded-full"></span>
+              <span className="w-4 h-4 bg-red-500 rounded-full"></span>
               <span className="text-sm">Dislikes ({Math.round(dislikesPercentage)}%)</span>
             </div>
           </div>
@@ -90,7 +66,7 @@ export default function StatsChart() {
                 <div
                   className="bg-blue-500 h-6 rounded"
                   style={{
-                    width: `${(totalVues / (totalVues + totalReactions)) * 100}%`,
+                    width: `${percent(totalVues, totalVues + totalReactions)}%`,
                     maxWidth: "100%",
                   }}
                 ></div>
@@ -123,7 +99,7 @@ export default function StatsChart() {
                 <div
                   className="bg-purple-500 h-6 rounded"
                   style={{
-                    width: `${(totalReactions / (totalVues + totalReactions)) * 100}%`,
+                    width: `${percent(totalReactions, totalVues + totalReactions)}%`,
                     maxWidth: "100%",
                   }}
                 ></div>
