@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, publicUserSelect } from "@/lib/prisma";
 
 export async function GET(request: Request, { params }: RouteContext<"/api/articles/[id]">) {
   const { id } = await params;
@@ -18,10 +18,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
         reaction1: true,
         reaction2: true,
         auteur: {
-          select: {
-            id: true,
-            pseudo: true,
-          },
+          select: publicUserSelect,
         },
         commentaires: {
           select: {
@@ -31,10 +28,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
             reaction1: true,
             reaction2: true,
             commentataire: {
-              select: {
-                id: true,
-                pseudo: true,
-              },
+              select: publicUserSelect,
             },
           },
         },

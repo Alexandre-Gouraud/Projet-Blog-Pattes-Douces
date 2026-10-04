@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, publicUserSelect } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
 
     const articles = await prisma.article.findMany({
       where: authorId ? { auteurId: authorId } : undefined,
-      include: { auteur: true },
+      include: { auteur: { select: publicUserSelect } },
       orderBy: { date: "desc" },
     });
 

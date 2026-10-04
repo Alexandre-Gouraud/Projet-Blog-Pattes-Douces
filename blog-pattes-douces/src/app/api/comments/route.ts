@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, publicUserSelect } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {
@@ -11,8 +11,8 @@ export async function GET(request: Request) {
       orderBy: { date: "desc" },
       select: {
         id: true,
-        article_source: true, // Assurez-vous que ce champ correspond à votre schéma Prisma
-        commentataire: true,
+        article_source: { select: { id: true, titre: true } }, // Assurez-vous que ce champ correspond à votre schéma Prisma
+        commentataire: { select: publicUserSelect },
         date: true,
         texte: true,
         reaction1: true,

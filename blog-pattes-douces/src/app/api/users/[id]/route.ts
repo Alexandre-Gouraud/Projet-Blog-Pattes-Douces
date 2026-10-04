@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, publicUserSelect } from "@/lib/prisma";
 
 export async function GET(req: Request, { params }: RouteContext<"/api/users/[id]">) {
   try {
@@ -7,6 +7,7 @@ export async function GET(req: Request, { params }: RouteContext<"/api/users/[id
 
     const user = await prisma.user.findUnique({
       where: { id },
+      select: { ...publicUserSelect, biographie: true },
     });
 
     if (!user) {
