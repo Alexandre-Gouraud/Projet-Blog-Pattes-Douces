@@ -1,57 +1,21 @@
-
 # 📌 Projet Blog Pattes Douces
 
-Ce projet est un projet de blog avec Gestion de BAse de données avec MongoDb donc de nombreux élément sont à installé avant de lancer l'application
+Blog communautaire ecrit avec Next.js 16 et MongoDB.
 
-# 🚀 Installation et exécution
+Le code de l'application se trouve dans **`blog-pattes-douces/`**.
+Toute la documentation (installation, variables d'environnement, structure,
+API) est dans [`blog-pattes-douces/README.md`](blog-pattes-douces/README.md).
 
-    1 - Clonez le repository :
+## Demarrage rapide
 
+```bash
 git clone https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces.git
-
-    2 - Installez les dépendances
-
-npm install -g pnpm
-
-    3 - Lancez le projet dans votre Terminal (dans le dossier du projet) :
-
-cd .\Blog-Pattes-Douces\
-
-pnpm run dev : Pour test l'application
-
-    4 - Accédez au site:
-
-Une fois démarré, l'application sera accessible à l'URL indiquée dans le terminal (généralement http://localhost:3000/).
-
-# Après avoir Importer depuis GitHub
-
-    1 - Installer les packages
-
+cd Projet-Blog-Pattes-Douces/blog-pattes-douces
 pnpm install
+cp .env.example .env    # puis renseigner DATABASE_URL et BLOB_READ_WRITE_TOKEN
+pnpm dev
+```
 
-   
+## 📄 Licence
 
-# Prisma et Next-Auth
-
-    1 - Installer Prisma et Next-Auth
-
-Pour gérer la bdd avec Next JS nous avons besoin de Prisma et Next-Auth
-
-Donc Installer avec : pnpm add prisma @prisma/client
-
-Init prisma : npx prisma Init
-
-npx prisma generate
-
-Puis Installer Next-Auth : pnpm install next-auth
-
-# 🛠 Technologies utilisées :
-- NextJS , Tailwind CSS
-
-# 📄 Licence
-
-Ce projet est sous licence MIT, vous êtes libre de le modifier et de l'utiliser comme bon vous semble.
-
-
-
-
+Ce projet est sous licence MIT.

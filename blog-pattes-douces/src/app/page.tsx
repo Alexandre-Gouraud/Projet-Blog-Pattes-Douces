@@ -1,23 +1,15 @@
-"use client";
-import React from "react";
+import Navbar from "@/components/layout/Navbar";
+import Banner from "@/components/layout/Banner";
+import Footer from "@/components/layout/Footer";
+import ArticleFeed from "@/features/articles/components/ArticleFeed";
 
-import Feedhome from "./Components/feed";
-import Header from "./Components/navigation/Header";
-import Navbar from "./Components/navigation/Navbar";
-import Footer from "./Components/navigation/Footer";
-
-export default function App({ children }: { children: React.ReactNode }) {
+export default function HomePage() {
   return (
-    <html lang="fr">
-      <body>
-        <Navbar />
-        <Header />
-        <Feedhome />
-        {/* <Dashboard /> */}
-        {/* <Home /> */}
-        <Footer />
-        {children}
-      </body>
-    </html>
+    <>
+      <Navbar />
+      <Banner />
+      <ArticleFeed />
+      <Footer />
+    </>
   );
 }
