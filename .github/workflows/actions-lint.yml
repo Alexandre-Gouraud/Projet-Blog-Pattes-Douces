@@ -24,8 +24,8 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: write
+      contents: read # lire les workflows
+      pull-requests: write # commenter la PR (reporter github-pr-review)
 
     steps:
       - name: Checkout
@@ -42,9 +42,9 @@ jobs:
     name: Security scan (zizmor)
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      actions: read
-      security-events: write
+      contents: read # lire les workflows
+      actions: read # lire les metadonnees des workflows
+      security-events: write # publier les resultats dans l'onglet Security
 
     steps:
       - name: Checkout

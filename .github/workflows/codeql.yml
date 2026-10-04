@@ -26,9 +26,9 @@ jobs:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      security-events: write
-      actions: read
+      contents: read # lire le code
+      security-events: write # publier les resultats dans l'onglet Security
+      actions: read # lire les metadonnees des workflows
 
     strategy:
       fail-fast: false
