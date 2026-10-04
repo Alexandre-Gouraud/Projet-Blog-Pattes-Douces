@@ -31,6 +31,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Image Docker : serveur autonome minimal (.next/standalone). Active seulement
+  // par le Dockerfile, pour que `pnpm start` continue de fonctionner hors Docker.
+  output: process.env.NEXT_OUTPUT_STANDALONE === "true" ? "standalone" : undefined,
   // Ne pas annoncer la techno du serveur (en-tete X-Powered-By).
   poweredByHeader: false,
   async headers() {

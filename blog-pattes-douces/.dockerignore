@@ -1,0 +1,22 @@
+# Regeneres dans l'image : inutile (et lent) de les envoyer au build Docker.
+node_modules
+.next
+out
+build
+coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets : jamais dans une image (les variables sont passees par compose.yaml).
+.env
+.env.*
+!.env.example
+
+# Divers
+.git
+.vercel
+.DS_Store
+Dockerfile
+.dockerignore
+compose.yaml
+README.md

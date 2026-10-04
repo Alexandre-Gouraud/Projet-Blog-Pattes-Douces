@@ -59,3 +59,22 @@ updates:
       github-actions:
         patterns: ['*']
         update-types: ['minor', 'patch']
+
+  # Image de base du Dockerfile de l'application (node:24-slim)
+  - package-ecosystem: 'docker'
+    directory: '/blog-pattes-douces'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    labels:
+      - 'docker'
+      - 'dependencies'
+    commit-message:
+      prefix: 'chore (docker) :'
+    ignore:
+      # Rester sur la version LTS de Node : les majeures se valident a la main.
+      - dependency-name: 'node'
+        update-types: ['version-update:semver-major']

@@ -11,7 +11,9 @@
     "typecheck": "next typegen && tsc --noEmit",
     "db:up": "docker compose up -d --wait",
     "db:push": "prisma db push",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "docker:up": "docker compose --profile app up -d --build --wait",
+    "docker:down": "docker compose --profile app down"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
