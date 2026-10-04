@@ -12,9 +12,14 @@ API) est dans [`blog-pattes-douces/README.md`](blog-pattes-douces/README.md).
 git clone https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces.git
 cd Projet-Blog-Pattes-Douces/blog-pattes-douces
 pnpm install
-cp .env.example .env    # puis renseigner DATABASE_URL et BLOB_READ_WRITE_TOKEN
-pnpm dev
+cp .env.example .env    # .env n'est jamais commite ; BLOB_READ_WRITE_TOKEN pour publier
+pnpm db:up              # MongoDB local en replica set (Docker), requis par Prisma
+pnpm db:push            # cree les index de la base
+pnpm dev                # http://localhost:3000
 ```
+
+Prerequis : Node.js 24, pnpm 10, Docker. Details et problemes frequents :
+[`blog-pattes-douces/README.md`](blog-pattes-douces/README.md#demarrage).
 
 ## 📄 Licence
 

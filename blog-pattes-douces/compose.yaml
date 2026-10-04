@@ -1,0 +1,31 @@
+# MongoDB de developpement.
+# Prisma exige un replica set pour ecrire (transactions) : un mongod lance seul
+# fait echouer l'inscription et la creation d'article. Le healthcheck initialise
+# le replica set "rs0" au premier demarrage.
+#
+#   docker compose up -d --wait
+#   DATABASE_URL="mongodb://localhost:27017/pattes-douces?replicaSet=rs0&directConnection=true"
+#
+# Port deja pris ? MONGO_PORT=27019 docker compose up -d --wait (et adapter DATABASE_URL).
+services:
+  mongo:
+    image: mongo:8.0
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - "127.0.0.1:${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok }"
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  mongo-data:

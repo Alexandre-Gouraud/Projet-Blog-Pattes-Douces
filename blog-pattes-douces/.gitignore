@@ -30,8 +30,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files : secrets (DATABASE_URL, BLOB_READ_WRITE_TOKEN), jamais commites.
+# Seul le modele .env.example est versionne.
+.env
+.env.*
 !.env.example
 
 # vercel
@@ -40,6 +42,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-.vercel
-.env*.local
