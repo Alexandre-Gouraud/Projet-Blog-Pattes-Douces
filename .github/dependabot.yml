@@ -33,6 +33,11 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
+      # Prisma 7+ n'a pas d'adaptateur MongoDB : rester en 6.x.
+      - dependency-name: 'prisma'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@prisma/client'
+        update-types: ['version-update:semver-major']
 
   # Actions utilisées dans .github/workflows/*.yml
   - package-ecosystem: 'github-actions'

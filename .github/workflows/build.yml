@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  push:
+    branches: [main, development]
+    paths: &app-files
+      - 'blog-pattes-douces/**'
+      - '!blog-pattes-douces/**.md'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [main, development]
+    paths: *app-files
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: blog-pattes-douces
+
+jobs:
+  build:
+    name: Lint, typecheck & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Version lue dans le champ "packageManager" de package.json.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: blog-pattes-douces/package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: blog-pattes-douces/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Valide uniquement le format de l'URL : aucune connexion n'est ouverte.
+      - name: Validate Prisma schema
+        run: pnpm exec prisma validate
+        env:
+          DATABASE_URL: mongodb://localhost:27017/ci
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build

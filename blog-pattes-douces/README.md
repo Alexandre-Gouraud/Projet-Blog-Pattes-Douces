@@ -11,11 +11,13 @@ likes, dislikes) et commentaires.
 | UI | React 19, Tailwind CSS 4, Heroicons |
 | Base de donnees | MongoDB via Prisma 6 |
 | Stockage d'images | Vercel Blob |
-| Gestionnaire de paquets | pnpm |
+| Runtime | Node.js 24 LTS |
+| Gestionnaire de paquets | pnpm 10 (version fixee par `packageManager`) |
 
-> **Prisma est volontairement fige en 6.19.3.** Prisma 7 exige un driver adapter
-> et aucun adaptateur MongoDB n'est publie : l'application ne pourrait plus se
-> connecter a la base. Ne pas le monter en version sans changer de base.
+> **Prisma est volontairement limite a la 6.x** (`^6.19.3`). Prisma 7 exige un
+> driver adapter et aucun adaptateur MongoDB n'est publie : l'application ne
+> pourrait plus se connecter a la base. Ne pas le monter en version sans changer
+> de base. Les majeures de Prisma sont aussi ignorees par `.github/dependabot.yml`.
 
 > **TypeScript est volontairement en 6.x.** `typescript-eslint` ne supporte pas
 > encore TypeScript 7, ce qui fait echouer `pnpm lint` au demarrage. C'est aussi
@@ -47,6 +49,7 @@ L'application demarre sur http://localhost:3000.
 | `pnpm build` | Build de production (inclut la verification TypeScript) |
 | `pnpm start` | Sert le build de production |
 | `pnpm lint` | ESLint (plugin Next + regles des hooks React) |
+| `pnpm typecheck` | Genere les types de routes puis lance `tsc --noEmit` |
 
 ## Structure
 
