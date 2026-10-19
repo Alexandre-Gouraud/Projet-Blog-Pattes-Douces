@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
+import { RequireAuth } from "@/features/auth/components/RequireAuth";
 import ProfileView from "@/features/profile/components/ProfileView";
+import { pageTitle } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Profil" };
+export const generateMetadata = pageTitle("profile");
 
 export default function ProfilePage() {
-  return <ProfileView />;
+  return (
+    <RequireAuth>
+      <ProfileView />
+    </RequireAuth>
+  );
 }

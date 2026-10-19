@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
 import MyArticlesList from "@/features/articles/components/MyArticlesList";
+import { RequireAuth } from "@/features/auth/components/RequireAuth";
+import { pageTitle } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Mes articles" };
+export const generateMetadata = pageTitle("mine");
 
 export default function MyArticlesPage() {
-  return <MyArticlesList />;
+  return (
+    <RequireAuth>
+      <MyArticlesList />
+    </RequireAuth>
+  );
 }

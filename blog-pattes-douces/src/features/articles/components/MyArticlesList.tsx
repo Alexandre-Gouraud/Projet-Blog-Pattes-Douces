@@ -1,113 +1,116 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { deleteArticle, fetchArticles } from "@/lib/api-client";
-import { getUserId } from "@/lib/auth/session";
-import { ROUTES } from "@/lib/routes";
+import { ButtonLink } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { EmptyState, ErrorState } from "@/components/ui/EmptyState";
+import { PageTitle } from "@/components/ui/PageTitle";
+import { CardSkeleton, Loading } from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/Toast";
 import { notifyArticlesChanged } from "@/features/articles/events";
+import { useI18n } from "@/i18n/I18nProvider";
+import { deleteArticle, fetchArticles } from "@/lib/api-client";
+import { useUserId } from "@/lib/auth/session";
+import { ROUTES } from "@/lib/routes";
 import type { Article } from "@/types";
+import { type ReactionType, useReact } from "../useReact";
+import { ArticleCard } from "./ArticleCard";
 
 /**
- * Liste des articles de l'utilisateur connecte, avec suppression.
- * Unique implementation : remplace app/Post_user/page.tsx et
- * app/Components/Post_user/index.tsx, qui faisaient double emploi.
+ * « Mes articles » : la carte article commune, avec les actions Lire et
+ * Supprimer. La suppression passe par un dialogue de confirmation.
  */
 export default function MyArticlesList() {
-    const [articles, setArticles] = useState<Article[]>([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+  const { t } = useI18n();
+  const toast = useToast();
+  const userId = useUserId();
+  const react = useReact();
+  const [articles, setArticles] = useState<Article[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [pending, setPending] = useState<Article | null>(null);
 
-    useEffect(() => {
-        const userId = getUserId();
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    // Le filtre par auteur est fait par l'API (?authorId=).
+    fetchArticles(userId)
+      .then((list) => !cancelled && setArticles(list))
+      .catch(() => !cancelled && setFailed(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, attempt]);
 
-        const loadArticles = async (): Promise<void> => {
-            try {
-                // Le filtre par auteur est fait par l'API (?authorId=).
-                if (userId) setArticles(await fetchArticles(userId));
-            } catch (error) {
-                console.error(error);
-            } finally {
-                // Meme en cas d'erreur, on sort de l'etat de chargement.
-                setIsLoaded(true);
-            }
-        };
+  const onReact = async (article: Article, type: ReactionType) => {
+    const updated = await react(article, type);
+    if (updated) setArticles((list) => list?.map((item) => (item.id === updated.id ? updated : item)) ?? null);
+  };
 
-        loadArticles();
-    }, []);
-
-    async function handleDelete(articleId: string) {
-        try {
-            await deleteArticle(articleId);
-            // mise a jour de la liste et des statistiques affichees sur la page
-            setArticles((previous) => previous.filter((article) => article.id !== articleId));
-            notifyArticlesChanged();
-        } catch (error) {
-            console.error(error);
-        }
+  const confirmDelete = async () => {
+    const article = pending;
+    if (!article) return;
+    try {
+      await deleteArticle(article.id);
+      // Carte retiree et dialogue ferme dans le meme rendu : le declencheur
+      // n'existant plus, le focus est rendu au contenu principal.
+      setArticles((list) => list?.filter((item) => item.id !== article.id) ?? null);
+      setPending(null);
+      notifyArticlesChanged();
+      toast(t.articleDeleted);
+    } catch {
+      setPending(null);
+      toast(t.deleteFailed);
     }
+  };
 
-    if (!isLoaded) {
-        // Afficher l'animation de chargement si les données ne sont pas chargées
-        return (
-            <div className="p-8">
-                <h1 className="text-3xl font-bold mb-4">Chargement des articles...</h1>
-                <div className="space-y-6">
-                    {[...Array(3)].map((_, index) => (
-                        <div key={index} className="animate-pulse bg-white p-4 rounded-md shadow-md">
-                            <div className="mb-4 h-4 w-1/3 bg-gray-300 rounded"></div>
-                            <div className="h-6 w-1/2 bg-gray-300 rounded mb-4"></div>
-                            <div className="h-24 w-full bg-gray-200 rounded"></div>
-                            <div className="mt-4 flex space-x-4">
-                                <div className="h-4 w-12 bg-gray-300 rounded"></div>
-                                <div className="h-4 w-12 bg-gray-300 rounded"></div>
-                                <div className="h-4 w-12 bg-gray-300 rounded"></div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
+  return (
+    <>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <PageTitle>{t.mine}</PageTitle>
+        <ButtonLink href={ROUTES.newArticle}>{t.write}</ButtonLink>
+      </div>
 
-    return (
-        <div className="p-8">
-            <h1 className="text-3xl font-bold mb-4">Voici vos derniers articles</h1>
-            <div className="space-y-6">
-                {articles.map((article) => (
-                    <div key={article.id}>
-                        <Link href={ROUTES.article(article.id)} className="block">
-                            <div className="border p-4 rounded-lg shadow-md bg-white transform transition-transform duration-300 hover:scale-102">
-                                <h2 className="text-xl font-semibold">{article.titre}</h2>
-                                <p className="text-gray-700">{article.texte}</p>
-                                <p className="text-sm text-gray-500">
-                                    Publié le {new Date(article.date).toLocaleDateString()}
-                                </p>
+      {failed ? (
+        <ErrorState
+          message={t.loadError}
+          retryLabel={t.retry}
+          onRetry={() => {
+            setFailed(false);
+            setArticles(null);
+            setAttempt((n) => n + 1);
+          }}
+        />
+      ) : !articles ? (
+        <Loading label={t.loadingMine}>
+          <CardSkeleton />
+          <CardSkeleton />
+        </Loading>
+      ) : articles.length === 0 ? (
+        <EmptyState
+          logo
+          title={t.mineEmpty}
+          text={t.mineEmptySub}
+          action={<ButtonLink href={ROUTES.newArticle}>{t.firstArticle}</ButtonLink>}
+        />
+      ) : (
+        <ul className="m-0 flex list-none flex-col gap-4 p-0">
+          {articles.map((article) => (
+            <li key={article.id}>
+              <ArticleCard article={article} userId={userId} onReact={onReact} onDelete={setPending} />
+            </li>
+          ))}
+        </ul>
+      )}
 
-                                <div className="flex space-x-4">
-                                    <p className="text-sm text-gray-400">Vues : {article.vue.length}</p>
-                                    <p className="text-sm text-blue-400">Like : {article.reaction1.length}</p>
-                                    <p className="text-sm text-red-400">Dislike : {article.reaction2.length}</p>
-                                </div>
-                            </div>
-                        </Link>
-                        <button
-                            type="button"
-                            onClick={() => handleDelete(article.id)}
-                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                        >
-                            Supprimer
-                        </button>
-                    </div>
-                ))}
-            </div>
-            <Link href={ROUTES.newArticle}>
-                <button
-                    type="button"
-                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                    Créer un article
-                </button>
-            </Link>
-        </div>
-    );
+      <ConfirmDialog
+        open={pending !== null}
+        title={t.confirmArticleTitle}
+        description={pending ? t.confirmArticleText(pending.titre) : ""}
+        confirmLabel={t.deleteForever}
+        onConfirm={confirmDelete}
+        onCancel={() => setPending(null)}
+      />
+    </>
+  );
 }

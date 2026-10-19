@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
 import ArticleForm from "@/features/articles/components/ArticleForm";
+import { RequireAuth } from "@/features/auth/components/RequireAuth";
+import { pageTitle } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Nouvel article" };
+export const generateMetadata = pageTitle("new");
 
 export default function NewArticlePage() {
-  return <ArticleForm />;
+  return (
+    <RequireAuth>
+      <ArticleForm />
+    </RequireAuth>
+  );
 }
