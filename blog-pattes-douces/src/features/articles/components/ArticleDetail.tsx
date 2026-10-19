@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { BackArrowIcon, ThumbDownIcon, ThumbUpIcon } from "@/components/icons";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button, ButtonLink } from "@/components/ui/Button";
@@ -13,6 +11,7 @@ import { PageTitle, cardClass } from "@/components/ui/PageTitle";
 import { ArticleSkeleton, Loading } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/Toast";
 import { useI18n } from "@/i18n/I18nProvider";
+import { Link, usePathname } from "@/i18n/navigation";
 import { ApiError, addView, createComment, fetchArticle } from "@/lib/api-client";
 import { useIsLoggedIn, useUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
@@ -34,7 +33,7 @@ type State =
  * connecter. Le contenu garde sa langue d'origine (attribut lang).
  */
 export default function ArticleDetail({ articleId: id }: { articleId: string }) {
-  const { t, date, locale } = useI18n();
+  const { t, f, p, date, locale } = useI18n();
   const toast = useToast();
   const pathname = usePathname();
   const userId = useUserId();
@@ -83,8 +82,8 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
   if (state.status === "loading") {
     return (
       <>
-        <BackLink label={t.back} />
-        <Loading label={t.loadingArticle}>
+        <BackLink label={t.article.back} />
+        <Loading label={t.article.loading}>
           <ArticleSkeleton />
         </Loading>
       </>
@@ -94,12 +93,12 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
   if (state.status === "missing") {
     return (
       <>
-        <BackLink label={t.back} />
-        <PageTitle>{t.articleNotFound}</PageTitle>
+        <BackLink label={t.article.back} />
+        <PageTitle>{t.article.notFound}</PageTitle>
         <EmptyState
           logo
-          title={t.articleNotFoundText}
-          action={<ButtonLink href={ROUTES.feed}>{t.backFeed}</ButtonLink>}
+          title={t.article.notFoundText}
+          action={<ButtonLink href={ROUTES.feed}>{t.errors.backFeed}</ButtonLink>}
         />
       </>
     );
@@ -108,11 +107,11 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
   if (state.status === "error") {
     return (
       <>
-        <BackLink label={t.back} />
+        <BackLink label={t.article.back} />
         <PageTitle>{t.titles.article}</PageTitle>
         <ErrorState
-          message={t.loadError}
-          retryLabel={t.retry}
+          message={t.common.loadError}
+          retryLabel={t.common.retry}
           onRetry={() => {
             setState({ status: "loading" });
             setAttempt((n) => n + 1);
@@ -136,7 +135,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
     event.preventDefault();
     if (sending || !userId) return;
     const text = comment.trim();
-    const error = !text ? t.errComment : text.length > LIMITS.commentaire ? t.errCommentLong : null;
+    const error = !text ? t.article.errEmpty : text.length > LIMITS.commentaire ? t.article.errLong : null;
     if (error) {
       setCommentError(error);
       commentRef.current?.focus();
@@ -147,10 +146,10 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
     try {
       await createComment({ id_article: id, texte: text, commentataireId: userId, langue: locale });
       setComment("");
-      toast(t.commentPosted);
+      toast(t.article.commentPosted);
       setState({ status: "ready", article: await fetchArticle(id) });
     } catch {
-      toast(t.commentFailed);
+      toast(t.article.commentFailed);
     } finally {
       setSending(false);
     }
@@ -158,7 +157,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
 
   return (
     <>
-      <BackLink label={t.back} />
+      <BackLink label={t.article.back} />
       <article className={`${cardClass} flex flex-col gap-[18px] p-5 desk:p-8`}>
         <PageTitle className="text-balance">
           <span lang={lang}>{current.titre}</span>
@@ -166,10 +165,10 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
         <div className="flex items-center gap-3">
           <Avatar name={author ?? "?"} seed={current.auteurId} size={44} />
           <p className="m-0 flex flex-col leading-[1.3]">
-            <span className="font-semibold">{t.by(author ?? t.species.former)}</span>
+            <span className="font-semibold">{f(t.common.by, { name: author ?? t.species.former })}</span>
             <span className="text-sm text-ink3">
               {speciesLabel(t, current.auteur)} · <time dateTime={current.date}>{date(current.date)}</time> ·{" "}
-              {t.viewsN(current.vue.length)}
+              {p(t.common.count.views, current.vue.length)}
             </span>
           </p>
         </div>
@@ -192,14 +191,14 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
             pressed={userId !== null && current.reaction1.includes(userId)}
             icon={<ThumbUpIcon />}
             count={current.reaction1.length}
-            label={t.like}
+            label={t.common.like}
             onClick={() => onReact("like")}
           />
           <ReactionButton
             pressed={userId !== null && current.reaction2.includes(userId)}
             icon={<ThumbDownIcon />}
             count={current.reaction2.length}
-            label={t.dislike}
+            label={t.common.dislike}
             onClick={() => onReact("dislike")}
           />
         </div>
@@ -211,10 +210,10 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
         className={`${cardClass} flex flex-col gap-4 p-5 desk:p-8`}
       >
         <h2 id="titre-commentaires" className="m-0 text-[22px] font-bold">
-          {t.commentsHeading(comments.length)}
+          {f(t.article.commentsHeading, { count: comments.length })}
         </h2>
         {comments.length === 0 ? (
-          <p className="m-0 text-ink2">{t.noComments}</p>
+          <p className="m-0 text-ink2">{t.article.noComments}</p>
         ) : (
           <ul className="m-0 flex list-none flex-col gap-3 p-0">
             {comments.map((item) => (
@@ -236,7 +235,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
 
         {loggedIn ? (
           <form onSubmit={submitComment} noValidate className="flex flex-col gap-2.5">
-            <FormField id="commentaire" label={t.yourComment} error={commentError ?? undefined} errorPrefix={t.error}>
+            <FormField id="commentaire" label={t.article.yourComment} error={commentError ?? undefined} errorPrefix={t.common.error}>
               {(control) => (
                 <textarea
                   {...control}
@@ -249,15 +248,15 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
               )}
             </FormField>
             <div>
-              <Button type="submit">{t.publishComment}</Button>
+              <Button type="submit">{t.article.publishComment}</Button>
             </div>
           </form>
         ) : (
           <p className="m-0 rounded-xl bg-cream px-4 py-3.5">
             <Link href={ROUTES.loginThen(pathname)} className="font-semibold">
-              {t.loginLink}
+              {t.article.loginLink}
             </Link>{" "}
-            {t.toComment}
+            {t.article.toComment}
           </p>
         )}
       </section>

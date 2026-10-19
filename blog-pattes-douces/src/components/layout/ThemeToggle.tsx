@@ -28,7 +28,7 @@ export function ThemeToggle() {
         <MoonIcon className="in-data-[theme=dark]:hidden" />
         <SunIcon className="hidden in-data-[theme=dark]:block" />
       </span>
-      <span className="sr-only">{t.darkMode}</span>
+      <span className="sr-only">{t.shell.darkMode}</span>
     </button>
   );
 }

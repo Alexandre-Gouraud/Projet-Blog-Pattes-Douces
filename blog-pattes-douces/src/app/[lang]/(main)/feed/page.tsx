@@ -1,5 +1,5 @@
 import ArticleFeed from "@/features/articles/components/ArticleFeed";
-import { pageTitle } from "@/i18n/server";
+import { pageTitle } from "@/i18n/dictionaries";
 
 export const generateMetadata = pageTitle("feed");
 

@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
+import { Link } from "@/i18n/navigation";
 import { ROUTES } from "@/lib/routes";
 import { AccountBlock } from "./AccountBlock";
 import { LanguageSwitcher } from "./LanguageSwitcher";

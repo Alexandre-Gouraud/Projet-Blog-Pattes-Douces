@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { ComponentProps } from "react";
+import { Link } from "@/i18n/navigation";
 
 /**
  * Boutons (DESIGN.md §9.1) : <button> pour une action, ButtonLink (<a>) pour

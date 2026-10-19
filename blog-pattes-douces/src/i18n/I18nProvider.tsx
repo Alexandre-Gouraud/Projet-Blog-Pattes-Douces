@@ -1,50 +1,49 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { LOCALE_COOKIE, LOCALE_INFO, type Locale } from "./config";
-import { DICTIONARIES, type Dictionary } from "./dictionaries";
-import { formatDate } from "./format";
+import { createContext, useContext, useMemo } from "react";
+import { LOCALE_INFO, type Locale } from "./config";
+import { type PluralForms, type Values, format, formatDate, plural } from "./format";
+import type { Messages } from "./messages";
 
 type I18nValue = {
   locale: Locale;
   dir: "ltr" | "rtl";
-  t: Dictionary;
-  setLocale: (locale: Locale) => void;
+  /** Messages de la langue courante (structures par espace de noms). */
+  t: Messages;
+  /** Message avec variables : f(t.common.by, { name }). */
+  f: (message: string, values?: Values) => string;
+  /** Message accorde au nombre : p(t.common.count.comments, 3). */
+  p: (forms: PluralForms, count: number, values?: Values) => string;
+  /** Date au format de la langue. */
   date: (iso: string) => string;
 };
 
 const I18nContext = createContext<I18nValue | null>(null);
 
 /**
- * Langue de l'interface cote client. La langue initiale vient du serveur
- * (cookie) ; un changement met a jour le cookie, `lang` et `dir` sur <html>,
- * puis rafraichit les Server Components (titre du document compris).
+ * Donne aux Client Components la langue de l'URL et ses messages, charges
+ * cote serveur par le layout racine : seul le dictionnaire de la langue
+ * courante est envoye au navigateur.
  */
-export function I18nProvider({ initialLocale, children }: { initialLocale: Locale; children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState(initialLocale);
-  const router = useRouter();
-
-  const setLocale = useCallback(
-    (next: Locale) => {
-      document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
-      document.documentElement.lang = next;
-      document.documentElement.dir = LOCALE_INFO[next].dir;
-      setLocaleState(next);
-      router.refresh();
-    },
-    [router],
-  );
-
+export function I18nProvider({
+  locale,
+  messages,
+  children,
+}: {
+  locale: Locale;
+  messages: Messages;
+  children: React.ReactNode;
+}) {
   const value = useMemo<I18nValue>(
     () => ({
       locale,
       dir: LOCALE_INFO[locale].dir,
-      t: DICTIONARIES[locale],
-      setLocale,
+      t: messages,
+      f: format,
+      p: (forms, count, values) => plural(locale, forms, count, values),
       date: (iso) => formatDate(locale, iso),
     }),
-    [locale, setLocale],
+    [locale, messages],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

@@ -1,0 +1,285 @@
+{
+  "meta": {
+    "description": "毛孩子的博客：由宠物来写作、评论和互动。"
+  },
+  "common": {
+    "quote": "「{text}」",
+    "error": "错误：",
+    "retry": "重试",
+    "loadError": "内容加载失败。请检查网络连接后重试。",
+    "cancel": "取消",
+    "publishedOn": "发布于",
+    "by": "作者：{name}",
+    "views": "次浏览",
+    "like": "赞",
+    "dislike": "踩",
+    "likeLabel": "赞（{count}）",
+    "dislikeLabel": "踩（{count}）",
+    "write": "写文章",
+    "deleteForever": "永久删除",
+    "deleteFailed": "删除失败，请重试。",
+    "deletedArticle": "已删除的文章",
+    "on": "于",
+    "count": {
+      "articles": { "other": "{count} 篇文章" },
+      "comments": { "other": "{count} 条评论" },
+      "views": { "other": "{count} 次浏览" },
+      "likes": { "other": "{count} 个赞" },
+      "dislikes": { "other": "{count} 个踩" }
+    }
+  },
+  "shell": {
+    "skip": "跳到主要内容",
+    "login": "登录",
+    "logout": "退出登录",
+    "createAccount": "创建账户",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "myProfile": "我的资料",
+    "menu": "菜单",
+    "mainNav": "主导航",
+    "darkMode": "深色模式",
+    "changeLang": "切换语言",
+    "chooseLang": "选择语言",
+    "langChanged": "语言：中文",
+    "loggedOut": "你已退出登录，再见！",
+    "copyright": "© 2026 Pattes Douces",
+    "footerNav": "页脚链接",
+    "nav": {
+      "feed": "首页",
+      "profile": "个人资料",
+      "mine": "我的文章",
+      "activity": "动态",
+      "stats": "统计"
+    },
+    "footer": {
+      "about": "关于我们",
+      "contact": "联系我们",
+      "privacy": "隐私",
+      "accessibility": "无障碍：部分符合"
+    }
+  },
+  "titles": {
+    "feed": "最新文章",
+    "article": "文章",
+    "login": "登录",
+    "register": "注册",
+    "new": "写文章",
+    "mine": "我的文章",
+    "profile": "我的资料",
+    "activity": "动态与历史",
+    "stats": "统计",
+    "comments": "我的评论",
+    "notFound": "页面未找到",
+    "error": "错误",
+    "about": "关于我们",
+    "contact": "联系我们",
+    "privacy": "隐私",
+    "accessibility": "无障碍声明"
+  },
+  "species": {
+    "cat": "猫",
+    "dog": "狗",
+    "rabbit": "兔子",
+    "kitten": "小猫",
+    "puppy": "小狗",
+    "pet": "宠物",
+    "former": "前成员"
+  },
+  "feed": {
+    "welcomeTitle": "毛孩子的博客",
+    "welcomeText": "猫、狗、兔子……在这里，由它们来写作。阅读它们的冒险，留下你的反应，也讲讲你家伙伴的故事。",
+    "createMyAccount": "创建我的账户",
+    "searchLabel": "搜索文章",
+    "searchPlaceholder": "搜索文章或作者…",
+    "loading": "正在加载文章…",
+    "found": { "other": "找到 {count} 篇文章" },
+    "noMatch": "没有与「{query}」匹配的文章。换个词，或换只动物试试！",
+    "empty": "还没有文章。不如由你来写第一篇？",
+    "onTitle": "评论「{title}」",
+    "reactLogin": "登录后即可对文章表达态度。",
+    "reactError": "未能保存你的反应，请重试。"
+  },
+  "article": {
+    "back": "返回文章列表",
+    "loading": "正在加载文章…",
+    "commentsHeading": "评论（{count}）",
+    "noComments": "还没有评论，来开启话题吧！",
+    "yourComment": "你的评论",
+    "publishComment": "发表评论",
+    "loginLink": "登录",
+    "toComment": "后即可评论和互动。",
+    "errEmpty": "请先写点内容再发布。",
+    "errLong": "评论不能超过 2000 个字符。",
+    "commentPosted": "评论已发布。",
+    "commentFailed": "评论发布失败，请重试。",
+    "notFound": "文章未找到",
+    "notFoundText": "这篇文章不存在，或已被作者删除。"
+  },
+  "login": {
+    "allRequired": "所有字段均为必填。",
+    "pseudo": "用户名",
+    "password": "密码",
+    "firstTime": "第一次来 Pattes Douces？",
+    "signUp": "立即注册",
+    "errEmpty": "请输入用户名和密码。",
+    "errBad": "用户名或密码错误。",
+    "errServer": "服务器无响应，请稍后重试。",
+    "required": "请登录后访问此页面。",
+    "welcomeBack": "欢迎回来，{name}！"
+  },
+  "register": {
+    "starRequired": "标有星号（*）的字段为必填。",
+    "pseudo": "宠物昵称 *",
+    "pseudoHelp": "3 到 30 个字符。",
+    "email": "电子邮箱 *",
+    "emailHelp": "格式示例：name@domain.com",
+    "bio": "个人简介",
+    "bioHelp": "最多 500 个字符。",
+    "species": "物种",
+    "password": "密码 *",
+    "passwordHelp": "至少 8 个字符，需包含大写字母、小写字母、数字和特殊字符（!@#$%…）。",
+    "confirm": "确认密码 *",
+    "submit": "创建我的账户",
+    "alreadyAccount": "已有账户？",
+    "welcome": "欢迎加入 Pattes Douces，{name}！",
+    "errors": {
+      "pseudoLength": "用户名需为 3 到 30 个字符。",
+      "pseudoTaken": "该用户名已被占用。",
+      "email": "电子邮箱格式无效（示例：name@domain.com）。",
+      "emailTaken": "该电子邮箱已被使用。",
+      "bioLong": "个人简介不能超过 500 个字符。",
+      "confirm": "两次输入的密码不一致。",
+      "server": "服务器无响应，请稍后重试。"
+    },
+    "passwordRules": {
+      "length": "密码至少需要 8 个字符。",
+      "long": "密码不能超过 128 个字符。",
+      "upper": "密码至少需要包含一个大写字母。",
+      "lower": "密码至少需要包含一个小写字母。",
+      "digit": "密码至少需要包含一个数字。",
+      "special": "密码至少需要包含一个特殊字符（!@#$%…）。"
+    }
+  },
+  "editor": {
+    "starRequired": "标有星号（*）的字段为必填。",
+    "title": "标题 *",
+    "text": "正文 *",
+    "textHelp": "至少 20 个字符 · 已输入 {count} 个",
+    "image": "图片（可选）",
+    "imageHelp": "JPG、PNG、WebP 或 GIF，最大 4 MB。记得在正文中描述图片内容。",
+    "publish": "发布",
+    "errTitle": "请为文章添加标题。",
+    "errTitleLong": "标题不能超过 150 个字符。",
+    "errText": "正文至少需要 20 个字符。",
+    "errImage": "图片须为 JPG、PNG、WebP 或 GIF 格式，且不超过 4 MB。",
+    "posted": "文章已发布！",
+    "failed": "文章发布失败，请重试。"
+  },
+  "mine": {
+    "loading": "正在加载你的文章…",
+    "empty": "你还没有发布任何内容。",
+    "emptySub": "今天早上的午睡一定值得写一篇文章……",
+    "firstArticle": "写下我的第一篇文章",
+    "read": "阅读",
+    "delete": "删除",
+    "confirmTitle": "删除这篇文章？",
+    "confirmText": "「{title}」及其评论将被永久删除。",
+    "deleted": "文章已删除。"
+  },
+  "profile": {
+    "identity": "身份",
+    "noBio": "暂无个人简介。",
+    "summary": "概览",
+    "seeMine": "查看我的文章",
+    "deleteAccount": "删除账户",
+    "confirmTitle": "删除你的账户？",
+    "confirmText": "你的文章和评论，以及你的文章收到的评论，将被永久删除。此操作无法撤销。",
+    "deleted": "你的账户已删除。",
+    "tiles": {
+      "articles": "已发布文章",
+      "views": "浏览",
+      "reactions": "互动",
+      "comments": "收到的评论"
+    }
+  },
+  "activity": {
+    "loading": "正在加载你的动态…",
+    "myComments": "我的评论",
+    "noComments": "你还没有发表评论，去和邻居们打个招呼吧！",
+    "liked": "赞过的文章",
+    "noLiked": "暂时还没有赞过的文章。",
+    "seeAllComments": "查看我的全部评论"
+  },
+  "stats": {
+    "loading": "正在加载你的统计…",
+    "distribution": "互动分布",
+    "total": "总计",
+    "overview": "总览",
+    "detail": "按文章查看",
+    "publishFirst": "发布第一篇文章后即可在此查看统计。",
+    "caption": "你每篇文章的浏览、赞、踩和评论数",
+    "columns": {
+      "article": "文章",
+      "views": "浏览",
+      "likes": "赞",
+      "dislikes": "踩",
+      "comments": "评论"
+    },
+    "likeLegend": "赞：{count}（{percent}%）",
+    "dislikeLegend": "踩：{count}（{percent}%）",
+    "donutAlt": "分布：{likes} 个赞（{likePercent}%），{dislikes} 个踩（{dislikePercent}%）",
+    "donutNone": "暂无互动"
+  },
+  "errors": {
+    "notFoundText": "该页面不存在或已被移动。也许是猫把它从桌上推下去了。",
+    "backFeed": "返回动态",
+    "errorTitle": "出错了",
+    "errorText": "我们这边出了点问题。请重试；如果问题仍然存在，请联系我们。"
+  },
+  "pages": {
+    "about": {
+      "intro": "Pattes Douces 是一个社区博客：宠物们在主人的一点帮助下，分享自己的冒险、发表评论并互动。",
+      "body": "它最初是一个学生项目，至今仍保持开放：源代码公开，任何人都可以提出改进建议。",
+      "sourceLink": "在 GitHub 上查看源代码"
+    },
+    "contact": {
+      "intro": "有问题、发现错误，或对无障碍有建议？请在 GitHub 上提交工单联系我们，我们会在几天内回复。",
+      "issuesLink": "在 GitHub 上提交工单"
+    },
+    "privacy": {
+      "intro": "Pattes Douces 只收集博客运行所必需的数据。没有广告，没有追踪器，没有第三方 Cookie。",
+      "accountHeading": "你的账户数据",
+      "account": "用户名、电子邮箱、个人简介和物种。你的密码经过哈希处理（bcrypt）：任何人都无法读取，包括我们。",
+      "contentHeading": "你的贡献",
+      "content": "你的文章、图片、评论、互动以及你读过的文章。图片由 Vercel Blob 托管。",
+      "browserHeading": "浏览器中的存储",
+      "browser": "你的会话和主题选择保存在浏览器的本地存储中；语言保存在一个技术性 Cookie（NEXT_LOCALE）中。",
+      "deletionHeading": "删除",
+      "deletion": "在个人资料中，点击「删除账户」即可删除你的账户、文章和评论。"
+    },
+    "accessibility": {
+      "intro": "Pattes Douces 致力于让网站人人可用，遵循法国无障碍参考标准 RGAA 4.1.2 版，对应 WCAG 2.2 AA 级。",
+      "statusHeading": "符合状态",
+      "status": "Pattes Douces 网站部分符合 RGAA 4.1.2：2026 年 10 月的改版按 AA 级设计，但尚未进行完整审计。",
+      "testsHeading": "测试结果",
+      "tests": "已进行自动化测试（axe、Lighthouse）、纯键盘操作测试，以及 320 像素宽度、200% 和 400% 缩放和阿拉伯语（从右到左）测试。计划对部分页面进行 RGAA 审计。",
+      "limitsHeading": "不可访问的内容",
+      "limits": [
+        "文章图片没有独立的替代文本：作者被邀请在正文中描述图片。",
+        "成员发布的内容可能未遵守所有规则（结构、语言）。",
+        "尚未使用屏幕阅读器（NVDA、JAWS、VoiceOver、TalkBack）进行测试。"
+      ],
+      "dateHeading": "声明日期",
+      "date": "本声明于 2026 年 10 月 19 日制定。",
+      "techHeading": "使用的技术",
+      "tech": "HTML、CSS、JavaScript（React 和 Next.js）。",
+      "contactHeading": "反馈与联系",
+      "contact": "如果你无法访问某项内容或服务，请联系我们，我们会为你提供可访问的替代方案或以其他形式提供内容。",
+      "contactLink": "在 GitHub 上报告问题",
+      "remedyHeading": "救济途径",
+      "remedy": "如果你发现无障碍缺陷导致无法访问内容，并已向我们反映但未获得满意答复，可以联系法国权利保护官（Défenseur des droits）：通过其在线表格，或免费邮寄至 Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France。",
+      "remedyLink": "权利保护官在线表格"
+    }
+  }
+}

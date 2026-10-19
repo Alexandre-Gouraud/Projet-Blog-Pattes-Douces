@@ -1,19 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AlertIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { fieldClass } from "@/components/ui/FormField";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { useToast } from "@/components/ui/Toast";
 import { useI18n } from "@/i18n/I18nProvider";
+import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError, login } from "@/lib/api-client";
 import { saveSession } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 
-type LoginError = "errEmptyLogin" | "errBadLogin" | "errServer";
+type LoginError = "errEmpty" | "errBad" | "errServer";
 
 /**
  * Connexion (DESIGN.md §9.8) : validation a la soumission seulement, erreur
@@ -21,7 +20,7 @@ type LoginError = "errEmptyLogin" | "errBadLogin" | "errServer";
  * corriger. Le message ne dit pas lequel du pseudo ou du mot de passe est faux.
  */
 export default function LoginForm({ notice, next }: { notice: boolean; next: string | null }) {
-  const { t } = useI18n();
+  const { t, f } = useI18n();
   const toast = useToast();
   const router = useRouter();
   const [error, setError] = useState<LoginError | null>(null);
@@ -36,7 +35,7 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
     const password = passwordRef.current?.value ?? "";
 
     if (!pseudo || !password) {
-      setError("errEmptyLogin");
+      setError("errEmpty");
       (pseudo ? passwordRef : pseudoRef).current?.focus();
       return;
     }
@@ -45,11 +44,11 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
     try {
       const { user } = await login(pseudo, password);
       saveSession(user);
-      toast(t.welcomeBack(user.pseudo));
+      toast(f(t.login.welcomeBack, { name: user.pseudo }));
       router.push(next ?? ROUTES.feed);
     } catch (err) {
       const unreachable = err instanceof ApiError && (err.status === 0 || err.status >= 500);
-      setError(unreachable ? "errServer" : "errBadLogin");
+      setError(unreachable ? "errServer" : "errBad");
       pseudoRef.current?.focus();
       setSubmitting(false);
     }
@@ -60,10 +59,10 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
 
   return (
     <div className="mx-auto flex w-full max-w-[460px] flex-col gap-5">
-      <PageTitle className="text-center">{t.loginTitle}</PageTitle>
+      <PageTitle className="text-center">{t.titles.login}</PageTitle>
       {notice && (
         <p role="status" className="m-0 rounded-xl bg-cream px-4 py-3 font-semibold">
-          {t.loginRequired}
+          {t.login.required}
         </p>
       )}
       <form
@@ -73,10 +72,10 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
         noValidate
         className="flex flex-col gap-[18px] rounded-2xl bg-form p-7 shadow-md"
       >
-        <p className="m-0 text-sm">{t.allRequired}</p>
+        <p className="m-0 text-sm">{t.login.allRequired}</p>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="connexion-pseudo" className="text-[15px] font-semibold">
-            {t.pseudo}
+            {t.login.pseudo}
           </label>
           <input
             ref={pseudoRef}
@@ -91,7 +90,7 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
         </div>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="connexion-mot-de-passe" className="text-[15px] font-semibold">
-            {t.password}
+            {t.login.password}
           </label>
           <input
             ref={passwordRef}
@@ -113,18 +112,18 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
           >
             <AlertIcon className="mt-px shrink-0" />
             <span>
-              {t.error} {t[error]}
+              {t.common.error} {t.login[error]}
             </span>
           </p>
         )}
         <Button type="submit" size="lg">
-          {t.login}
+          {t.shell.login}
         </Button>
       </form>
       <p className="m-0 rounded-xl bg-surface px-4 py-3.5 text-center">
-        {t.firstTime}{" "}
+        {t.login.firstTime}{" "}
         <Link href={ROUTES.register} className="font-semibold text-link">
-          {t.signUp}
+          {t.login.signUp}
         </Link>
       </p>
     </div>

@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_Arabic } from "next/font/google";
 import Shell from "@/components/layout/Shell";
 import { ToastProvider } from "@/components/ui/Toast";
-import { LOCALE_INFO } from "@/i18n/config";
+import { LOCALES, LOCALE_INFO } from "@/i18n/config";
+import { getDictionary, getLocale } from "@/i18n/dictionaries";
 import { I18nProvider } from "@/i18n/I18nProvider";
-import { getDictionary, getLocale } from "@/i18n/server";
 import { ThemeProvider } from "@/theme/ThemeProvider";
+import { InlineScript } from "@/theme/InlineScript";
 import { THEME_SCRIPT } from "@/theme/themeScript";
-import "./globals.css";
+import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 // Utilisee seulement en arabe : pas de prechargement pour les autres langues.
@@ -18,17 +19,24 @@ const notoArabic = Noto_Sans_Arabic({
   preload: false,
 });
 
+/** Une version de chaque page par langue (guide i18n de Next.js). */
+export function generateStaticParams() {
+  return LOCALES.map((lang) => ({ lang }));
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getDictionary();
   return {
     // « {titre de page} – Pattes Douces » (RGAA 8.6).
     title: { template: "%s – Pattes Douces", default: "Pattes Douces" },
-    description: t.siteDescription,
+    description: t.meta.description,
   };
 }
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+/** Layout racine : un par langue, avec lang et dir propres (RGAA 8.3). */
+export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
   const locale = await getLocale();
+  const messages = await getDictionary();
 
   return (
     <html
@@ -39,11 +47,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <InlineScript html={THEME_SCRIPT} />
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider>
-          <I18nProvider initialLocale={locale}>
+          <I18nProvider locale={locale} messages={messages}>
             <ToastProvider>
               <Shell>{children}</Shell>
             </ToastProvider>

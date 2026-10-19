@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { BurgerIcon, CloseIcon } from "@/components/icons";
 import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { useI18n } from "@/i18n/I18nProvider";
+import { Link } from "@/i18n/navigation";
 import { useIsLoggedIn } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 import { ProfileLink } from "./AccountBlock";
@@ -43,7 +43,7 @@ export function BurgerButton({
       >
         {open ? <CloseIcon /> : <BurgerIcon />}
       </span>
-      <span className="sr-only">{open ? t.closeMenu : t.openMenu}</span>
+      <span className="sr-only">{open ? t.shell.closeMenu : t.shell.openMenu}</span>
     </button>
   );
 }
@@ -74,7 +74,7 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: { sidebarOpen: boolean;
           <div className="ms-auto flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher menuId="menu-langue-haut" compact />
-            {loggedIn ? <ProfileLink /> : <ButtonLink href={ROUTES.login}>{t.login}</ButtonLink>}
+            {loggedIn ? <ProfileLink /> : <ButtonLink href={ROUTES.login}>{t.shell.login}</ButtonLink>}
           </div>
         </>
       )}

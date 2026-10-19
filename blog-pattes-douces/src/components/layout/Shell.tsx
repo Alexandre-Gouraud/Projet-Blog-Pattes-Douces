@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import { useI18n } from "@/i18n/I18nProvider";
+import { usePathname } from "@/i18n/navigation";
 import Footer from "./Footer";
 import { MobileDrawer } from "./MobileDrawer";
 import { Sidebar } from "./Sidebar";
@@ -23,7 +23,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const previousPath = useRef(pathname);
 
   // Apres chaque navigation, le focus va sur <main> (RGAA 12.x) : le lecteur
-  // d'ecran reprend la lecture au debut du nouveau contenu.
+  // d'ecran reprend la lecture au debut du nouveau contenu. Le chemin est
+  // compare sans la langue : changer de langue garde le focus sur le selecteur.
   useEffect(() => {
     if (previousPath.current === pathname) return;
     previousPath.current = pathname;
@@ -52,7 +53,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         href="#contenu"
         className="absolute start-3 -top-20 z-[100] rounded-[10px] bg-ink px-[18px] py-3 font-semibold text-app no-underline focus:top-3 focus:text-app"
       >
-        {t.skip}
+        {t.shell.skip}
       </a>
 
       <Sidebar open={sidebarOpen} />

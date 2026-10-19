@@ -1,25 +1,25 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { AlertIcon } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { FormField, fieldClass } from "@/components/ui/FormField";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { useToast } from "@/components/ui/Toast";
-import type { Dictionary } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/I18nProvider";
+import type { Messages } from "@/i18n/messages";
+import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError, login, register } from "@/lib/api-client";
 import { saveSession } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
-import { LIMITS, SPECIES, isEmail, passwordIssue } from "@/lib/validation";
+import { LIMITS, type PasswordIssue, SPECIES, isEmail, passwordIssue } from "@/lib/validation";
 
 type Field = "pseudo" | "email" | "bio" | "password" | "confirm";
-type MessageKey = {
-  [K in keyof Dictionary]: Dictionary[K] extends string ? K : never;
-}[keyof Dictionary];
-type Errors = Partial<Record<Field, MessageKey>>;
+/** Message d'erreur a afficher : une regle du mot de passe ou une erreur de champ. */
+type FieldError =
+  | { rule: PasswordIssue }
+  | { key: Exclude<keyof Messages["register"]["errors"], "server"> };
+type Errors = Partial<Record<Field, FieldError>>;
 
 const ORDER: Field[] = ["pseudo", "email", "bio", "password", "confirm"];
 const fieldId = (field: Field) => `inscription-${field}`;
@@ -27,12 +27,12 @@ const fieldId = (field: Field) => `inscription-${field}`;
 function validate(values: Record<Field, string>): Errors {
   const errors: Errors = {};
   const pseudo = values.pseudo.trim();
-  if (pseudo.length < LIMITS.pseudo.min || pseudo.length > LIMITS.pseudo.max) errors.pseudo = "errPseudoLength";
-  if (!isEmail(values.email.trim())) errors.email = "errEmail";
-  if (values.bio.trim().length > LIMITS.biographie) errors.bio = "errBioLong";
+  if (pseudo.length < LIMITS.pseudo.min || pseudo.length > LIMITS.pseudo.max) errors.pseudo = { key: "pseudoLength" };
+  if (!isEmail(values.email.trim())) errors.email = { key: "email" };
+  if (values.bio.trim().length > LIMITS.biographie) errors.bio = { key: "bioLong" };
   const issue = passwordIssue(values.password);
-  if (issue) errors.password = `password_${issue}`;
-  if (!values.confirm || values.confirm !== values.password) errors.confirm = "errConfirm";
+  if (issue) errors.password = { rule: issue };
+  if (!values.confirm || values.confirm !== values.password) errors.confirm = { key: "confirm" };
   return errors;
 }
 
@@ -42,7 +42,7 @@ function validate(values: Record<Field, string>): Errors {
  * premier champ en erreur. Le compte cree, le membre est connecte directement.
  */
 export default function RegisterForm() {
-  const { t } = useI18n();
+  const { t, f } = useI18n();
   const toast = useToast();
   const router = useRouter();
   const [errors, setErrors] = useState<Errors>({});
@@ -87,12 +87,12 @@ export default function RegisterForm() {
       });
       const { user } = await login(pseudo, values.password);
       saveSession(user);
-      toast(t.welcome(user.pseudo));
+      toast(f(t.register.welcome, { name: user.pseudo }));
       router.push(ROUTES.feed);
     } catch (err) {
       setSubmitting(false);
       if (err instanceof ApiError && err.status === 409) {
-        showErrors(/e-?mail/i.test(err.message) ? { email: "errEmailTaken" } : { pseudo: "errPseudoTaken" });
+        showErrors(/e-?mail/i.test(err.message) ? { email: { key: "emailTaken" } } : { pseudo: { key: "pseudoTaken" } });
       } else {
         setErrors({});
         setServerError(true);
@@ -100,11 +100,15 @@ export default function RegisterForm() {
     }
   };
 
-  const message = (field: Field) => (errors[field] ? t[errors[field]] : undefined);
+  const message = (field: Field) => {
+    const error = errors[field];
+    if (!error) return undefined;
+    return "rule" in error ? t.register.passwordRules[error.rule] : t.register.errors[error.key];
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-[460px] flex-col gap-5">
-      <PageTitle className="text-center">{t.registerTitle}</PageTitle>
+      <PageTitle className="text-center">{t.titles.register}</PageTitle>
       <form
         onSubmit={handleSubmit}
         // POST : meme envoye avant l'hydratation, le mot de passe ne finit jamais dans l'URL.
@@ -112,19 +116,19 @@ export default function RegisterForm() {
         noValidate
         className="flex flex-col gap-[18px] rounded-2xl bg-form p-7 shadow-md"
       >
-        <p className="m-0 text-sm">{t.starRequired}</p>
-        <FormField id={fieldId("pseudo")} label={t.petName} help={t.pseudoHelp} error={message("pseudo")} errorPrefix={t.error}>
+        <p className="m-0 text-sm">{t.register.starRequired}</p>
+        <FormField id={fieldId("pseudo")} label={t.register.pseudo} help={t.register.pseudoHelp} error={message("pseudo")} errorPrefix={t.common.error}>
           {(control) => <input {...control} name="pseudo" autoComplete="username" aria-required="true" />}
         </FormField>
-        <FormField id={fieldId("email")} label={t.email} help={t.emailHelp} error={message("email")} errorPrefix={t.error}>
+        <FormField id={fieldId("email")} label={t.register.email} help={t.register.emailHelp} error={message("email")} errorPrefix={t.common.error}>
           {(control) => <input {...control} name="mail" type="email" autoComplete="email" aria-required="true" />}
         </FormField>
-        <FormField id={fieldId("bio")} label={t.bio} help={t.bioHelp} error={message("bio")} errorPrefix={t.error}>
+        <FormField id={fieldId("bio")} label={t.register.bio} help={t.register.bioHelp} error={message("bio")} errorPrefix={t.common.error}>
           {(control) => <textarea {...control} name="biographie" rows={3} className={`${control.className} resize-y`} />}
         </FormField>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="inscription-espece" className="text-[15px] font-semibold">
-            {t.speciesLabel}
+            {t.register.species}
           </label>
           <select id="inscription-espece" name="espece" defaultValue="pet" className={fieldClass(false)}>
             {SPECIES.map((key) => (
@@ -136,16 +140,16 @@ export default function RegisterForm() {
         </div>
         <FormField
           id={fieldId("password")}
-          label={t.passwordReq}
-          help={t.passwordHelp}
+          label={t.register.password}
+          help={t.register.passwordHelp}
           error={message("password")}
-          errorPrefix={t.error}
+          errorPrefix={t.common.error}
         >
           {(control) => (
             <input {...control} name="password" type="password" autoComplete="new-password" aria-required="true" />
           )}
         </FormField>
-        <FormField id={fieldId("confirm")} label={t.confirm} error={message("confirm")} errorPrefix={t.error}>
+        <FormField id={fieldId("confirm")} label={t.register.confirm} error={message("confirm")} errorPrefix={t.common.error}>
           {(control) => (
             <input
               {...control}
@@ -163,18 +167,18 @@ export default function RegisterForm() {
           >
             <AlertIcon className="mt-px shrink-0" />
             <span>
-              {t.error} {t.errServer}
+              {t.common.error} {t.register.errors.server}
             </span>
           </p>
         )}
         <Button type="submit" size="lg">
-          {t.createMyAccount}
+          {t.register.submit}
         </Button>
       </form>
       <p className="m-0 rounded-xl bg-surface px-4 py-3.5 text-center">
-        {t.alreadyAccount}{" "}
+        {t.register.alreadyAccount}{" "}
         <Link href={ROUTES.login} className="font-semibold text-link">
-          {t.login}
+          {t.shell.login}
         </Link>
       </p>
     </div>

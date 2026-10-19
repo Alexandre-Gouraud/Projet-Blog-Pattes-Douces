@@ -38,7 +38,7 @@ export function MobileDrawer({
     <dialog
       ref={dialogRef}
       id="tiroir"
-      aria-label={t.menu}
+      aria-label={t.shell.menu}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -59,7 +59,7 @@ export function MobileDrawer({
             className="grid size-11 cursor-pointer place-items-center rounded-[10px] text-ink hover:bg-surface"
           >
             <CloseIcon size={22} />
-            <span className="sr-only">{t.closeMenu}</span>
+            <span className="sr-only">{t.shell.closeMenu}</span>
           </button>
         </div>
         <NavLinks variant="drawer" onNavigate={onNavigate} />

@@ -1,10 +1,10 @@
 import LoginForm from "@/features/auth/components/LoginForm";
-import { pageTitle } from "@/i18n/server";
+import { pageTitle } from "@/i18n/dictionaries";
 import { safeNext } from "@/lib/routes";
 
 export const generateMetadata = pageTitle("login");
 
-export default async function LoginPage({ searchParams }: PageProps<"/login">) {
+export default async function LoginPage({ searchParams }: PageProps<"/[lang]/login">) {
   const { raison, suite } = await searchParams;
   return (
     <LoginForm

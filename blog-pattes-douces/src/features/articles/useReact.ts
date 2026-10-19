@@ -22,7 +22,7 @@ export function useReact() {
   return useCallback(
     async <A extends Article>(article: A, type: ReactionType): Promise<A | null> => {
       if (!userId) {
-        toast(t.reactLogin);
+        toast(t.feed.reactLogin);
         return null;
       }
       try {
@@ -31,7 +31,7 @@ export function useReact() {
         // La reponse ne contient ni l'auteur ni les compteurs : on ne reprend que les reactions.
         return { ...article, reaction1: updated.reaction1, reaction2: updated.reaction2 };
       } catch {
-        toast(t.reactError);
+        toast(t.feed.reactError);
         return null;
       }
     },

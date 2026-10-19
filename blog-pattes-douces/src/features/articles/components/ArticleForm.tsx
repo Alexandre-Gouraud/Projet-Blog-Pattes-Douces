@@ -1,13 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AlertIcon } from "@/components/icons";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { useToast } from "@/components/ui/Toast";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useRouter } from "@/i18n/navigation";
 import { createArticle, uploadImage } from "@/lib/api-client";
 import { useUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
@@ -23,7 +23,7 @@ type Errors = { title?: string; body?: string; image?: string };
  * erreur. L'article prend la langue de l'interface au moment de sa redaction.
  */
 export default function ArticleForm() {
-  const { t, locale } = useI18n();
+  const { t, f, locale } = useI18n();
   const toast = useToast();
   const router = useRouter();
   const userId = useUserId();
@@ -39,14 +39,14 @@ export default function ArticleForm() {
     if (sending || !userId) return;
     const file = fileRef.current?.files?.[0];
     const next: Errors = {};
-    if (!title.trim()) next.title = t.errTitle;
-    else if (title.trim().length > LIMITS.titre) next.title = t.errTitleLong;
-    if (body.trim().length < MIN_TEXT) next.body = t.errBody;
+    if (!title.trim()) next.title = t.editor.errTitle;
+    else if (title.trim().length > LIMITS.titre) next.title = t.editor.errTitleLong;
+    if (body.trim().length < MIN_TEXT) next.body = t.editor.errText;
     if (
       file &&
       (!(ALLOWED_IMAGE_TYPES as readonly string[]).includes(file.type) || file.size > LIMITS.imageBytes)
     ) {
-      next.image = t.errImage;
+      next.image = t.editor.errImage;
     }
 
     setErrors(next);
@@ -62,7 +62,7 @@ export default function ArticleForm() {
       // Image envoyee seulement une fois le formulaire valide : jamais d'image orpheline.
       const imageUrl = file ? (await uploadImage(file)).url : undefined;
       const { id } = await createArticle({ titre: title.trim(), texte: body.trim(), userId, imageUrl, langue: locale });
-      toast(t.posted);
+      toast(t.editor.posted);
       router.push(ROUTES.article(id));
     } catch {
       setFailed(true);
@@ -72,24 +72,24 @@ export default function ArticleForm() {
 
   return (
     <div className="mx-auto flex w-full max-w-[640px] flex-col gap-5">
-      <PageTitle>{t.write}</PageTitle>
+      <PageTitle>{t.titles.new}</PageTitle>
       <form
         onSubmit={handleSubmit}
         noValidate
         className="flex flex-col gap-[18px] rounded-2xl bg-form p-7 shadow-md"
       >
-        <p className="m-0 text-sm">{t.starRequired}</p>
-        <FormField id="article-title" label={t.titleReq} error={errors.title} errorPrefix={t.error}>
+        <p className="m-0 text-sm">{t.editor.starRequired}</p>
+        <FormField id="article-title" label={t.editor.title} error={errors.title} errorPrefix={t.common.error}>
           {(control) => (
             <input {...control} value={title} onChange={(event) => setTitle(event.target.value)} aria-required="true" />
           )}
         </FormField>
         <FormField
           id="article-body"
-          label={t.textReq}
-          help={t.textHelp(body.trim().length)}
+          label={t.editor.text}
+          help={f(t.editor.textHelp, { count: body.trim().length })}
           error={errors.body}
-          errorPrefix={t.error}
+          errorPrefix={t.common.error}
         >
           {(control) => (
             <textarea
@@ -102,7 +102,7 @@ export default function ArticleForm() {
             />
           )}
         </FormField>
-        <FormField id="article-image" label={t.image} help={t.imageHelp} error={errors.image} errorPrefix={t.error}>
+        <FormField id="article-image" label={t.editor.image} help={t.editor.imageHelp} error={errors.image} errorPrefix={t.common.error}>
           {(control) => (
             <input
               {...control}
@@ -120,16 +120,16 @@ export default function ArticleForm() {
           >
             <AlertIcon className="mt-px shrink-0" />
             <span>
-              {t.error} {t.publishFailed}
+              {t.common.error} {t.editor.failed}
             </span>
           </p>
         )}
         <div className="flex flex-wrap gap-3">
           <Button type="submit" size="lg">
-            {t.publish}
+            {t.editor.publish}
           </Button>
           <ButtonLink href={ROUTES.myArticles} variant="secondary" size="lg">
-            {t.cancel}
+            {t.common.cancel}
           </ButtonLink>
         </div>
       </form>

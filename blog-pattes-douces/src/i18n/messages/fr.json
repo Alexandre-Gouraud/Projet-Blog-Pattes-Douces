@@ -1,0 +1,285 @@
+{
+  "meta": {
+    "description": "Le blog des boules de poils : les animaux écrivent, commentent et réagissent."
+  },
+  "common": {
+    "quote": "« {text} »",
+    "error": "Erreur :",
+    "retry": "Réessayer",
+    "loadError": "Impossible de charger le contenu. Vérifiez votre connexion puis réessayez.",
+    "cancel": "Annuler",
+    "publishedOn": "Publié le",
+    "by": "Par {name}",
+    "views": "vues",
+    "like": "J'aime",
+    "dislike": "Je n'aime pas",
+    "likeLabel": "J'aime ({count})",
+    "dislikeLabel": "Je n'aime pas ({count})",
+    "write": "Écrire un article",
+    "deleteForever": "Supprimer définitivement",
+    "deleteFailed": "La suppression a échoué. Réessayez.",
+    "deletedArticle": "Article supprimé",
+    "on": "sur",
+    "count": {
+      "articles": { "one": "{count} article", "other": "{count} articles" },
+      "comments": { "one": "{count} commentaire", "other": "{count} commentaires" },
+      "views": { "one": "{count} vue", "other": "{count} vues" },
+      "likes": { "one": "{count} j'aime", "other": "{count} j'aime" },
+      "dislikes": { "one": "{count} je n'aime pas", "other": "{count} je n'aime pas" }
+    }
+  },
+  "shell": {
+    "skip": "Aller au contenu",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "createAccount": "Créer un compte",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "myProfile": "Mon profil",
+    "menu": "Menu",
+    "mainNav": "Navigation principale",
+    "darkMode": "Mode sombre",
+    "changeLang": "Changer de langue",
+    "chooseLang": "Choisir la langue",
+    "langChanged": "Langue : Français",
+    "loggedOut": "Vous êtes déconnecté. À bientôt !",
+    "copyright": "© 2026 Pattes Douces",
+    "footerNav": "Liens de pied de page",
+    "nav": {
+      "feed": "Accueil",
+      "profile": "Profil",
+      "mine": "Mes articles",
+      "activity": "Activité",
+      "stats": "Statistiques"
+    },
+    "footer": {
+      "about": "À propos",
+      "contact": "Contact",
+      "privacy": "Confidentialité",
+      "accessibility": "Accessibilité : partiellement conforme"
+    }
+  },
+  "titles": {
+    "feed": "Articles récents",
+    "article": "Article",
+    "login": "Connexion",
+    "register": "Inscription",
+    "new": "Écrire un article",
+    "mine": "Mes articles",
+    "profile": "Mon profil",
+    "activity": "Activité et historique",
+    "stats": "Statistiques",
+    "comments": "Mes commentaires",
+    "notFound": "Page introuvable",
+    "error": "Erreur",
+    "about": "À propos",
+    "contact": "Contact",
+    "privacy": "Confidentialité",
+    "accessibility": "Déclaration d'accessibilité"
+  },
+  "species": {
+    "cat": "Chat",
+    "dog": "Chien",
+    "rabbit": "Lapine",
+    "kitten": "Chatonne",
+    "puppy": "Chiot",
+    "pet": "Animal",
+    "former": "Ancien membre"
+  },
+  "feed": {
+    "welcomeTitle": "Le blog des boules de poils",
+    "welcomeText": "Chats, chiens, lapins… Ici, ce sont eux qui écrivent. Lisez leurs aventures, réagissez, et racontez celles de votre compagnon.",
+    "createMyAccount": "Créer mon compte",
+    "searchLabel": "Rechercher un article",
+    "searchPlaceholder": "Rechercher un article, un auteur…",
+    "loading": "Chargement des articles…",
+    "found": { "one": "{count} article trouvé", "other": "{count} articles trouvés" },
+    "noMatch": "Aucun article ne correspond à « {query} ». Essayez un autre mot, ou un autre animal !",
+    "empty": "Aucun article pour l'instant. Et si vous écriviez le premier ?",
+    "onTitle": "sur « {title} »",
+    "reactLogin": "Connectez-vous pour réagir aux articles.",
+    "reactError": "Votre réaction n'a pas pu être enregistrée. Réessayez."
+  },
+  "article": {
+    "back": "Retour aux articles",
+    "loading": "Chargement de l'article…",
+    "commentsHeading": "Commentaires ({count})",
+    "noComments": "Pas encore de commentaire. Lancez la conversation !",
+    "yourComment": "Votre commentaire",
+    "publishComment": "Publier le commentaire",
+    "loginLink": "Connectez-vous",
+    "toComment": "pour commenter et réagir.",
+    "errEmpty": "écrivez quelque chose avant de publier.",
+    "errLong": "le commentaire ne doit pas dépasser 2 000 caractères.",
+    "commentPosted": "Commentaire publié.",
+    "commentFailed": "Le commentaire n'a pas pu être publié. Réessayez.",
+    "notFound": "Article introuvable",
+    "notFoundText": "Cet article n'existe pas ou a été supprimé par son auteur."
+  },
+  "login": {
+    "allRequired": "Tous les champs sont obligatoires.",
+    "pseudo": "Pseudo",
+    "password": "Mot de passe",
+    "firstTime": "Première fois sur Pattes Douces ?",
+    "signUp": "Inscris-toi",
+    "errEmpty": "renseignez votre pseudo et votre mot de passe.",
+    "errBad": "pseudo ou mot de passe incorrect.",
+    "errServer": "le serveur ne répond pas. Réessayez dans un instant.",
+    "required": "Connectez-vous pour accéder à cette page.",
+    "welcomeBack": "Bon retour parmi nous, {name} !"
+  },
+  "register": {
+    "starRequired": "Les champs marqués d'un astérisque (*) sont obligatoires.",
+    "pseudo": "Pseudo de votre animal *",
+    "pseudoHelp": "Entre 3 et 30 caractères.",
+    "email": "Adresse e-mail *",
+    "emailHelp": "Format attendu : nom@domaine.fr",
+    "bio": "Biographie",
+    "bioHelp": "500 caractères maximum.",
+    "species": "Espèce",
+    "password": "Mot de passe *",
+    "passwordHelp": "8 caractères minimum, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%…).",
+    "confirm": "Confirmer le mot de passe *",
+    "submit": "Créer mon compte",
+    "alreadyAccount": "Déjà un compte ?",
+    "welcome": "Bienvenue sur Pattes Douces, {name} !",
+    "errors": {
+      "pseudoLength": "le pseudo doit contenir entre 3 et 30 caractères.",
+      "pseudoTaken": "ce pseudo est déjà pris.",
+      "email": "l'adresse e-mail n'est pas valide (exemple : nom@domaine.fr).",
+      "emailTaken": "cette adresse e-mail est déjà utilisée.",
+      "bioLong": "la biographie ne doit pas dépasser 500 caractères.",
+      "confirm": "les deux mots de passe ne correspondent pas.",
+      "server": "le serveur ne répond pas. Réessayez dans un instant."
+    },
+    "passwordRules": {
+      "length": "le mot de passe doit contenir au moins 8 caractères.",
+      "long": "le mot de passe ne doit pas dépasser 128 caractères.",
+      "upper": "le mot de passe doit contenir au moins une lettre majuscule.",
+      "lower": "le mot de passe doit contenir au moins une lettre minuscule.",
+      "digit": "le mot de passe doit contenir au moins un chiffre.",
+      "special": "le mot de passe doit contenir au moins un caractère spécial (!@#$%…)."
+    }
+  },
+  "editor": {
+    "starRequired": "Les champs marqués d'un astérisque (*) sont obligatoires.",
+    "title": "Titre *",
+    "text": "Texte *",
+    "textHelp": "20 caractères minimum · {count} saisis",
+    "image": "Image (facultatif)",
+    "imageHelp": "JPG, PNG, WebP ou GIF, 4 Mo maximum. Pensez à décrire l'image dans votre texte.",
+    "publish": "Publier",
+    "errTitle": "donnez un titre à votre article.",
+    "errTitleLong": "le titre ne doit pas dépasser 150 caractères.",
+    "errText": "le texte doit contenir au moins 20 caractères.",
+    "errImage": "l'image doit être au format JPG, PNG, WebP ou GIF et peser 4 Mo maximum.",
+    "posted": "Article publié !",
+    "failed": "L'article n'a pas pu être publié. Réessayez."
+  },
+  "mine": {
+    "loading": "Chargement de vos articles…",
+    "empty": "Vous n'avez encore rien publié.",
+    "emptySub": "La sieste de ce matin mérite sûrement un article…",
+    "firstArticle": "Écrire mon premier article",
+    "read": "Lire",
+    "delete": "Supprimer",
+    "confirmTitle": "Supprimer cet article ?",
+    "confirmText": "« {title} » et ses commentaires seront définitivement supprimés.",
+    "deleted": "Article supprimé."
+  },
+  "profile": {
+    "identity": "Identité",
+    "noBio": "Pas encore de biographie.",
+    "summary": "En résumé",
+    "seeMine": "Voir mes articles",
+    "deleteAccount": "Supprimer le compte",
+    "confirmTitle": "Supprimer votre compte ?",
+    "confirmText": "Vos articles et vos commentaires, ainsi que les commentaires reçus sur vos articles, seront définitivement effacés. Cette action est irréversible.",
+    "deleted": "Votre compte a été supprimé.",
+    "tiles": {
+      "articles": "Articles publiés",
+      "views": "Vues",
+      "reactions": "Réactions",
+      "comments": "Commentaires reçus"
+    }
+  },
+  "activity": {
+    "loading": "Chargement de votre activité…",
+    "myComments": "Mes commentaires",
+    "noComments": "Vous n'avez pas encore commenté. Allez dire bonjour aux voisins !",
+    "liked": "Articles aimés",
+    "noLiked": "Aucun article aimé pour l'instant.",
+    "seeAllComments": "Voir tous mes commentaires"
+  },
+  "stats": {
+    "loading": "Chargement de vos statistiques…",
+    "distribution": "Répartition des réactions",
+    "total": "Total",
+    "overview": "Vue d'ensemble",
+    "detail": "Détail par article",
+    "publishFirst": "Publiez un premier article pour voir vos statistiques ici.",
+    "caption": "Vues, j'aime, je n'aime pas et commentaires pour chacun de vos articles",
+    "columns": {
+      "article": "Article",
+      "views": "Vues",
+      "likes": "J'aime",
+      "dislikes": "Je n'aime pas",
+      "comments": "Commentaires"
+    },
+    "likeLegend": "J'aime : {count} ({percent} %)",
+    "dislikeLegend": "Je n'aime pas : {count} ({percent} %)",
+    "donutAlt": "Répartition : {likes} j'aime ({likePercent} %), {dislikes} je n'aime pas ({dislikePercent} %)",
+    "donutNone": "Aucune réaction pour le moment"
+  },
+  "errors": {
+    "notFoundText": "Cette page n'existe pas ou a été déplacée. Le chat l'a peut-être fait tomber de la table.",
+    "backFeed": "Retour au fil d'actualité",
+    "errorTitle": "Une erreur est survenue",
+    "errorText": "Quelque chose s'est mal passé de notre côté. Réessayez, et si le problème persiste, contactez-nous."
+  },
+  "pages": {
+    "about": {
+      "intro": "Pattes Douces est un blog communautaire où les animaux de compagnie, avec un peu d'aide de leurs humains, publient leurs aventures, commentent et réagissent.",
+      "body": "Le projet est né comme projet étudiant et reste ouvert : son code source est public et chacun peut proposer des améliorations.",
+      "sourceLink": "Voir le code source sur GitHub"
+    },
+    "contact": {
+      "intro": "Une question, un bug, une remarque sur l'accessibilité ? Écrivez-nous en ouvrant un ticket sur GitHub : nous répondons sous quelques jours.",
+      "issuesLink": "Ouvrir un ticket sur GitHub"
+    },
+    "privacy": {
+      "intro": "Pattes Douces ne collecte que ce qui est nécessaire au fonctionnement du blog. Aucune publicité, aucun traceur, aucun cookie tiers.",
+      "accountHeading": "Données de votre compte",
+      "account": "Pseudo, adresse e-mail, biographie et espèce. Votre mot de passe est chiffré (bcrypt) : personne, pas même nous, ne peut le lire.",
+      "contentHeading": "Vos contributions",
+      "content": "Vos articles, images, commentaires, réactions et les articles que vous avez lus. Les images sont hébergées par Vercel Blob.",
+      "browserHeading": "Stockage dans votre navigateur",
+      "browser": "Votre session et votre choix de thème sont gardés dans le stockage local de votre navigateur ; votre langue, dans un cookie technique (NEXT_LOCALE).",
+      "deletionHeading": "Suppression",
+      "deletion": "Depuis votre profil, « Supprimer le compte » efface votre compte, vos articles et vos commentaires."
+    },
+    "accessibility": {
+      "intro": "Pattes Douces s'engage à rendre son site accessible, en suivant le référentiel général d'amélioration de l'accessibilité (RGAA) version 4.1.2, qui correspond aux WCAG 2.2 niveau AA.",
+      "statusHeading": "État de conformité",
+      "status": "Le site Pattes Douces est partiellement conforme avec le RGAA 4.1.2 : la refonte d'octobre 2026 a été conçue pour respecter le niveau AA, mais aucun audit complet n'a encore été réalisé.",
+      "testsHeading": "Résultats des tests",
+      "tests": "Des tests automatiques (axe, Lighthouse), des parcours au clavier, des tests à 320 px de large, à 200 % et 400 % de zoom et en arabe (sens de lecture de droite à gauche) ont été menés. Un audit RGAA sur un échantillon de pages est prévu.",
+      "limitsHeading": "Contenus non accessibles",
+      "limits": [
+        "Les images des articles n'ont pas d'alternative textuelle propre : leurs auteurs sont invités à les décrire dans le texte de l'article.",
+        "Les contenus publiés par les membres peuvent ne pas respecter toutes les règles (structure, langue).",
+        "Les tests avec des lecteurs d'écran (NVDA, JAWS, VoiceOver, TalkBack) restent à mener."
+      ],
+      "dateHeading": "Établissement de cette déclaration",
+      "date": "Cette déclaration a été établie le 19 octobre 2026.",
+      "techHeading": "Technologies utilisées",
+      "tech": "HTML, CSS, JavaScript (React et Next.js).",
+      "contactHeading": "Retour d'information et contact",
+      "contact": "Si vous n'arrivez pas à accéder à un contenu ou à un service, contactez-nous pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.",
+      "contactLink": "Nous signaler un problème sur GitHub",
+      "remedyHeading": "Voies de recours",
+      "remedy": "Si vous constatez un défaut d'accessibilité qui vous empêche d'accéder à un contenu, que vous nous l'avez signalé et que vous n'avez pas obtenu de réponse satisfaisante, vous pouvez saisir le Défenseur des droits : par son formulaire en ligne, ou par courrier gratuit à l'adresse Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07.",
+      "remedyLink": "Formulaire du Défenseur des droits"
+    }
+  }
+}

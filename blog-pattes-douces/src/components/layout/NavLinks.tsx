@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { BookmarkIcon, ChartIcon, DocumentIcon, HomeIcon, UserIcon } from "@/components/icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { Link, usePathname } from "@/i18n/navigation";
 import { ROUTES } from "@/lib/routes";
 
 const ITEMS = [
@@ -37,7 +36,7 @@ export function NavLinks({ variant, onNavigate }: { variant: "sidebar" | "drawer
   const active = activeKey(usePathname());
 
   return (
-    <nav aria-label={t.mainNav}>
+    <nav aria-label={t.shell.mainNav}>
       <ul className="m-0 flex list-none flex-col gap-1 p-0">
         {ITEMS.map(({ key, href, Icon }) => {
           const current = key === active;
@@ -52,7 +51,7 @@ export function NavLinks({ variant, onNavigate }: { variant: "sidebar" | "drawer
                 } ${current ? "bg-surface font-[650]" : "font-medium"}`}
               >
                 {variant === "sidebar" && <Icon size={22} className="shrink-0 text-icon" />}
-                <span>{t.nav[key]}</span>
+                <span>{t.shell.nav[key]}</span>
               </Link>
             </li>
           );

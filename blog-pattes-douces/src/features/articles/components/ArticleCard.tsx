@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { CommentIcon, EyeIcon, ThumbDownIcon, ThumbUpIcon } from "@/components/icons";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { cardClass } from "@/components/ui/PageTitle";
 import { useI18n } from "@/i18n/I18nProvider";
+import { Link } from "@/i18n/navigation";
 import { ROUTES } from "@/lib/routes";
 import type { Article } from "@/types";
 import type { ReactionType } from "../useReact";
@@ -29,7 +29,7 @@ export function ArticleCard({
   onReact: (article: Article, type: ReactionType) => void;
   onDelete?: (article: Article) => void;
 }) {
-  const { t, date } = useI18n();
+  const { t, f, p, date } = useI18n();
   const href = ROUTES.article(article.id);
   const lang = article.langue ?? undefined;
   const author = article.auteur?.pseudo;
@@ -44,7 +44,7 @@ export function ArticleCard({
         <p className="m-0 flex min-w-0 flex-col leading-[1.3]">
           <span className="font-semibold">{author ?? t.species.former}</span>
           <span className="text-sm text-ink3">
-            {speciesLabel(t, article.auteur)} · {t.publishedOn} <time dateTime={article.date}>{date(article.date)}</time>
+            {speciesLabel(t, article.auteur)} · {t.common.publishedOn} <time dateTime={article.date}>{date(article.date)}</time>
           </span>
         </p>
       </div>
@@ -62,20 +62,20 @@ export function ArticleCard({
         <span className="inline-flex items-center gap-1.5 pe-1.5 text-sm text-ink3">
           <EyeIcon />
           {article.vue.length}
-          <span className="sr-only"> {t.views}</span>
+          <span className="sr-only"> {t.common.views}</span>
         </span>
         <ReactionButton
           pressed={liked}
           icon={<ThumbUpIcon />}
           count={article.reaction1.length}
-          accessibleLabel={t.likeLabel(article.reaction1.length)}
+          accessibleLabel={f(t.common.likeLabel, { count: article.reaction1.length })}
           onClick={() => onReact(article, "like")}
         />
         <ReactionButton
           pressed={disliked}
           icon={<ThumbDownIcon />}
           count={article.reaction2.length}
-          accessibleLabel={t.dislikeLabel(article.reaction2.length)}
+          accessibleLabel={f(t.common.dislikeLabel, { count: article.reaction2.length })}
           onClick={() => onReact(article, "dislike")}
         />
         <Link
@@ -83,20 +83,20 @@ export function ArticleCard({
           className="inline-flex min-h-11 items-center gap-1.5 px-2 text-sm font-semibold text-link"
         >
           <CommentIcon />
-          {t.commentsN(comments)}
-          <span className="sr-only"> {t.onTitle(article.titre)}</span>
+          {p(t.common.count.comments, comments)}
+          <span className="sr-only"> {f(t.feed.onTitle, { title: article.titre })}</span>
         </Link>
       </div>
 
       {onDelete && (
         <div className="flex flex-wrap gap-2.5 border-t border-line pt-3">
           <ButtonLink href={href} variant="secondary">
-            {t.read}
-            <span className="sr-only"> {t.quote(article.titre)}</span>
+            {t.mine.read}
+            <span className="sr-only"> {f(t.common.quote, { text: article.titre })}</span>
           </ButtonLink>
           <Button variant="danger" onClick={() => onDelete(article)}>
-            {t.delete}
-            <span className="sr-only"> {t.quote(article.titre)}</span>
+            {t.mine.delete}
+            <span className="sr-only"> {f(t.common.quote, { text: article.titre })}</span>
           </Button>
         </div>
       )}

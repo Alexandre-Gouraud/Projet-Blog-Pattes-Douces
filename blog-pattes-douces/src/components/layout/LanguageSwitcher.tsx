@@ -4,8 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
 import { useToast } from "@/components/ui/Toast";
 import { LOCALES, LOCALE_INFO, type Locale } from "@/i18n/config";
-import { DICTIONARIES } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSwitchLocale } from "@/i18n/navigation";
+
+// Le changement de langue est une navigation (/fr/… → /ar/…) : ce drapeau
+// permet, une fois la page affichee dans la nouvelle langue, de confirmer le
+// changement et de rendre le focus au selecteur qui l'a declenche.
+const SWITCH_KEY = "pd-lang-switch";
 
 function Flag({ locale, large = false }: { locale: Locale; large?: boolean }) {
   // Drapeau decoratif : le nom de la langue est toujours ecrit (DESIGN.md §7).
@@ -29,7 +34,8 @@ function Flag({ locale, large = false }: { locale: Locale; large?: boolean }) {
  * de statut confirme le changement.
  */
 export function LanguageSwitcher({ menuId, compact = false }: { menuId: string; compact?: boolean }) {
-  const { locale, t, setLocale } = useI18n();
+  const { locale, t } = useI18n();
+  const switchLocale = useSwitchLocale();
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -54,12 +60,27 @@ export function LanguageSwitcher({ menuId, compact = false }: { menuId: string; 
     };
   }, [open]);
 
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(SWITCH_KEY) !== menuId) return;
+      sessionStorage.removeItem(SWITCH_KEY);
+    } catch {
+      return;
+    }
+    buttonRef.current?.focus();
+    toast(t.shell.langChanged);
+  }, [locale, menuId, t, toast]);
+
   const pick = (next: Locale) => {
     setOpen(false);
     buttonRef.current?.focus();
     if (next === locale) return;
-    setLocale(next);
-    toast(DICTIONARIES[next].langChanged);
+    try {
+      sessionStorage.setItem(SWITCH_KEY, menuId);
+    } catch {
+      // Sans stockage, la langue change quand meme, sans message de confirmation.
+    }
+    switchLocale(next);
   };
 
   return (
@@ -77,7 +98,7 @@ export function LanguageSwitcher({ menuId, compact = false }: { menuId: string; 
         <Flag locale={locale} />
         {compact ? (
           <span className="sr-only">
-            <span lang={locale}>{current.name}</span> – {t.changeLang}
+            <span lang={locale}>{current.name}</span> – {t.shell.changeLang}
           </span>
         ) : (
           <>
@@ -85,7 +106,7 @@ export function LanguageSwitcher({ menuId, compact = false }: { menuId: string; 
               {current.name}
             </span>
             <ChevronIcon className={open ? "" : "rotate-180"} />
-            <span className="sr-only"> – {t.changeLang}</span>
+            <span className="sr-only"> – {t.shell.changeLang}</span>
           </>
         )}
       </button>
@@ -93,7 +114,7 @@ export function LanguageSwitcher({ menuId, compact = false }: { menuId: string; 
       <ul
         id={menuId}
         hidden={!open}
-        aria-label={t.chooseLang}
+        aria-label={t.shell.chooseLang}
         className={`absolute end-0 z-50 m-0 flex w-[220px] list-none flex-col gap-0.5 rounded-xl border border-line bg-surface p-1.5 shadow-lg ${
           compact ? "top-[calc(100%+8px)]" : "bottom-[calc(100%+8px)]"
         }`}

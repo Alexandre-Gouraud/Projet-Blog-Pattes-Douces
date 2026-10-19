@@ -1,0 +1,285 @@
+{
+  "meta": {
+    "description": "The blog for furballs: pets write, comment and react."
+  },
+  "common": {
+    "quote": "“{text}”",
+    "error": "Error:",
+    "retry": "Try again",
+    "loadError": "The content could not be loaded. Check your connection and try again.",
+    "cancel": "Cancel",
+    "publishedOn": "Published on",
+    "by": "By {name}",
+    "views": "views",
+    "like": "Like",
+    "dislike": "Dislike",
+    "likeLabel": "Like ({count})",
+    "dislikeLabel": "Dislike ({count})",
+    "write": "Write an article",
+    "deleteForever": "Delete permanently",
+    "deleteFailed": "Deletion failed. Please try again.",
+    "deletedArticle": "Deleted article",
+    "on": "on",
+    "count": {
+      "articles": { "one": "{count} article", "other": "{count} articles" },
+      "comments": { "one": "{count} comment", "other": "{count} comments" },
+      "views": { "one": "{count} view", "other": "{count} views" },
+      "likes": { "one": "{count} like", "other": "{count} likes" },
+      "dislikes": { "one": "{count} dislike", "other": "{count} dislikes" }
+    }
+  },
+  "shell": {
+    "skip": "Skip to content",
+    "login": "Log in",
+    "logout": "Log out",
+    "createAccount": "Create an account",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "myProfile": "My profile",
+    "menu": "Menu",
+    "mainNav": "Main navigation",
+    "darkMode": "Dark mode",
+    "changeLang": "Change language",
+    "chooseLang": "Choose language",
+    "langChanged": "Language: English",
+    "loggedOut": "You are logged out. See you soon!",
+    "copyright": "© 2026 Pattes Douces",
+    "footerNav": "Footer links",
+    "nav": {
+      "feed": "Home",
+      "profile": "Profile",
+      "mine": "My articles",
+      "activity": "Activity",
+      "stats": "Statistics"
+    },
+    "footer": {
+      "about": "About",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "accessibility": "Accessibility: partially compliant"
+    }
+  },
+  "titles": {
+    "feed": "Recent articles",
+    "article": "Article",
+    "login": "Log in",
+    "register": "Sign up",
+    "new": "Write an article",
+    "mine": "My articles",
+    "profile": "My profile",
+    "activity": "Activity & history",
+    "stats": "Statistics",
+    "comments": "My comments",
+    "notFound": "Page not found",
+    "error": "Error",
+    "about": "About",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "accessibility": "Accessibility statement"
+  },
+  "species": {
+    "cat": "Cat",
+    "dog": "Dog",
+    "rabbit": "Rabbit",
+    "kitten": "Kitten",
+    "puppy": "Puppy",
+    "pet": "Pet",
+    "former": "Former member"
+  },
+  "feed": {
+    "welcomeTitle": "The blog for furballs",
+    "welcomeText": "Cats, dogs, rabbits… Here, they do the writing. Read their adventures, react, and share your own companion’s stories.",
+    "createMyAccount": "Create my account",
+    "searchLabel": "Search articles",
+    "searchPlaceholder": "Search an article or an author…",
+    "loading": "Loading articles…",
+    "found": { "one": "{count} article found", "other": "{count} articles found" },
+    "noMatch": "No article matches “{query}”. Try another word, or another animal!",
+    "empty": "No articles yet. Why not write the first one?",
+    "onTitle": "on “{title}”",
+    "reactLogin": "Log in to react to articles.",
+    "reactError": "Your reaction could not be saved. Please try again."
+  },
+  "article": {
+    "back": "Back to articles",
+    "loading": "Loading article…",
+    "commentsHeading": "Comments ({count})",
+    "noComments": "No comments yet. Start the conversation!",
+    "yourComment": "Your comment",
+    "publishComment": "Post comment",
+    "loginLink": "Log in",
+    "toComment": "to comment and react.",
+    "errEmpty": "write something before posting.",
+    "errLong": "comments cannot exceed 2,000 characters.",
+    "commentPosted": "Comment posted.",
+    "commentFailed": "Your comment could not be posted. Please try again.",
+    "notFound": "Article not found",
+    "notFoundText": "This article doesn’t exist or was deleted by its author."
+  },
+  "login": {
+    "allRequired": "All fields are required.",
+    "pseudo": "Username",
+    "password": "Password",
+    "firstTime": "New to Pattes Douces?",
+    "signUp": "Sign up",
+    "errEmpty": "enter your username and password.",
+    "errBad": "incorrect username or password.",
+    "errServer": "the server is not responding. Please try again in a moment.",
+    "required": "Log in to access this page.",
+    "welcomeBack": "Welcome back, {name}!"
+  },
+  "register": {
+    "starRequired": "Fields marked with an asterisk (*) are required.",
+    "pseudo": "Your pet’s name *",
+    "pseudoHelp": "Between 3 and 30 characters.",
+    "email": "Email address *",
+    "emailHelp": "Expected format: name@domain.com",
+    "bio": "Bio",
+    "bioHelp": "500 characters maximum.",
+    "species": "Species",
+    "password": "Password *",
+    "passwordHelp": "At least 8 characters, including an uppercase letter, a lowercase letter, a digit and a special character (!@#$%…).",
+    "confirm": "Confirm password *",
+    "submit": "Create my account",
+    "alreadyAccount": "Already have an account?",
+    "welcome": "Welcome to Pattes Douces, {name}!",
+    "errors": {
+      "pseudoLength": "username must be between 3 and 30 characters.",
+      "pseudoTaken": "this username is already taken.",
+      "email": "email address is not valid (example: name@domain.com).",
+      "emailTaken": "this email address is already in use.",
+      "bioLong": "bio cannot exceed 500 characters.",
+      "confirm": "the two passwords do not match.",
+      "server": "the server is not responding. Please try again in a moment."
+    },
+    "passwordRules": {
+      "length": "password must be at least 8 characters.",
+      "long": "password cannot exceed 128 characters.",
+      "upper": "password must contain at least one uppercase letter.",
+      "lower": "password must contain at least one lowercase letter.",
+      "digit": "password must contain at least one digit.",
+      "special": "password must contain at least one special character (!@#$%…)."
+    }
+  },
+  "editor": {
+    "starRequired": "Fields marked with an asterisk (*) are required.",
+    "title": "Title *",
+    "text": "Text *",
+    "textHelp": "At least 20 characters · {count} typed",
+    "image": "Image (optional)",
+    "imageHelp": "JPG, PNG, WebP or GIF, 4 MB max. Remember to describe the image in your text.",
+    "publish": "Publish",
+    "errTitle": "give your article a title.",
+    "errTitleLong": "title cannot exceed 150 characters.",
+    "errText": "text must be at least 20 characters.",
+    "errImage": "image must be a JPG, PNG, WebP or GIF file of 4 MB max.",
+    "posted": "Article published!",
+    "failed": "The article could not be published. Please try again."
+  },
+  "mine": {
+    "loading": "Loading your articles…",
+    "empty": "You haven’t published anything yet.",
+    "emptySub": "This morning’s nap surely deserves an article…",
+    "firstArticle": "Write my first article",
+    "read": "Read",
+    "delete": "Delete",
+    "confirmTitle": "Delete this article?",
+    "confirmText": "“{title}” and its comments will be permanently deleted.",
+    "deleted": "Article deleted."
+  },
+  "profile": {
+    "identity": "Identity",
+    "noBio": "No bio yet.",
+    "summary": "At a glance",
+    "seeMine": "See my articles",
+    "deleteAccount": "Delete account",
+    "confirmTitle": "Delete your account?",
+    "confirmText": "Your articles and comments, and the comments received on your articles, will be permanently erased. This cannot be undone.",
+    "deleted": "Your account has been deleted.",
+    "tiles": {
+      "articles": "Articles published",
+      "views": "Views",
+      "reactions": "Reactions",
+      "comments": "Comments received"
+    }
+  },
+  "activity": {
+    "loading": "Loading your activity…",
+    "myComments": "My comments",
+    "noComments": "You haven’t commented yet. Go say hi to the neighbours!",
+    "liked": "Liked articles",
+    "noLiked": "No liked articles yet.",
+    "seeAllComments": "See all my comments"
+  },
+  "stats": {
+    "loading": "Loading your statistics…",
+    "distribution": "Reaction breakdown",
+    "total": "Total",
+    "overview": "Overview",
+    "detail": "Per-article details",
+    "publishFirst": "Publish a first article to see your statistics here.",
+    "caption": "Views, likes, dislikes and comments for each of your articles",
+    "columns": {
+      "article": "Article",
+      "views": "Views",
+      "likes": "Likes",
+      "dislikes": "Dislikes",
+      "comments": "Comments"
+    },
+    "likeLegend": "Likes: {count} ({percent}%)",
+    "dislikeLegend": "Dislikes: {count} ({percent}%)",
+    "donutAlt": "Breakdown: {likes} likes ({likePercent}%), {dislikes} dislikes ({dislikePercent}%)",
+    "donutNone": "No reactions yet"
+  },
+  "errors": {
+    "notFoundText": "This page doesn’t exist or has moved. The cat may have knocked it off the table.",
+    "backFeed": "Back to the feed",
+    "errorTitle": "Something went wrong",
+    "errorText": "Something went wrong on our side. Please try again, and contact us if the problem persists."
+  },
+  "pages": {
+    "about": {
+      "intro": "Pattes Douces is a community blog where pets, with a little help from their humans, share their adventures, comment and react.",
+      "body": "It started as a student project and remains open: its source code is public and anyone can suggest improvements.",
+      "sourceLink": "See the source code on GitHub"
+    },
+    "contact": {
+      "intro": "A question, a bug, a remark about accessibility? Write to us by opening an issue on GitHub: we answer within a few days.",
+      "issuesLink": "Open an issue on GitHub"
+    },
+    "privacy": {
+      "intro": "Pattes Douces only collects what the blog needs to work. No ads, no trackers, no third-party cookies.",
+      "accountHeading": "Your account data",
+      "account": "Username, email address, bio and species. Your password is hashed (bcrypt): nobody, not even us, can read it.",
+      "contentHeading": "Your contributions",
+      "content": "Your articles, images, comments, reactions and the articles you have read. Images are hosted by Vercel Blob.",
+      "browserHeading": "Storage in your browser",
+      "browser": "Your session and theme choice are kept in your browser’s local storage; your language in a technical cookie (NEXT_LOCALE).",
+      "deletionHeading": "Deletion",
+      "deletion": "From your profile, “Delete account” erases your account, your articles and your comments."
+    },
+    "accessibility": {
+      "intro": "Pattes Douces is committed to making its website accessible, following the French accessibility framework RGAA version 4.1.2, which matches WCAG 2.2 level AA.",
+      "statusHeading": "Compliance status",
+      "status": "Pattes Douces is partially compliant with RGAA 4.1.2: the October 2026 redesign was built to meet level AA, but no full audit has been carried out yet.",
+      "testsHeading": "Test results",
+      "tests": "Automated tests (axe, Lighthouse), keyboard-only journeys, tests at 320 px wide, at 200% and 400% zoom and in Arabic (right-to-left) have been carried out. An RGAA audit on a sample of pages is planned.",
+      "limitsHeading": "Non-accessible content",
+      "limits": [
+        "Article images have no text alternative of their own: authors are invited to describe them in the article text.",
+        "Content published by members may not follow every rule (structure, language).",
+        "Screen reader tests (NVDA, JAWS, VoiceOver, TalkBack) are still to be carried out."
+      ],
+      "dateHeading": "Date of this statement",
+      "date": "This statement was made on 19 October 2026.",
+      "techHeading": "Technologies used",
+      "tech": "HTML, CSS, JavaScript (React and Next.js).",
+      "contactHeading": "Feedback and contact",
+      "contact": "If you cannot access a piece of content or a service, contact us so we can direct you to an accessible alternative or provide the content in another form.",
+      "contactLink": "Report a problem on GitHub",
+      "remedyHeading": "Remedies",
+      "remedy": "If you notice an accessibility issue that prevents you from accessing content, have reported it to us and have not received a satisfactory answer, you can contact the French Defender of Rights (Défenseur des droits): through its online form, or by free mail to Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France.",
+      "remedyLink": "Defender of Rights online form"
+    }
+  }
+}

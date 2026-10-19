@@ -21,7 +21,7 @@ import { ArticleCard } from "./ArticleCard";
  * Supprimer. La suppression passe par un dialogue de confirmation.
  */
 export default function MyArticlesList() {
-  const { t } = useI18n();
+  const { t, f } = useI18n();
   const toast = useToast();
   const userId = useUserId();
   const react = useReact();
@@ -57,24 +57,24 @@ export default function MyArticlesList() {
       setArticles((list) => list?.filter((item) => item.id !== article.id) ?? null);
       setPending(null);
       notifyArticlesChanged();
-      toast(t.articleDeleted);
+      toast(t.mine.deleted);
     } catch {
       setPending(null);
-      toast(t.deleteFailed);
+      toast(t.common.deleteFailed);
     }
   };
 
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <PageTitle>{t.mine}</PageTitle>
-        <ButtonLink href={ROUTES.newArticle}>{t.write}</ButtonLink>
+        <PageTitle>{t.titles.mine}</PageTitle>
+        <ButtonLink href={ROUTES.newArticle}>{t.common.write}</ButtonLink>
       </div>
 
       {failed ? (
         <ErrorState
-          message={t.loadError}
-          retryLabel={t.retry}
+          message={t.common.loadError}
+          retryLabel={t.common.retry}
           onRetry={() => {
             setFailed(false);
             setArticles(null);
@@ -82,16 +82,16 @@ export default function MyArticlesList() {
           }}
         />
       ) : !articles ? (
-        <Loading label={t.loadingMine}>
+        <Loading label={t.mine.loading}>
           <CardSkeleton />
           <CardSkeleton />
         </Loading>
       ) : articles.length === 0 ? (
         <EmptyState
           logo
-          title={t.mineEmpty}
-          text={t.mineEmptySub}
-          action={<ButtonLink href={ROUTES.newArticle}>{t.firstArticle}</ButtonLink>}
+          title={t.mine.empty}
+          text={t.mine.emptySub}
+          action={<ButtonLink href={ROUTES.newArticle}>{t.mine.firstArticle}</ButtonLink>}
         />
       ) : (
         <ul className="m-0 flex list-none flex-col gap-4 p-0">
@@ -105,9 +105,9 @@ export default function MyArticlesList() {
 
       <ConfirmDialog
         open={pending !== null}
-        title={t.confirmArticleTitle}
-        description={pending ? t.confirmArticleText(pending.titre) : ""}
-        confirmLabel={t.deleteForever}
+        title={t.mine.confirmTitle}
+        description={pending ? f(t.mine.confirmText, { title: pending.titre }) : ""}
+        confirmLabel={t.common.deleteForever}
         onConfirm={confirmDelete}
         onCancel={() => setPending(null)}
       />

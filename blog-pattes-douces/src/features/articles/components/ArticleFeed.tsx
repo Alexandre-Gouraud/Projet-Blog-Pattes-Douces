@@ -26,7 +26,7 @@ function matches(article: Article, query: string): boolean {
  * squelettes au chargement, etat vide et erreur.
  */
 export default function ArticleFeed() {
-  const { t } = useI18n();
+  const { t, f, p } = useI18n();
   const hydrated = useHydrated();
   const loggedIn = useIsLoggedIn();
   const userId = useUserId();
@@ -59,27 +59,27 @@ export default function ArticleFeed() {
 
   const search = query.trim();
   const visible = articles && search ? articles.filter((article) => matches(article, search)) : articles;
-  const status = visible ? (search ? t.foundN(visible.length) : t.articlesN(visible.length)) : "";
+  const status = visible ? (search ? p(t.feed.found, visible.length) : p(t.common.count.articles, visible.length)) : "";
 
   return (
     <>
       {hydrated && !loggedIn && <VisitorBanner />}
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <PageTitle>{t.recent}</PageTitle>
-        {loggedIn && <ButtonLink href={ROUTES.newArticle}>{t.write}</ButtonLink>}
+        <PageTitle>{t.titles.feed}</PageTitle>
+        {loggedIn && <ButtonLink href={ROUTES.newArticle}>{t.common.write}</ButtonLink>}
       </div>
 
       <div role="search" className="flex items-center gap-2.5 rounded-xl bg-surface px-3.5 shadow-sm">
         <SearchIcon className="shrink-0 text-ink3" />
         <label htmlFor="recherche" className="sr-only">
-          {t.searchLabel}
+          {t.feed.searchLabel}
         </label>
         <input
           id="recherche"
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={t.searchPh}
+          placeholder={t.feed.searchPlaceholder}
           className="min-h-12 min-w-0 flex-1 bg-transparent text-ink outline-offset-4"
         />
       </div>
@@ -88,16 +88,16 @@ export default function ArticleFeed() {
       </p>
 
       {failed ? (
-        <ErrorState message={t.loadError} retryLabel={t.retry} onRetry={retry} />
+        <ErrorState message={t.common.loadError} retryLabel={t.common.retry} onRetry={retry} />
       ) : !visible ? (
-        <Loading label={t.loadingArticles}>
+        <Loading label={t.feed.loading}>
           <CardSkeleton />
           <CardSkeleton />
           <CardSkeleton />
         </Loading>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl bg-cream p-7 text-center text-ink">
-          {search ? t.noMatch(search) : t.feedEmpty}
+          {search ? f(t.feed.noMatch, { query: search }) : t.feed.empty}
         </div>
       ) : (
         <ul className="m-0 flex list-none flex-col gap-4 p-0">

@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { speciesLabel } from "@/features/articles/species";
 import { useLogout } from "@/features/auth/useLogout";
 import { useI18n } from "@/i18n/I18nProvider";
+import { Link } from "@/i18n/navigation";
 import { usePseudo, useSpecies, useUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 
@@ -42,7 +42,7 @@ export function AccountBlock({ variant, onNavigate }: { variant: "sidebar" | "dr
             logout();
           }}
         >
-          {t.logout}
+          {t.shell.logout}
         </Button>
       </>
     );
@@ -51,18 +51,18 @@ export function AccountBlock({ variant, onNavigate }: { variant: "sidebar" | "dr
   return (
     <>
       <ButtonLink href={ROUTES.login} size={size} onClick={onNavigate}>
-        {t.login}
+        {t.shell.login}
       </ButtonLink>
       {variant === "sidebar" ? (
         <Link
           href={ROUTES.register}
           className="flex min-h-11 items-center justify-center text-[15px] font-semibold text-link"
         >
-          {t.createAccount}
+          {t.shell.createAccount}
         </Link>
       ) : (
         <ButtonLink href={ROUTES.register} variant="secondary" size={size} onClick={onNavigate}>
-          {t.createAccount}
+          {t.shell.createAccount}
         </ButtonLink>
       )}
     </>
@@ -79,7 +79,7 @@ export function ProfileLink() {
   return (
     <Link href={ROUTES.profile} className="grid size-11 place-items-center rounded-full no-underline">
       <Avatar name={pseudo} seed={userId ?? pseudo} size={36} />
-      <span className="sr-only">{t.myProfile}</span>
+      <span className="sr-only">{t.shell.myProfile}</span>
     </Link>
   );
 }

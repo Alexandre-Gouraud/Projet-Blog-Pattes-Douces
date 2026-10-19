@@ -63,7 +63,7 @@ export function ConfirmDialog({ open, title, description, confirmLabel, onConfir
         </p>
         <div className="flex flex-wrap justify-end gap-2.5 pt-1.5">
           <Button ref={cancelRef} variant="secondary" onClick={onCancel}>
-            {t.cancel}
+            {t.common.cancel}
           </Button>
           <Button variant="danger-solid" onClick={onConfirm}>
             {confirmLabel}
