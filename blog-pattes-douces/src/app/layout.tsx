@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_Arabic } from "next/font/google";
+import Shell from "@/components/layout/Shell";
+import { ToastProvider } from "@/components/ui/Toast";
 import { LOCALE_INFO } from "@/i18n/config";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import { getDictionary, getLocale } from "@/i18n/server";
@@ -41,7 +43,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider>
-          <I18nProvider initialLocale={locale}>{children}</I18nProvider>
+          <I18nProvider initialLocale={locale}>
+            <ToastProvider>
+              <Shell>{children}</Shell>
+            </ToastProvider>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

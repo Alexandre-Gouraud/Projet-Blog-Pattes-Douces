@@ -5,6 +5,8 @@
 export const ROUTES = {
   home: "/",
   login: "/login",
+  /** Connexion demandee par une page reservee aux membres, avec retour ensuite. */
+  loginRequired: (next: string) => `/login?raison=connexion&suite=${encodeURIComponent(next)}`,
   register: "/register",
   feed: "/feed",
   articles: "/articles",
@@ -15,6 +17,10 @@ export const ROUTES = {
   activity: "/activity",
   comments: "/comments",
   dashboard: "/dashboard",
+  about: "/about",
+  contact: "/contact",
+  privacy: "/privacy",
+  accessibility: "/accessibility",
 } as const;
 
 /** Endpoints de l'API REST. */

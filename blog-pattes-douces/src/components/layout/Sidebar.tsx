@@ -1,97 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import {
-    HomeIcon,
-    UserCircleIcon,
-    DocumentDuplicateIcon,
-    BookmarkSquareIcon,
-    ChartBarSquareIcon,
-    ArrowRightOnRectangleIcon,
-    ArrowLeftStartOnRectangleIcon,
-} from "@heroicons/react/24/outline";
+import { Logo } from "@/components/ui/Logo";
 import { ROUTES } from "@/lib/routes";
-import { clearSession, useIsLoggedIn } from "@/lib/auth/session";
+import { AccountBlock } from "./AccountBlock";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { NavLinks } from "./NavLinks";
+import { ThemeToggle } from "./ThemeToggle";
 
-type MenuItem = {
-    label: string;
-    icon: React.ReactNode;
-    href?: string;
-    onClick?: () => void;
-};
+export const SIDEBAR_ID = "barre-laterale";
 
 /**
- * Sidebar unique : les memes entrees pour tout le monde, seule la derniere
- * change selon que l'utilisateur est connecte ou non.
- * Remplace AfficherSidebar + AppSidebar + CoSidebar.
+ * Barre laterale desktop (DESIGN.md §9.2) : collante, pleine hauteur,
+ * repliable depuis le burger de la barre superieure. Repliee, elle reste dans
+ * le DOM (masquee) pour que aria-controls designe toujours un element.
  */
-const Sidebar = () => {
-    const [collapsed] = useState(false);
-    const connected = useIsLoggedIn();
-
-    const handleLogout = () => {
-        clearSession();
-        window.location.href = ROUTES.feed;
-    };
-
-    const menuItems: MenuItem[] = [
-        { href: ROUTES.feed, icon: <HomeIcon className="h-6 w-6" />, label: "Accueil" },
-        { href: ROUTES.profile, icon: <UserCircleIcon className="h-6 w-6" />, label: "Profil" },
-        { href: ROUTES.feed, icon: <DocumentDuplicateIcon className="h-6 w-6" />, label: "Articles" },
-        { href: ROUTES.activity, icon: <BookmarkSquareIcon className="h-6 w-6" />, label: "Activité et Historique" },
-        { href: ROUTES.dashboard, icon: <ChartBarSquareIcon className="h-6 w-6" />, label: "Statistiques" },
-        connected
-            ? { onClick: handleLogout, icon: <ArrowLeftStartOnRectangleIcon className="h-6 w-6" />, label: "Se Déconnecter" }
-            : { href: ROUTES.login, icon: <ArrowRightOnRectangleIcon className="h-6 w-6" />, label: "Se Connecter" },
-    ];
-
-    return (
-        <div
-            className={`${
-                collapsed ? "w-16" : "w-64"
-            } bg-[#E5E5DF] h-screen fixed flex flex-col transition-all duration-300`}
-        >
-            {/* Header de la sidebar */}
-            <div className="h-16 flex items-center justify-between px-4 border-b border-gray-700">
-                {!collapsed && (
-                    <h1 className="text-black font-bold text-xl truncate">Pattes Douces</h1>
-                )}
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto px-4 py-6">
-                <ul className="space-y-2">
-                    {menuItems.map((item, index) => (
-                        <li key={index}>
-                            {item.href ? (
-                                <Link
-                                    href={item.href}
-                                    className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 group"
-                                >
-                                    <div className="text-gray-400 group-hover:text-black">{item.icon}</div>
-                                    {!collapsed && <span className="text-black text-sm">{item.label}</span>}
-                                </Link>
-                            ) : (
-                                <button
-                                    onClick={item.onClick}
-                                    className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-700 group w-full text-left"
-                                >
-                                    <div className="text-gray-400 group-hover:text-black">{item.icon}</div>
-                                    {!collapsed && <span className="text-black text-sm">{item.label}</span>}
-                                </button>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-
-            {/* Footer */}
-            <footer className="px-4 py-4 border-t border-gray-700 mt-auto">
-                {!collapsed && <p className="text-gray-500 text-xs">&copy; 2025 Pattes Douces</p>}
-            </footer>
+export function Sidebar({ open }: { open: boolean }) {
+  return (
+    <aside
+      id={SIDEBAR_ID}
+      hidden={!open}
+      className="sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col overflow-y-auto border-e border-line bg-app px-4 py-5 desk:flex"
+    >
+      <Link href={ROUTES.feed} className="flex items-center gap-3 px-2 pt-1 pb-5 text-ink no-underline hover:text-ink">
+        <Logo size={44} priority />
+        <span className="text-[19px] font-bold tracking-[-0.01em]">Pattes Douces</span>
+      </Link>
+      <NavLinks variant="sidebar" />
+      <div className="mt-auto flex flex-col gap-3 border-t border-line pt-4">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <LanguageSwitcher menuId="menu-langue-laterale" />
         </div>
-    );
-};
-
-export default Sidebar;
+        <AccountBlock variant="sidebar" />
+      </div>
+    </aside>
+  );
+}

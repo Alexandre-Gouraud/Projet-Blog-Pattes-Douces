@@ -1,15 +1,6 @@
-import Navbar from "@/components/layout/Navbar";
-import Banner from "@/components/layout/Banner";
-import Footer from "@/components/layout/Footer";
 import ArticleFeed from "@/features/articles/components/ArticleFeed";
 
+/** Accueil public : le fil d'actualite, dans le shell commun. */
 export default function HomePage() {
-  return (
-    <>
-      <Navbar />
-      <Banner />
-      <ArticleFeed />
-      <Footer />
-    </>
-  );
+  return <ArticleFeed />;
 }

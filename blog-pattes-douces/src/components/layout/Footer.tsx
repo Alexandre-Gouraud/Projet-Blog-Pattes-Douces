@@ -1,44 +1,37 @@
+"use client";
+
 import Link from "next/link";
+import { useI18n } from "@/i18n/I18nProvider";
+import { ROUTES } from "@/lib/routes";
 
-const Footer = () => {
+/**
+ * Pied de page (DESIGN.md §9.12). Contact et Accessibilite restent au meme
+ * endroit sur toutes les pages (WCAG 3.2.6) ; la mention de l'etat de
+ * conformite mene a la declaration d'accessibilite.
+ */
+export default function Footer() {
+  const { t } = useI18n();
+  const links = [
+    { href: ROUTES.about, label: t.about },
+    { href: ROUTES.contact, label: t.contact },
+    { href: ROUTES.privacy, label: t.privacy },
+    { href: ROUTES.accessibility, label: t.a11y },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Contenu principal de la page */}
-      <div className="flex-grow">
-        {/* Ton contenu ici */}
-      </div>
-
-      {/* Footer */}
-      <div className="footer bg-white w-full h-20 border-t border-gray-300">
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex justify-end items-center h-full">
-            <ul className="hidden md:flex gap-x-6 text-gray-700">
-              <li>
-                <Link href="/about">
-                  <p>À propos</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact">
-                  <p>Contact</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy">
-                  <p>Confidentialité</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms">
-                  <p>Conditions</p>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-surface px-6 py-5 text-[15px]">
+      <p className="m-0 text-ink2">{t.copyright}</p>
+      <nav aria-label={t.footerNav}>
+        <ul className="m-0 flex list-none flex-wrap gap-x-5 gap-y-1 p-0">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link href={link.href} className="inline-flex min-h-11 items-center text-link">
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </footer>
   );
-};
-
-export default Footer;
+}
