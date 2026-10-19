@@ -11,6 +11,8 @@ model User {
   id  String   @id @default(auto()) @map("_id") @db.ObjectId
   pseudo  String @unique
   biographie String?  
+  // Cle d'espece (cat, dog, rabbit, kitten, puppy, pet) affichee a cote du pseudo.
+  espece String?
   email  String  @unique
   password String
  
@@ -24,6 +26,8 @@ model Article{
   titre String
   texte String
   image String?
+  // Langue de redaction (fr, en, ar, zh) : attribut lang du contenu (RGAA 8.7).
+  langue String?
   date DateTime @default(now())
   vue         String[]
   reaction1   String[]
@@ -40,6 +44,7 @@ model Article{
 model Commentaire{
   id String   @id @default(auto()) @map("_id") @db.ObjectId
   texte String
+  langue String?
   date DateTime @default(now())
   reaction1   String[]
   reaction2   String[]

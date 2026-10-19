@@ -20,4 +20,5 @@ if (process.env.NODE_ENV !== 'production') {
 export const publicUserSelect = {
   id: true,
   pseudo: true,
+  espece: true,
 } satisfies Prisma.UserSelect;

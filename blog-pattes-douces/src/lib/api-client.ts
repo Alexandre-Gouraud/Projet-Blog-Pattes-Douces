@@ -1,11 +1,27 @@
 import { API } from "./routes";
-import type { Article, ArticleWithComments, Comment, CurrentUserResponse } from "./api-types";
+import type { Article, ArticleWithComments, Comment, CurrentUserResponse, User } from "./api-types";
+
+/**
+ * Erreur d'API : `status` permet a l'interface d'afficher un message traduit
+ * (les messages du serveur sont en francais). 0 = reseau indisponible.
+ */
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, init);
+  let response: Response;
+  try {
+    response = await fetch(url, init);
+  } catch {
+    throw new ApiError("Erreur reseau", 0);
+  }
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    throw new Error(body.message || body.error || "Erreur reseau");
+    throw new ApiError(body.message || body.error || "Erreur reseau", response.status);
   }
   return response.json() as Promise<T>;
 }
@@ -24,8 +40,12 @@ export function login(pseudo: string, password: string) {
   return request<CurrentUserResponse>(API.login, postJson(API.login, { pseudo, password }));
 }
 
-export function register(payload: { pseudo: string; mail: string; biographie?: string; password: string }) {
+export function register(payload: { pseudo: string; mail: string; biographie?: string; espece?: string; password: string }) {
   return request<{ message: string }>(API.register, postJson(API.register, payload));
+}
+
+export function fetchUser(id: string) {
+  return request<User>(API.user(id));
 }
 
 export function deleteAccount(userId: string) {
@@ -47,8 +67,14 @@ export function fetchArticle(id: string) {
   return request<ArticleWithComments>(API.article(id));
 }
 
-export function createArticle(payload: { titre: string; texte: string; userId: string; imageUrl?: string }) {
-  return request<{ message: string }>(API.articles, postJson(API.articles, payload));
+export function createArticle(payload: {
+  titre: string;
+  texte: string;
+  userId: string;
+  imageUrl?: string;
+  langue?: string;
+}) {
+  return request<{ message: string; id: string }>(API.articles, postJson(API.articles, payload));
 }
 
 export function deleteArticle(id: string) {
@@ -83,7 +109,7 @@ export function fetchCommentsOnAuthorArticles(authorId: string) {
   return request<Comment[]>(API.commentsOnAuthorArticles(authorId));
 }
 
-export function createComment(payload: { id_article: string; texte: string; commentataireId: string }) {
+export function createComment(payload: { id_article: string; texte: string; commentataireId: string; langue?: string }) {
   return request<Comment>(API.comments, postJson(API.comments, payload));
 }
 

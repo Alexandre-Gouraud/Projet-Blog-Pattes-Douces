@@ -15,6 +15,15 @@ export const LIMITS = {
   imageBytes: 4 * 1024 * 1024,
 } as const;
 
+/** Especes proposees a l'inscription (cles traduites par l'interface). */
+export const SPECIES = ["cat", "dog", "rabbit", "kitten", "puppy", "pet"] as const;
+
+export type Species = (typeof SPECIES)[number];
+
+export function isSpecies(value: unknown): value is Species {
+  return typeof value === "string" && (SPECIES as readonly string[]).includes(value);
+}
+
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
 
 const OBJECT_ID = /^[a-f\d]{24}$/i;

@@ -13,8 +13,12 @@ import { useSyncExternalStore } from "react";
 
 const PSEUDO_KEY = "pseudo";
 const USER_ID_KEY = "user_id";
+const SPECIES_KEY = "espece";
+// Le localStorage n'emet "storage" que dans les AUTRES onglets : cet evenement
+// previent l'onglet courant d'une connexion ou d'une deconnexion.
+const SESSION_EVENT = "pd-session-change";
 
-export type CurrentUser = { id: string; pseudo: string };
+export type CurrentUser = { id: string; pseudo: string; espece?: string | null };
 
 function read(key: string): string | null {
   if (typeof window === "undefined") return null;
@@ -33,6 +37,10 @@ export function getPseudo(): string | null {
   return read(PSEUDO_KEY);
 }
 
+export function getSpecies(): string | null {
+  return read(SPECIES_KEY);
+}
+
 export function isLoggedIn(): boolean {
   return getPseudo() !== null;
 }
@@ -41,12 +49,17 @@ export function saveSession(user: CurrentUser): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(PSEUDO_KEY, user.pseudo);
   localStorage.setItem(USER_ID_KEY, user.id);
+  if (user.espece) localStorage.setItem(SPECIES_KEY, user.espece);
+  else localStorage.removeItem(SPECIES_KEY);
+  window.dispatchEvent(new Event(SESSION_EVENT));
 }
 
 export function clearSession(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem(PSEUDO_KEY);
   localStorage.removeItem(USER_ID_KEY);
+  localStorage.removeItem(SPECIES_KEY);
+  window.dispatchEvent(new Event(SESSION_EVENT));
 }
 
 /* --- Hooks --- */
@@ -59,7 +72,11 @@ export function clearSession(): void {
 function subscribe(onChange: () => void): () => void {
   if (typeof window === "undefined") return () => {};
   window.addEventListener("storage", onChange);
-  return () => window.removeEventListener("storage", onChange);
+  window.addEventListener(SESSION_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(SESSION_EVENT, onChange);
+  };
 }
 
 export function useIsLoggedIn(): boolean {
@@ -72,4 +89,18 @@ export function usePseudo(): string | null {
 
 export function useUserId(): string | null {
   return useSyncExternalStore(subscribe, getUserId, () => null);
+}
+
+export function useSpecies(): string | null {
+  return useSyncExternalStore(subscribe, getSpecies, () => null);
+}
+
+const noop = () => () => {};
+
+/**
+ * false pendant le rendu serveur et l'hydratation, true ensuite. Permet
+ * d'attendre la lecture du localStorage avant de rediriger un visiteur.
+ */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(noop, () => true, () => false);
 }

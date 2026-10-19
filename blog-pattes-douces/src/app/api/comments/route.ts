@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest, readJson } from "@/lib/http";
+import { isLocale } from "@/i18n/config";
 import { LIMITS, isObjectId, isText } from "@/lib/validation";
 
 export async function GET(request: Request) {
@@ -35,6 +36,7 @@ export async function GET(request: Request) {
         commentataire: { select: publicUserSelect },
         date: true,
         texte: true,
+        langue: true,
         reaction1: true,
         reaction2: true,
       },
@@ -53,6 +55,7 @@ export async function POST(req: Request) {
     const id_article = body?.id_article;
     const texte = body?.texte;
     const commentataireId = body?.commentataireId;
+    const langue = isLocale(body?.langue) ? body.langue : undefined;
 
     if (!isObjectId(id_article) || !isObjectId(commentataireId) || !isText(texte, LIMITS.commentaire)) {
       return NextResponse.json(
@@ -74,6 +77,7 @@ export async function POST(req: Request) {
       data: {
         article_sourceId: id_article,
         texte: texte.trim(),
+        langue,
         commentataireId,
         reaction1: [], // Initialise avec un tableau vide
         reaction2: [], // Initialise avec un tableau vide

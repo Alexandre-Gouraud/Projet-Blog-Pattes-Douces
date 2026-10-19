@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { Prisma } from "@prisma/client";
 import { readJson } from "@/lib/http";
-import { LIMITS, isEmail, passwordError } from "@/lib/validation";
+import { LIMITS, isEmail, isSpecies, passwordError } from "@/lib/validation";
 
 export async function POST(request: Request) {
     const body = await readJson(request);
@@ -11,6 +11,8 @@ export async function POST(request: Request) {
     const mail = typeof body?.mail === "string" ? body.mail.trim() : "";
     const biographie = typeof body?.biographie === "string" ? body.biographie.trim() : "";
     const password = typeof body?.password === "string" ? body.password : "";
+    // Facultative : une valeur inconnue est ignoree plutot que refusee.
+    const espece = isSpecies(body?.espece) ? body.espece : null;
 
     // La validation du formulaire se contourne en appelant l'API directement :
     // les memes regles sont donc reappliquees ici.
@@ -58,6 +60,7 @@ export async function POST(request: Request) {
                 pseudo,
                 email: mail,
                 biographie: biographie || null,
+                espece,
                 password: hashedPassword,
             },
         });

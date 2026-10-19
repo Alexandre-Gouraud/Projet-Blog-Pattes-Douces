@@ -19,6 +19,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
         titre: true,
         texte: true,
         image: true,
+        langue: true,
         date: true,
         vue: true,
         reaction1: true,
@@ -30,6 +31,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
           select: {
             id: true,
             texte: true,
+            langue: true,
             date: true,
             reaction1: true,
             reaction2: true,
@@ -37,6 +39,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
               select: publicUserSelect,
             },
           },
+          orderBy: { date: "asc" },
         },
       },
     });

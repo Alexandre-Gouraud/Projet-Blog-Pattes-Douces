@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     try {
         const user = await prisma.user.findUnique({
             where: { pseudo },
-            select: { id: true, pseudo: true, password: true },
+            select: { id: true, pseudo: true, espece: true, password: true },
         });
 
         const passwordOk = await bcrypt.compare(password, user?.password ?? DUMMY_HASH);
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: INVALID_CREDENTIALS }, { status: 401 });
         }
         return NextResponse.json(
-            { message: "Connexion réussie", user: { id: user.id, pseudo: user.pseudo } },
+            { message: "Connexion réussie", user: { id: user.id, pseudo: user.pseudo, espece: user.espece } },
             { status: 200 }
         );
     } catch (error) {

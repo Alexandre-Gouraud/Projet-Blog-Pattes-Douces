@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest, readJson } from "@/lib/http";
+import { isLocale } from "@/i18n/config";
 import { LIMITS, isBlobImageUrl, isObjectId, isText } from "@/lib/validation";
 
 export async function GET(request: Request) {
@@ -21,7 +22,11 @@ export async function GET(request: Request) {
   try {
     const articles = await prisma.article.findMany({
       where,
-      include: { auteur: { select: publicUserSelect } },
+      include: {
+        auteur: { select: publicUserSelect },
+        // Nombre de commentaires affiche sur les cartes et dans les statistiques.
+        _count: { select: { commentaires: true } },
+      },
       orderBy: { date: "desc" },
     });
 
@@ -40,6 +45,7 @@ export async function POST(request: Request) {
     const texte = body?.texte;
     const userId = body?.userId;
     const imageUrl = body?.imageUrl || undefined;
+    const langue = isLocale(body?.langue) ? body.langue : undefined;
 
     // Validate input
     if (!isText(titre, LIMITS.titre) || !isText(texte, LIMITS.texte)) {
@@ -59,11 +65,12 @@ export async function POST(request: Request) {
     }
 
     // Create article in database
-    await prisma.article.create({
+    const article = await prisma.article.create({
       data: {
         titre: titre.trim(),
         texte: texte.trim(),
         image: imageUrl,
+        langue,
         vue: [],
         reaction1: [],
         reaction2: [],
@@ -73,7 +80,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ message: "Article créé avec succès" }, { status: 201 });
+    return NextResponse.json({ message: "Article créé avec succès", id: article.id }, { status: 201 });
   } catch (error) {
     console.error("Erreur lors de la création de l'article:", error);
     return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
