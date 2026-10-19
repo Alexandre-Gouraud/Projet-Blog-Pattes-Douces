@@ -50,6 +50,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Avec un cache pnpm, le postinstall de @prisma/client n'est pas rejoue :
+      # le client doit etre genere explicitement pour le typecheck et le build.
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
       # Valide uniquement le format de l'URL : aucune connexion n'est ouverte.
       - name: Validate Prisma schema
         run: pnpm exec prisma validate
