@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="#english"><b>English</b></a> · <a href="#francais"><b>Français</b></a>
+  <a href="#english"><b>🇬🇧 English</b></a> · <a href="#francais"><b>🇫🇷 Français</b></a>
 </p>
 
 <a id="english"></a>
@@ -277,7 +277,7 @@ This project is distributed under the **MIT** license.
 ---
 
 <p align="center">
-  <a href="#english"><b>English</b></a> · <a href="#francais"><b>Français</b></a>
+  <a href="#english"><b>🇬🇧 English</b></a> · <a href="#francais"><b>🇫🇷 Français</b></a>
 </p>
 
 <a id="francais"></a>
