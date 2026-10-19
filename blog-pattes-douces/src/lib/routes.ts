@@ -41,3 +41,8 @@ export const API = {
   commentsOnAuthorArticles: (authorId: string) => `/api/comments?authorId=${encodeURIComponent(authorId)}`,
   uploads: (filename: string) => `/api/uploads?filename=${encodeURIComponent(filename)}`,
 } as const;
+
+/** Chemin interne sur lequel revenir apres la connexion (jamais une autre origine). */
+export function safeNext(value: string | null): string | null {
+  return value && value.startsWith("/") && !value.startsWith("//") ? value : null;
+}

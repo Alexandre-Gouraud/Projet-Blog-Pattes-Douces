@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import RegisterForm from "@/features/auth/components/RegisterForm";
+import { pageTitle } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Inscription" };
+export const generateMetadata = pageTitle("register");
 
 export default function RegisterPage() {
   return <RegisterForm />;

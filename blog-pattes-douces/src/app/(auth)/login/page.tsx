@@ -1,8 +1,16 @@
-import type { Metadata } from "next";
 import LoginForm from "@/features/auth/components/LoginForm";
+import { pageTitle } from "@/i18n/server";
+import { safeNext } from "@/lib/routes";
 
-export const metadata: Metadata = { title: "Connexion" };
+export const generateMetadata = pageTitle("login");
 
-export default function LoginPage() {
-  return <LoginForm />;
+export default async function LoginPage({ searchParams }: PageProps<"/login">) {
+  const { raison, suite } = await searchParams;
+  return (
+    <LoginForm
+      // Arrivee depuis une page reservee aux membres (voir RequireAuth).
+      notice={raison === "connexion"}
+      next={safeNext(typeof suite === "string" ? suite : null)}
+    />
+  );
 }
