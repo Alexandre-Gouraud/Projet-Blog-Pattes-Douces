@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_Arabic } from "next/font/google";
+import { LOCALE_INFO } from "@/i18n/config";
+import { I18nProvider } from "@/i18n/I18nProvider";
+import { getDictionary, getLocale } from "@/i18n/server";
+import { ThemeProvider } from "@/theme/ThemeProvider";
+import { THEME_SCRIPT } from "@/theme/themeScript";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -11,18 +16,34 @@ const notoArabic = Noto_Sans_Arabic({
   preload: false,
 });
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s – Pattes Douces",
-    default: "Pattes Douces",
-  },
-  description: "Le blog des amoureux des chats : articles, photos et commentaires.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return {
+    // « {titre de page} – Pattes Douces » (RGAA 8.6).
+    title: { template: "%s – Pattes Douces", default: "Pattes Douces" },
+    description: t.siteDescription,
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
+
   return (
-    <html lang="fr" className={`${inter.variable} ${notoArabic.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+    <html
+      lang={locale}
+      dir={LOCALE_INFO[locale].dir}
+      className={`${inter.variable} ${notoArabic.variable}`}
+      // data-theme est pose par THEME_SCRIPT avant l'hydratation.
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
+      <body className="font-sans antialiased">
+        <ThemeProvider>
+          <I18nProvider initialLocale={locale}>{children}</I18nProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

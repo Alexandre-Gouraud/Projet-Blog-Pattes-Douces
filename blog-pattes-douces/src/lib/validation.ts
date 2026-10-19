@@ -46,13 +46,33 @@ export function isBlobImageUrl(value: unknown): value is string {
   }
 }
 
-/** Message d'erreur si le mot de passe ne respecte pas la politique, sinon null. */
-export function passwordError(password: string): string | null {
-  if (password.length < LIMITS.password.min) return "Le mot de passe doit contenir au moins 8 caractères.";
-  if (password.length > LIMITS.password.max) return "Le mot de passe est trop long.";
-  if (!/[A-Z]/.test(password)) return "Le mot de passe doit contenir au moins une lettre majuscule.";
-  if (!/[a-z]/.test(password)) return "Le mot de passe doit contenir au moins une lettre minuscule.";
-  if (!/[0-9]/.test(password)) return "Le mot de passe doit contenir au moins un chiffre.";
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return "Le mot de passe doit contenir au moins un caractère spécial.";
+/** Regle de la politique de mot de passe non respectee, ou null si le mot de passe est valide. */
+export type PasswordIssue = "length" | "long" | "upper" | "lower" | "digit" | "special";
+
+export function passwordIssue(password: string): PasswordIssue | null {
+  if (password.length < LIMITS.password.min) return "length";
+  if (password.length > LIMITS.password.max) return "long";
+  if (!/[A-Z]/.test(password)) return "upper";
+  if (!/[a-z]/.test(password)) return "lower";
+  if (!/[0-9]/.test(password)) return "digit";
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return "special";
   return null;
+}
+
+const PASSWORD_MESSAGES: Record<PasswordIssue, string> = {
+  length: "Le mot de passe doit contenir au moins 8 caractères.",
+  long: "Le mot de passe est trop long.",
+  upper: "Le mot de passe doit contenir au moins une lettre majuscule.",
+  lower: "Le mot de passe doit contenir au moins une lettre minuscule.",
+  digit: "Le mot de passe doit contenir au moins un chiffre.",
+  special: "Le mot de passe doit contenir au moins un caractère spécial.",
+};
+
+/**
+ * Message d'erreur (francais, renvoye par l'API) si le mot de passe ne respecte
+ * pas la politique, sinon null. Les formulaires traduisent `passwordIssue`.
+ */
+export function passwordError(password: string): string | null {
+  const issue = passwordIssue(password);
+  return issue && PASSWORD_MESSAGES[issue];
 }
