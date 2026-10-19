@@ -1,35 +1,158 @@
 @import "tailwindcss";
 
-/* @import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";  
+/*
+ * Jetons semantiques (DESIGN.md §3.2). Les composants n'utilisent que ces
+ * variables, jamais une couleur en dur, sauf les couleurs de marque
+ * invariantes (bouton primaire, graphiques) exposees plus bas.
+ * Le theme est choisi par l'attribut data-theme pose sur <html> (voir
+ * src/theme) : la preference systeme n'est lue qu'une fois, par le script
+ * inline du layout, quand aucun choix n'est memorise.
  */
-/* 
-@import "tailwindcss";
-@import "tailwindcss-intersect";
-@plugin "tailwindcss-motion"; */
-
 :root {
-  --background: linear-gradient(90deg, hsla(28, 100%, 72%, 1) 0%, hsla(28, 38%, 43%, 1) 100%);
-  --foreground: #171717;
+  --app: #e5e5e1;
+  --surface: #ffffff;
+  --ink: #1f140b;
+  --ink2: #4a3b2e;
+  --ink3: #6b5a4b;
+  --cream: #fff8f1;
+  --form: #d9d9d9;
+  --link: #7a5232;
+  --icon: #7a5232;
+  --brand: #996c44;
+  --tint: #fff1e4;
+  --danger: #b3261e;
+  --danger-bg: #fdecea;
+  --danger-ink: #8c1d18;
+  --sk1: #efe7de;
+  --sk2: #f4eee7;
+  --line: rgba(31, 20, 11, 0.12);
+  --line-strong: rgba(31, 20, 11, 0.25);
+  --grad: linear-gradient(90deg, hsl(28 100% 72%), hsl(28 38% 43%));
+  color-scheme: light;
 }
 
+[data-theme="dark"] {
+  --app: #1c1815;
+  --surface: #28211c;
+  --ink: #f5ede4;
+  --ink2: #dccfc2;
+  --ink3: #c2b1a2;
+  --cream: #332a23;
+  --form: #352d26;
+  --link: #ffb371;
+  --icon: #ffb371;
+  --brand: #c9925f;
+  --tint: #4a3829;
+  --danger: #ff8a80;
+  --danger-bg: #4a2420;
+  --danger-ink: #ffc9c3;
+  --sk1: #3a3029;
+  --sk2: #322923;
+  --line: rgba(245, 237, 228, 0.14);
+  --line-strong: rgba(245, 237, 228, 0.35);
+  --grad: linear-gradient(90deg, hsl(28 42% 26%), hsl(28 30% 13%));
+  color-scheme: dark;
+}
+
+/* Expose les jetons a Tailwind : bg-surface, text-ink, border-brand... */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-app: var(--app);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-ink3: var(--ink3);
+  --color-cream: var(--cream);
+  --color-form: var(--form);
+  --color-link: var(--link);
+  --color-icon: var(--icon);
+  --color-brand: var(--brand);
+  --color-tint: var(--tint);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-ink: var(--danger-ink);
+  --color-sk1: var(--sk1);
+  --color-sk2: var(--sk2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --font-sans: var(--font-inter), var(--font-noto-arabic), "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+    system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: linear-gradient(90deg, hsla(28, 100%, 72%, 1) 0%, hsla(28, 38%, 43%, 1) 100%);
-    --foreground: #171717;
-  }
+/* Couleurs invariantes (DESIGN.md §3.3) et points de rupture (§6.1). */
+@theme {
+  --color-primary: #ffb371;
+  --color-primary-ink: #1f140b;
+  --color-primary-hover: #996c44;
+  --color-danger-solid: #b3261e;
+  --color-chart-like: #3d8b40;
+  --color-chart-dislike: #d93a2b;
+  --color-chart-comment: #7c4dff;
+  --color-chart-view: #996c44;
+
+  /* 860 px : barre laterale au-dessus, tiroir en dessous. */
+  --breakpoint-desk: 53.75rem;
+
+  --shadow-sm: 0 1px 2px rgba(31, 20, 11, 0.08);
+  --shadow-md: 0 1px 2px rgba(31, 20, 11, 0.06), 0 8px 24px rgba(31, 20, 11, 0.1);
+  --shadow-lg: 0 24px 48px rgba(31, 20, 11, 0.25);
+
+  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Les barres collantes ne masquent jamais l'element qui a le focus (WCAG 2.4.11). */
+  scroll-padding-top: 76px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--app);
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ink3);
+}
+
+/* Focus visible sur tous les elements interactifs (DESIGN.md §10). */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Le <main> recoit le focus apres chaque navigation : pas de contour sur ce conteneur. */
+main:focus {
+  outline: none;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Fond de la zone de contenu : le degrade de la marque. */
+@utility bg-grad {
+  background: var(--grad);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
 }

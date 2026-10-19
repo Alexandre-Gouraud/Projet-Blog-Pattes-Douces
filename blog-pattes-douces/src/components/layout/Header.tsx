@@ -35,28 +35,28 @@ const Header: React.FC = () => {
               alt="Logo"
               width={64}
               height={64}
-              className="dark:hidden"
+              className=""
             />
             <Image
               src="/images/logo.png"
               alt="Logo"
               width={64}
               height={64}
-              className="hidden dark:block"
+              className="hidden"
             />
             </Link>
         </div>
 
         {/* Search Bar */}
-        <div className="hidden lg:block lg:max-w-md w-full bg-[#E5E5E1]-50 dark:bg-gray-900 rounded-lg shadow-sm">
+        <div className="hidden lg:block lg:max-w-md w-full bg-[#E5E5E1]-50 rounded-lg shadow-sm">
           <form className="relative">
             <input
               ref={inputRef}
               type="text"
               placeholder="Search or type command..."
-              className="w-full h-11 pl-12 text-sm text-[#E5E5E1]-800 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full h-11 pl-12 text-sm text-[#E5E5E1]-800 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
-            <span className="absolute inset-y-0 left-4 flex items-center text-gray-500 dark:text-gray-400">
+            <span className="absolute inset-y-0 left-4 flex items-center text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5"
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
             </span>
             <button
               type="button"
-              className="absolute inset-y-0 right-4 text-sm text-[#E5E5E1]-400 dark:text-gray-500"
+              className="absolute inset-y-0 right-4 text-sm text-[#E5E5E1]-400"
             >
             </button>
           </form>
@@ -84,13 +84,13 @@ const Header: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
           <button
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="p-2 rounded-full hover:bg-gray-100"
             aria-label="Toggle Dark Mode"
           >
             {/* Toggle Button Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-gray-600 dark:text-gray-400"
+              className="w-6 h-6 text-gray-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -104,13 +104,13 @@ const Header: React.FC = () => {
             </svg>
           </button>
           <button
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="p-2 rounded-full hover:bg-gray-100"
             aria-label="Notifications"
           >
             {/* Notifications Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-gray-600 dark:text-gray-400"
+              className="w-6 h-6 text-gray-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -124,13 +124,13 @@ const Header: React.FC = () => {
             </svg>
           </button>
           <button
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="p-2 rounded-full hover:bg-gray-100"
             aria-label="User Menu"
           >
             {/* User Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-gray-600 dark:text-gray-400"
+              className="w-6 h-6 text-gray-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
