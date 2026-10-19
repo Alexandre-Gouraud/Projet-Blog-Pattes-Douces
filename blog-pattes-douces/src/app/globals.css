@@ -100,46 +100,52 @@
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
-  /* Les barres collantes ne masquent jamais l'element qui a le focus (WCAG 2.4.11). */
-  scroll-padding-top: 76px;
-}
+/*
+ * Styles de base dans la couche "base" : les utilitaires Tailwind (couche
+ * "utilities") peuvent les surcharger, par exemple la couleur d'un lien-bouton.
+ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Les barres collantes ne masquent jamais l'element qui a le focus (WCAG 2.4.11). */
+    scroll-padding-top: 76px;
+  }
 
-body {
-  margin: 0;
-  background: var(--app);
-  color: var(--ink);
-  line-height: 1.55;
-}
+  body {
+    margin: 0;
+    background: var(--app);
+    color: var(--ink);
+    line-height: 1.55;
+  }
 
-a {
-  color: var(--link);
-}
+  a {
+    color: var(--link);
+  }
 
-a:hover {
-  color: var(--ink);
-}
+  a:hover {
+    color: var(--ink);
+  }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--ink3);
-}
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink3);
+  }
 
-/* Focus visible sur tous les elements interactifs (DESIGN.md §10). */
-:focus-visible {
-  outline: 3px solid var(--ink);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
+  /* Focus visible sur tous les elements interactifs (DESIGN.md §10). */
+  :focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 
-/* Le <main> recoit le focus apres chaque navigation : pas de contour sur ce conteneur. */
-main:focus {
-  outline: none;
-}
+  /* Le <main> recoit le focus apres chaque navigation : pas de contour sur ce conteneur. */
+  main:focus {
+    outline: none;
+  }
 
-p {
-  text-wrap: pretty;
+  p {
+    text-wrap: pretty;
+  }
 }
 
 /* Fond de la zone de contenu : le degrade de la marque. */
