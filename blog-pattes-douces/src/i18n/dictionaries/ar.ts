@@ -113,7 +113,6 @@ export const ar: Dictionary = {
   commentFailed: "تعذّر نشر التعليق. حاول مرة أخرى.",
   articleNotFound: "المقال غير موجود",
   articleNotFoundText: "هذا المقال غير موجود أو حذفه كاتبه.",
-  imageOf: (x) => `صورة توضيحية للمقال ${q(x)}`,
 
   loginTitle: "تسجيل الدخول",
   allRequired: "جميع الحقول مطلوبة.",

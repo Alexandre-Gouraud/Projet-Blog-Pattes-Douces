@@ -98,7 +98,6 @@ export const zh: Dictionary = {
   commentFailed: "评论发布失败，请重试。",
   articleNotFound: "文章未找到",
   articleNotFoundText: "这篇文章不存在，或已被作者删除。",
-  imageOf: (x) => `文章${q(x)}的配图`,
 
   loginTitle: "登录",
   allRequired: "所有字段均为必填。",

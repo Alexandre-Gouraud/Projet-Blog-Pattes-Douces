@@ -100,7 +100,6 @@ export const en: Dictionary = {
   commentFailed: "Your comment could not be posted. Please try again.",
   articleNotFound: "Article not found",
   articleNotFoundText: "This article doesn’t exist or was deleted by its author.",
-  imageOf: (x) => `Illustration for the article ${q(x)}`,
 
   loginTitle: "Log in",
   allRequired: "All fields are required.",

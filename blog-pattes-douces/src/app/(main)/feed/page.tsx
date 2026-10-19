@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import ArticleFeed from "@/features/articles/components/ArticleFeed";
+import { pageTitle } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Fil d'actualité" };
+export const generateMetadata = pageTitle("feed");
 
 export default function FeedPage() {
   return <ArticleFeed />;

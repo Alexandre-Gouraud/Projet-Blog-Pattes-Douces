@@ -106,7 +106,6 @@ export const fr = {
   commentFailed: "Le commentaire n'a pas pu être publié. Réessayez.",
   articleNotFound: "Article introuvable",
   articleNotFoundText: "Cet article n'existe pas ou a été supprimé par son auteur.",
-  imageOf: (x: string) => `Illustration de l'article ${q(x)}`,
 
   // Connexion
   loginTitle: "Connexion",

@@ -5,6 +5,8 @@
 export const ROUTES = {
   home: "/",
   login: "/login",
+  /** Connexion puis retour sur `next`. */
+  loginThen: (next: string) => `/login?suite=${encodeURIComponent(next)}`,
   /** Connexion demandee par une page reservee aux membres, avec retour ensuite. */
   loginRequired: (next: string) => `/login?raison=connexion&suite=${encodeURIComponent(next)}`,
   register: "/register",

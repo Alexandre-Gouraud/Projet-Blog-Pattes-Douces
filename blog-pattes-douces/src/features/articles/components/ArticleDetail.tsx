@@ -1,182 +1,277 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { EyeIcon, HandThumbUpIcon, HandThumbDownIcon } from "@heroicons/react/24/solid";
-import { createComment, dislikeArticle, fetchArticle, likeArticle } from "@/lib/api-client";
-import { getUserId } from "@/lib/auth/session";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BackArrowIcon, ThumbDownIcon, ThumbUpIcon } from "@/components/icons";
+import { Avatar } from "@/components/ui/Avatar";
+import { Button, ButtonLink } from "@/components/ui/Button";
+import { EmptyState, ErrorState } from "@/components/ui/EmptyState";
+import { FormField } from "@/components/ui/FormField";
+import { PageTitle, cardClass } from "@/components/ui/PageTitle";
+import { ArticleSkeleton, Loading } from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/Toast";
+import { useI18n } from "@/i18n/I18nProvider";
+import { ApiError, addView, createComment, fetchArticle } from "@/lib/api-client";
+import { useIsLoggedIn, useUserId } from "@/lib/auth/session";
+import { ROUTES } from "@/lib/routes";
+import { LIMITS } from "@/lib/validation";
 import type { ArticleWithComments } from "@/types";
+import { speciesLabel } from "../species";
+import { type ReactionType, useReact } from "../useReact";
+import { ReactionButton } from "./ReactionButton";
 
+type State =
+  | { status: "loading" }
+  | { status: "missing" }
+  | { status: "error" }
+  | { status: "ready"; article: ArticleWithComments };
+
+/**
+ * Detail d'un article (DESIGN.md §9.7) : retour, article, reactions et
+ * commentaires. Un membre peut commenter ; un visiteur est invite a se
+ * connecter. Le contenu garde sa langue d'origine (attribut lang).
+ */
 export default function ArticleDetail({ articleId: id }: { articleId: string }) {
-    const router = useRouter();
+  const { t, date, locale } = useI18n();
+  const toast = useToast();
+  const pathname = usePathname();
+  const userId = useUserId();
+  const loggedIn = useIsLoggedIn();
+  const react = useReact();
+  const [state, setState] = useState<State>({ status: "loading" });
+  const [attempt, setAttempt] = useState(0);
+  const [comment, setComment] = useState("");
+  const [commentError, setCommentError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const commentRef = useRef<HTMLTextAreaElement>(null);
+  const viewCounted = useRef(false);
 
-    const [article, setArticle] = useState<ArticleWithComments | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [commentText, setCommentText] = useState<string>("");
-
-    useEffect(() => {
-        const loadArticle = async (): Promise<void> => {
-            setError(null);
-            setLoading(true);
-
-            try {
-                setArticle(await fetchArticle(id));
-            } catch (error) {
-                setError((error as Error).message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadArticle();
-    }, [id]);
-
-    const handleAddLike = async () => {
-        const userId = getUserId();
-        if (!userId) {
-            alert("Vous devez être connecté pour effectuer cette action.");
-            return;
-        }
-
-        try {
-            await likeArticle(id, userId);
-
-            setArticle(await fetchArticle(id));
-        } catch (error) {
-            console.error("Erreur lors de l'ajout du like :", error);
-            alert("Une erreur est survenue lors de l'ajout du like.");
-        }
+  useEffect(() => {
+    let cancelled = false;
+    fetchArticle(id)
+      .then((article) => !cancelled && setState({ status: "ready", article }))
+      .catch((error) => {
+        if (cancelled) return;
+        setState({ status: error instanceof ApiError && error.status === 404 ? "missing" : "error" });
+      });
+    return () => {
+      cancelled = true;
     };
+  }, [id, attempt]);
 
-    const handleAddDislike = async () => {
-        const userId = getUserId();
-        if (!userId) {
-            alert("Vous devez être connecté pour effectuer cette action.");
-            return;
-        }
+  // Une vue par membre et par article (le serveur ignore les doublons).
+  const article = state.status === "ready" ? state.article : null;
+  useEffect(() => {
+    if (!article || !userId || viewCounted.current) return;
+    viewCounted.current = true;
+    if (article.vue.includes(userId)) return;
+    addView(article.id, userId)
+      .then(() =>
+        setState((current) =>
+          current.status === "ready"
+            ? { ...current, article: { ...current.article, vue: [...current.article.vue, userId] } }
+            : current,
+        ),
+      )
+      .catch(() => {
+        // Une vue non comptee n'empeche pas la lecture.
+      });
+  }, [article, userId]);
 
-        try {
-            await dislikeArticle(id, userId);
-
-            setArticle(await fetchArticle(id));
-        } catch (error) {
-            console.error("Erreur lors de l'ajout du dislike :", error);
-            alert("Une erreur est survenue lors de l'ajout du dislike.");
-        }
-    };
-
-    const handleAddComment = async () => {
-        if (!commentText.trim()) {
-            alert("Le commentaire ne peut pas être vide.");
-            return;
-        }
-
-        const userId = getUserId();
-        if (!userId) {
-            alert("Vous devez être connecté pour ajouter un commentaire.");
-            return;
-        }
-
-        try {
-            await createComment({ id_article: id, texte: commentText, commentataireId: userId });
-
-            alert("Commentaire ajouté avec succès !");
-            setCommentText("");
-
-            setArticle(await fetchArticle(id));
-        } catch (error) {
-            console.error("Erreur lors de l'ajout du commentaire :", error);
-        }
-    };
-
-    if (loading) return <p>Chargement...</p>;
-    if (error) return <p>Erreur : {error}</p>;
-    if (!article) return <p>Aucun article trouvé</p>;
-
+  if (state.status === "loading") {
     return (
-        <div className="container mx-auto px-4 py-8">
-                            <button
-                                onClick={() => router.back()}
-                                className="flex items-center text-blue-600 hover:underline mb-6"
-                            >
-                                <span role="img" aria-label="back" className="mr-2">
-                                    🔙
-                                </span>
-                            </button>
-                            <div className="bg-white shadow-md rounded-lg p-6">
-                                <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
-                                    {article.titre}
-                                </h1>
-                                <p className="text-sm text-gray-500 text-center mb-6">
-                                    Par {article.auteur?.pseudo || "Auteur inconnu"} -{" "}
-                                    {new Date(article.date).toLocaleDateString()}
-                                </p>
-                                {article.image && (
-                                    <div className="flex justify-center mb-6">
-                                        <Image
-                                            src={article.image}
-                                            alt={article.titre}
-                                            width={1200}
-                                            height={800}
-                                            sizes="(max-width: 1024px) 100vw, 1024px"
-                                            className="rounded-lg max-w-full h-auto"
-                                        />
-                                    </div>
-                                )}
-                                <p className="text-gray-700 leading-relaxed mb-6">{article.texte}</p>
-                            </div>
-                            <div className="mt-8">
-                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Interactions</h2>
-                                <div className="flex space-x-4">
-                                    <button className="text-sm text-gray-400">
-                                        <EyeIcon className="h-5 w-5 inline-block" />
-                                        {article.vue.length}
-                                    </button>
-                                    <button className="text-sm text-blue-400" onClick={handleAddLike}>
-                                        <HandThumbUpIcon className="h-5 w-5 inline-block" />
-                                        {article.reaction1.length}
-                                    </button>
-                                    <button className="text-sm text-red-400" onClick={handleAddDislike}>
-                                        <HandThumbDownIcon className="h-5 w-5 inline-block" />
-                                        {article.reaction2.length}
-                                    </button>
-                                </div>
-                                <h2 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">Commentaires</h2>
-                                {article.commentaires?.length ? (
-                                    <div className="space-y-4">
-                                        {article.commentaires.map((commentaire) => (
-                                            <div
-                                                key={commentaire.id}
-                                                className="bg-gray-100 p-4 rounded-lg shadow-sm"
-                                            >
-                                                <p className="text-sm text-gray-600 mb-2">
-                                                    {commentaire.commentataire?.pseudo || "Commentateur inconnu"} -{" "}
-                                                    {new Date(commentaire.date).toLocaleDateString()}
-                                                </p>
-                                                <p className="text-gray-800">{commentaire.texte}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-gray-500">Aucun commentaire pour cet article.</p>
-                                )}
-                            </div>
-                            <div className="mt-6">
-                                <textarea
-                                    value={commentText}
-                                    onChange={(e) => setCommentText(e.target.value)}
-                                    placeholder="Ajoutez un commentaire..."
-                                    className="w-full p-3 border border-gray-300 rounded-lg mb-4"
-                                />
-                                <button
-                                    onClick={handleAddComment}
-                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                                >
-                                    Ajouter un commentaire
-                                </button>
-                            </div>
-        </div>
+      <>
+        <BackLink label={t.back} />
+        <Loading label={t.loadingArticle}>
+          <ArticleSkeleton />
+        </Loading>
+      </>
     );
+  }
+
+  if (state.status === "missing") {
+    return (
+      <>
+        <BackLink label={t.back} />
+        <PageTitle>{t.articleNotFound}</PageTitle>
+        <EmptyState
+          logo
+          title={t.articleNotFoundText}
+          action={<ButtonLink href={ROUTES.feed}>{t.backFeed}</ButtonLink>}
+        />
+      </>
+    );
+  }
+
+  if (state.status === "error") {
+    return (
+      <>
+        <BackLink label={t.back} />
+        <PageTitle>{t.titles.article}</PageTitle>
+        <ErrorState
+          message={t.loadError}
+          retryLabel={t.retry}
+          onRetry={() => {
+            setState({ status: "loading" });
+            setAttempt((n) => n + 1);
+          }}
+        />
+      </>
+    );
+  }
+
+  const current = state.article;
+  const lang = current.langue ?? undefined;
+  const author = current.auteur?.pseudo;
+  const comments = current.commentaires ?? [];
+
+  const onReact = async (type: ReactionType) => {
+    const updated = await react(current, type);
+    if (updated) setState({ status: "ready", article: updated });
+  };
+
+  const submitComment = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (sending || !userId) return;
+    const text = comment.trim();
+    const error = !text ? t.errComment : text.length > LIMITS.commentaire ? t.errCommentLong : null;
+    if (error) {
+      setCommentError(error);
+      commentRef.current?.focus();
+      return;
+    }
+    setCommentError(null);
+    setSending(true);
+    try {
+      await createComment({ id_article: id, texte: text, commentataireId: userId, langue: locale });
+      setComment("");
+      toast(t.commentPosted);
+      setState({ status: "ready", article: await fetchArticle(id) });
+    } catch {
+      toast(t.commentFailed);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <>
+      <BackLink label={t.back} />
+      <article className={`${cardClass} flex flex-col gap-[18px] p-5 desk:p-8`}>
+        <PageTitle className="text-balance">
+          <span lang={lang}>{current.titre}</span>
+        </PageTitle>
+        <div className="flex items-center gap-3">
+          <Avatar name={author ?? "?"} seed={current.auteurId} size={44} />
+          <p className="m-0 flex flex-col leading-[1.3]">
+            <span className="font-semibold">{t.by(author ?? t.species.former)}</span>
+            <span className="text-sm text-ink3">
+              {speciesLabel(t, current.auteur)} · <time dateTime={current.date}>{date(current.date)}</time> ·{" "}
+              {t.viewsN(current.vue.length)}
+            </span>
+          </p>
+        </div>
+        {current.image && (
+          // Decorative : l'auteur est invite a decrire l'image dans son texte (DESIGN.md §7).
+          <Image
+            src={current.image}
+            alt=""
+            width={1200}
+            height={800}
+            sizes="(max-width: 1024px) 100vw, 864px"
+            className="h-auto max-h-[480px] w-full rounded-xl object-cover"
+          />
+        )}
+        <p className="m-0 max-w-[68ch] text-lg leading-[1.7] whitespace-pre-line text-ink">
+          <span lang={lang}>{current.texte}</span>
+        </p>
+        <div className="flex flex-wrap gap-2 border-t border-line pt-4">
+          <ReactionButton
+            pressed={userId !== null && current.reaction1.includes(userId)}
+            icon={<ThumbUpIcon />}
+            count={current.reaction1.length}
+            label={t.like}
+            onClick={() => onReact("like")}
+          />
+          <ReactionButton
+            pressed={userId !== null && current.reaction2.includes(userId)}
+            icon={<ThumbDownIcon />}
+            count={current.reaction2.length}
+            label={t.dislike}
+            onClick={() => onReact("dislike")}
+          />
+        </div>
+      </article>
+
+      <section
+        id="commentaires"
+        aria-labelledby="titre-commentaires"
+        className={`${cardClass} flex flex-col gap-4 p-5 desk:p-8`}
+      >
+        <h2 id="titre-commentaires" className="m-0 text-[22px] font-bold">
+          {t.commentsHeading(comments.length)}
+        </h2>
+        {comments.length === 0 ? (
+          <p className="m-0 text-ink2">{t.noComments}</p>
+        ) : (
+          <ul className="m-0 flex list-none flex-col gap-3 p-0">
+            {comments.map((item) => (
+              <li key={item.id} className="flex gap-3 rounded-xl bg-cream px-4 py-3.5">
+                <Avatar name={item.commentataire?.pseudo ?? "?"} seed={item.commentataire?.id} size={36} />
+                <div className="flex min-w-0 flex-col gap-0.5">
+                  <p className="m-0 text-sm text-ink2">
+                    <strong className="text-ink">{item.commentataire?.pseudo ?? t.species.former}</strong> ·{" "}
+                    <time dateTime={item.date}>{date(item.date)}</time>
+                  </p>
+                  <p className="m-0 break-words whitespace-pre-line">
+                    <span lang={item.langue ?? undefined}>{item.texte}</span>
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {loggedIn ? (
+          <form onSubmit={submitComment} noValidate className="flex flex-col gap-2.5">
+            <FormField id="commentaire" label={t.yourComment} error={commentError ?? undefined} errorPrefix={t.error}>
+              {(control) => (
+                <textarea
+                  {...control}
+                  ref={commentRef}
+                  rows={3}
+                  value={comment}
+                  onChange={(event) => setComment(event.target.value)}
+                  className={`${control.className} resize-y`}
+                />
+              )}
+            </FormField>
+            <div>
+              <Button type="submit">{t.publishComment}</Button>
+            </div>
+          </form>
+        ) : (
+          <p className="m-0 rounded-xl bg-cream px-4 py-3.5">
+            <Link href={ROUTES.loginThen(pathname)} className="font-semibold">
+              {t.loginLink}
+            </Link>{" "}
+            {t.toComment}
+          </p>
+        )}
+      </section>
+    </>
+  );
+}
+
+function BackLink({ label }: { label: string }) {
+  return (
+    <div>
+      <ButtonLink href={ROUTES.feed} variant="secondary">
+        <BackArrowIcon />
+        {label}
+      </ButtonLink>
+    </div>
+  );
 }
