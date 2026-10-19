@@ -1,16 +1,13 @@
-import type { Metadata } from "next";
-import StatsOverview from "@/features/dashboard/components/StatsOverview";
-import StatsChart from "@/features/dashboard/components/StatsChart";
-import MyArticlesList from "@/features/articles/components/MyArticlesList";
+import { RequireAuth } from "@/features/auth/components/RequireAuth";
+import StatsView from "@/features/dashboard/components/StatsView";
+import { pageTitle } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = { title: "Tableau de bord" };
+export const generateMetadata = pageTitle("stats");
 
 export default function DashboardPage() {
   return (
-    <>
-      <StatsOverview />
-      <StatsChart />
-      <MyArticlesList />
-    </>
+    <RequireAuth>
+      <StatsView />
+    </RequireAuth>
   );
 }

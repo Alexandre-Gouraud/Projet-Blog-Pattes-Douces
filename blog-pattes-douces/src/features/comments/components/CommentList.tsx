@@ -1,58 +1,92 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { EmptyState, ErrorState } from "@/components/ui/EmptyState";
+import { PageTitle } from "@/components/ui/PageTitle";
+import { BlockSkeleton, Loading } from "@/components/ui/Skeleton";
+import { useI18n } from "@/i18n/I18nProvider";
+import { Link } from "@/i18n/navigation";
 import { fetchCommentsByCommenter } from "@/lib/api-client";
-import { getUserId } from "@/lib/auth/session";
+import { useUserId } from "@/lib/auth/session";
+import { ROUTES } from "@/lib/routes";
 import type { Comment } from "@/types";
 
-export default function CommentList() {
-  const [commentaires, setCommentaires] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState(true);
+/** Un commentaire de l'utilisateur : texte cite, date et lien vers l'article. */
+export function CommentItem({ comment }: { comment: Comment }) {
+  const { t, r, date } = useI18n();
+  const article = comment.article_source;
+  return (
+    <li className="flex flex-col gap-1 rounded-xl bg-cream px-4 py-3.5">
+      <p className="m-0 break-words">
+        {r(t.common.quote, { text: <span key="texte" lang={comment.langue ?? undefined}>{comment.texte}</span> })}
+      </p>
+      <p className="m-0 text-sm text-ink2">
+        <time dateTime={comment.date}>{date(comment.date)}</time> · {t.common.on}{" "}
+        {article ? (
+          <Link href={ROUTES.article(article.id)} className="font-semibold text-link">
+            {article.titre}
+          </Link>
+        ) : (
+          t.common.deletedArticle
+        )}
+      </p>
+    </li>
+  );
+}
+
+/** Commentaires ecrits par l'utilisateur, du plus recent au plus ancien. */
+export function useMyComments() {
+  const userId = useUserId();
+  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    const loadComments = async () => {
-      try {
-        const userId = getUserId(); // Récupère l'ID de l'utilisateur connecté
-        if (!userId) {
-          console.error("Utilisateur non connecté");
-          return;
-        }
-
-        // Filtre les commentaires de l'utilisateur (fait par l'API)
-        setCommentaires(await fetchCommentsByCommenter(userId));
-      } catch (error) {
-        console.error("Erreur :", error);
-      } finally {
-        setLoading(false);
-      }
+    if (!userId) return;
+    let cancelled = false;
+    fetchCommentsByCommenter(userId)
+      .then((list) => !cancelled && setComments(list))
+      .catch(() => !cancelled && setFailed(true));
+    return () => {
+      cancelled = true;
     };
+  }, [userId, attempt]);
 
-    loadComments();
-  }, []);
+  return {
+    comments,
+    failed,
+    retry: () => {
+      setFailed(false);
+      setComments(null);
+      setAttempt((n) => n + 1);
+    },
+  };
+}
 
-  if (loading) {
-    return <p>Chargement des commentaires...</p>;
-  }
+/** Page « Mes commentaires » : la liste complete, liee depuis Activite. */
+export default function CommentList() {
+  const { t } = useI18n();
+  const { comments, failed, retry } = useMyComments();
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Mes Commentaires</h1>
-      <div className="space-y-6">
-        {commentaires.length > 0 ? (
-          commentaires.map((comment) => (
-            <div key={comment.id} className="border p-4 rounded-lg shadow-md bg-white">
-              <p className="text-gray-800">{comment.texte}</p>
-              <p className="text-sm text-gray-500">
-                Publié par {comment.commentataire.pseudo} le {new Date(comment.date).toLocaleDateString()}
-              </p>
-              <p className="text-sm text-gray-500">
-                Article : {comment.article_source.titre}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">Vous n'avez publié aucun commentaire.</p>
-        )}
-      </div>
-    </div>
+    <>
+      <PageTitle>{t.titles.comments}</PageTitle>
+      {failed ? (
+        <ErrorState message={t.common.loadError} retryLabel={t.common.retry} onRetry={retry} />
+      ) : !comments ? (
+        <Loading label={t.activity.loading}>
+          <BlockSkeleton />
+          <BlockSkeleton />
+        </Loading>
+      ) : comments.length === 0 ? (
+        <EmptyState title={t.activity.noComments} />
+      ) : (
+        <ul className="m-0 flex list-none flex-col gap-2.5 rounded-2xl bg-surface p-[22px] shadow-md">
+          {comments.map((comment) => (
+            <CommentItem key={comment.id} comment={comment} />
+          ))}
+        </ul>
+      )}
+    </>
   );
 }

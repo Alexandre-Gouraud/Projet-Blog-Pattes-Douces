@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo } from "react";
 import { LOCALE_INFO, type Locale } from "./config";
-import { type PluralForms, type Values, format, formatDate, plural } from "./format";
+import { type PluralForms, type Values, format, formatDate, plural, rich } from "./format";
 import type { Messages } from "./messages";
 
 type I18nValue = {
@@ -12,6 +12,8 @@ type I18nValue = {
   t: Messages;
   /** Message avec variables : f(t.common.by, { name }). */
   f: (message: string, values?: Values) => string;
+  /** Message dont les variables sont des elements React. */
+  r: typeof rich;
   /** Message accorde au nombre : p(t.common.count.comments, 3). */
   p: (forms: PluralForms, count: number, values?: Values) => string;
   /** Date au format de la langue. */
@@ -40,6 +42,7 @@ export function I18nProvider({
       dir: LOCALE_INFO[locale].dir,
       t: messages,
       f: format,
+      r: rich,
       p: (forms, count, values) => plural(locale, forms, count, values),
       date: (iso) => formatDate(locale, iso),
     }),

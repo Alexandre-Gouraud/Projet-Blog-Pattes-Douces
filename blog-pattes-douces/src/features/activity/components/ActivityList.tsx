@@ -1,127 +1,117 @@
 "use client";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { fetchArticles, fetchArticlesReactedBy, fetchCommentsByCommenter } from "@/lib/api-client";
-import { getUserId } from "@/lib/auth/session";
-import { ROUTES } from "@/lib/routes";
-import type { Article, Comment } from "@/types";
 
+import { useEffect, useState } from "react";
+import { ErrorState } from "@/components/ui/EmptyState";
+import { PageTitle, cardClass } from "@/components/ui/PageTitle";
+import { BlockSkeleton, Loading } from "@/components/ui/Skeleton";
+import { speciesLabel } from "@/features/articles/species";
+import { CommentItem, useMyComments } from "@/features/comments/components/CommentList";
+import { useI18n } from "@/i18n/I18nProvider";
+import { Link } from "@/i18n/navigation";
+import { fetchArticlesReactedBy } from "@/lib/api-client";
+import { useUserId } from "@/lib/auth/session";
+import { ROUTES } from "@/lib/routes";
+import type { Article } from "@/types";
+
+/** Nombre de commentaires montres ici ; la liste complete a sa propre page. */
+const PREVIEW = 5;
+
+/**
+ * Activite et historique : mes derniers commentaires et les articles que
+ * j'aime, chacun dans sa section, avec squelettes, etats vides et erreurs.
+ */
 export default function ActivityList() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [commentaires, setCommentaires] = useState<Comment[]>([]);
-  const [likedArticles, setLikedArticles] = useState<Article[]>([]);
-  const router = useRouter();
+  const { t, f, date } = useI18n();
+  const userId = useUserId();
+  const myComments = useMyComments();
+  const [liked, setLiked] = useState<Article[] | null>(null);
+  const [likedFailed, setLikedFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    const userId = getUserId();
-
-    const loadActivity = async () => {
-      if (!userId) return;
-      try {
-        // Trois requetes filtrees par l'API, en parallele, au lieu de
-        // telecharger tous les articles et tous les commentaires.
-        const [userArticles, userComments, reactedArticles] = await Promise.all([
-          fetchArticles(userId),
-          fetchCommentsByCommenter(userId),
-          fetchArticlesReactedBy(userId),
-        ]);
-        setArticles(userArticles);
-        setCommentaires(userComments);
-        setLikedArticles(reactedArticles);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données:", error);
-      }
+    if (!userId) return;
+    let cancelled = false;
+    // L'API renvoie les articles aimes OU non aimes : on ne garde que les « J'aime ».
+    fetchArticlesReactedBy(userId)
+      .then((list) => !cancelled && setLiked(list.filter((article) => article.reaction1.includes(userId))))
+      .catch(() => !cancelled && setLikedFailed(true));
+    return () => {
+      cancelled = true;
     };
+  }, [userId, attempt]);
 
-    loadActivity();
-  }, []);
+  const section = `${cardClass} flex flex-col gap-3 p-[22px]`;
+  const empty = "m-0 rounded-xl bg-cream p-3.5 text-ink2";
 
   return (
-    <div className="p-8 grid grid-cols-3 gap-6">
-      {/* Section Articles */}
-      <div className="col-span-2">
-        <h1 className="text-3xl font-bold mb-4">Mes articles</h1>
-        <div className="space-y-6">
-          {articles.length > 0 ? (
-            articles.map((article, index) => (
-              <div
-                key={index}
-                className="border p-4 rounded-lg shadow-md bg-white"
-              >
-                <h2 className="text-xl font-semibold mb-2">{article.titre}</h2>
-                <p className="text-gray-700">{article.texte}</p>
-                {article.image && (
-                  <Image
-                    src={article.image}
-                    alt={article.titre}
-                    width={800}
-                    height={600}
-                    sizes="(max-width: 768px) 100vw, 66vw"
-                    className="mt-4 rounded-md max-h-64 w-auto object-cover"
-                  />
-                )}
-                <p className="text-sm text-gray-500 mt-2">
-                  Publié le {new Date(article.date).toLocaleDateString()}
-                </p>
-              </div>
-            ))
+    <>
+      <PageTitle>{t.titles.activity}</PageTitle>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] items-start gap-5">
+        <section aria-labelledby="titre-mes-commentaires" className={section}>
+          <h2 id="titre-mes-commentaires" className="m-0 text-[22px] font-bold">
+            {t.activity.myComments}
+          </h2>
+          {myComments.failed ? (
+            <ErrorState message={t.common.loadError} retryLabel={t.common.retry} onRetry={myComments.retry} />
+          ) : !myComments.comments ? (
+            <Loading label={t.activity.loading}>
+              <BlockSkeleton height={72} />
+            </Loading>
+          ) : myComments.comments.length === 0 ? (
+            <p className={empty}>{t.activity.noComments}</p>
           ) : (
-            <p className="text-gray-500">Aucun article trouvé.</p>
+            <>
+              <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
+                {myComments.comments.slice(0, PREVIEW).map((comment) => (
+                  <CommentItem key={comment.id} comment={comment} />
+                ))}
+              </ul>
+              {myComments.comments.length > PREVIEW && (
+                <Link href={ROUTES.comments} className="inline-flex min-h-11 items-center font-semibold text-link">
+                  {t.activity.seeAllComments}
+                </Link>
+              )}
+            </>
           )}
-        </div>
-      </div>
+        </section>
 
-      <div className="col-span-1 flex flex-col space-y-6">
-        {/* Section Commentaires */}
-        <div>
-          <h2 className="text-3xl font-bold mb-4">Mes Commentaires</h2>
-          <div className="border p-4 rounded-lg shadow-md bg-white space-y-4">
-            {commentaires.length > 0 ? (
-              commentaires.slice(0, 5).map((comment) => (
-                <div key={comment.id}>
-                  <p className="text-gray-800">{comment.texte}</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Publié le {new Date(comment.date).toLocaleDateString()}
+        <section aria-labelledby="titre-articles-aimes" className={section}>
+          <h2 id="titre-articles-aimes" className="m-0 text-[22px] font-bold">
+            {t.activity.liked}
+          </h2>
+          {likedFailed ? (
+            <ErrorState
+              message={t.common.loadError}
+              retryLabel={t.common.retry}
+              onRetry={() => {
+                setLikedFailed(false);
+                setLiked(null);
+                setAttempt((n) => n + 1);
+              }}
+            />
+          ) : !liked ? (
+            <Loading label={t.activity.loading}>
+              <BlockSkeleton height={72} />
+            </Loading>
+          ) : liked.length === 0 ? (
+            <p className={empty}>{t.activity.noLiked}</p>
+          ) : (
+            <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
+              {liked.map((article) => (
+                <li key={article.id} className="flex flex-col gap-1 rounded-xl bg-cream px-4 py-3.5">
+                  <Link href={ROUTES.article(article.id)} className="font-[650] text-ink">
+                    <span lang={article.langue ?? undefined}>{article.titre}</span>
+                  </Link>
+                  <p className="m-0 text-sm text-ink2">
+                    {f(t.common.by, { name: article.auteur?.pseudo ?? t.species.former })} (
+                    {speciesLabel(t, article.auteur)}) · <time dateTime={article.date}>{date(article.date)}</time>
                   </p>
-                  <hr className="my-4 border-gray-300" />
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500">Aucun commentaire trouvé.</p>
-            )}
-
-            {commentaires.length > 5 && (
-              <button
-                onClick={() => router.push(ROUTES.comments)}
-                className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-              >
-                Voir plus de commentaires
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Section Articles Likés */}
-        <div>
-          <h2 className="text-3xl font-bold mb-4">Articles Likés</h2>
-          <div className="border p-4 rounded-lg shadow-md bg-white space-y-4">
-            {likedArticles.length > 0 ? (
-              likedArticles.map((article, index) => (
-                <div key={index} className="bg-white p-3 rounded-md shadow">
-                  <h3 className="text-lg font-semibold">{article.titre}</h3>
-                  <p className="text-gray-700">{article.texte}</p>
-                  <p className="text-sm text-gray-500">
-                    Publié le {new Date(article.date).toLocaleDateString()}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500">Aucun article liké trouvé.</p>
-            )}
-          </div>
-        </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
-    </div>
+    </>
   );
 }

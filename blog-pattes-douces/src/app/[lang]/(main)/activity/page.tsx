@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
 import ActivityList from "@/features/activity/components/ActivityList";
+import { RequireAuth } from "@/features/auth/components/RequireAuth";
+import { pageTitle } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = { title: "Activité" };
+export const generateMetadata = pageTitle("activity");
 
 export default function ActivityPage() {
-  return <ActivityList />;
+  return (
+    <RequireAuth>
+      <ActivityList />
+    </RequireAuth>
+  );
 }

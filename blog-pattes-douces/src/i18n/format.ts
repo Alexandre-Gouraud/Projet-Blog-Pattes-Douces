@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { LOCALE_INFO, type Locale } from "./config";
 
 /** Formes de pluriel CLDR d'un message : seule « other » est obligatoire. */
@@ -8,6 +9,15 @@ export type Values = Record<string, string | number>;
 /** Remplace les variables {nom} d'un message. */
 export function format(message: string, values: Values = {}): string {
   return message.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
+}
+
+/**
+ * Variante de format() dont les variables peuvent etre des elements React :
+ * rich(t.common.quote, { text: <span lang="en">…</span> }). Utile quand une
+ * partie du message doit porter son propre attribut lang (RGAA 8.7).
+ */
+export function rich(message: string, values: Record<string, ReactNode>): ReactNode[] {
+  return message.split(/\{(\w+)\}/).map((part, i) => (i % 2 === 1 && part in values ? values[part] : part));
 }
 
 const rulesCache = new Map<Locale, Intl.PluralRules>();
