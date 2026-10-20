@@ -265,8 +265,8 @@ Ce qui est en place :
   valide. La session est prolongée au plus une fois par jour d'activité
   (renouvellement glissant) ; une session expirée est refusée et supprimée.
   La déconnexion (`POST /api/auth/logout`) et la suppression du compte
-  détruisent les sessions. Les cookies `Secure` supposent HTTPS ou
-  `localhost` : en HTTP sur une autre machine, le navigateur les refuse ;
+  détruisent les sessions. Les cookies `Secure` supposent HTTPS (l'exception de
+  `localhost` dépend du navigateur) : en HTTP sur une autre machine, il les refuse ;
   `COOKIE_SECURE=true|false` force l'attribut (par défaut : vrai en production,
   jamais désactivé sans le demander explicitement).
 - **Identité et propriété** : toute route qui modifie des données appelle
