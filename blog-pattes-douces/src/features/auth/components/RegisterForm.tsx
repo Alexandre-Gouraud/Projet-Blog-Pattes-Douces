@@ -42,11 +42,13 @@ function validate(values: Record<Field, string>): Errors {
  * premier champ en erreur. Le compte cree, le membre est connecte directement.
  */
 export default function RegisterForm() {
-  const { t, f } = useI18n();
+  const { t, f, p } = useI18n();
   const toast = useToast();
   const router = useRouter();
   const [errors, setErrors] = useState<Errors>({});
   const [serverError, setServerError] = useState(false);
+  // Minutes avant de pouvoir reessayer, quand l'API repond 429.
+  const [lockedMinutes, setLockedMinutes] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const showErrors = (next: Errors) => {
@@ -69,6 +71,7 @@ export default function RegisterForm() {
     };
 
     setServerError(false);
+    setLockedMinutes(null);
     const invalid = validate(values);
     if (Object.keys(invalid).length > 0) {
       showErrors(invalid);
@@ -95,6 +98,9 @@ export default function RegisterForm() {
         showErrors(/e-?mail/i.test(err.message) ? { email: { key: "emailTaken" } } : { pseudo: { key: "pseudoTaken" } });
       } else {
         setErrors({});
+        if (err instanceof ApiError && err.status === 429) {
+          setLockedMinutes(Math.max(1, Math.ceil((err.retryAfter ?? 60) / 60)));
+        }
         setServerError(true);
       }
     }
@@ -167,7 +173,8 @@ export default function RegisterForm() {
           >
             <AlertIcon className="mt-px shrink-0" />
             <span>
-              {t.common.error} {t.register.errors.server}
+              {t.common.error}{" "}
+              {lockedMinutes === null ? t.register.errors.server : p(t.register.errLocked, lockedMinutes)}
             </span>
           </p>
         )}
