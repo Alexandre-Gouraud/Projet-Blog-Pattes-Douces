@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest, readJson } from "@/lib/http";
 import { isLocale } from "@/i18n/config";
+import { requireUser } from "@/lib/auth/server";
 import { LIMITS, isBlobImageUrl, isObjectId, isText } from "@/lib/validation";
 
 export async function GET(request: Request) {
@@ -38,12 +39,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  // L'auteur est l'utilisateur de la session, jamais une valeur du corps.
+  const auth = await requireUser(request);
+  if (auth.response) return auth.response;
+  const { user } = auth;
+
   try {
     // Parse request JSON
     const body = await readJson(request);
     const titre = body?.titre;
     const texte = body?.texte;
-    const userId = body?.userId;
     const imageUrl = body?.imageUrl || undefined;
     const langue = isLocale(body?.langue) ? body.langue : undefined;
 
@@ -51,17 +56,9 @@ export async function POST(request: Request) {
     if (!isText(titre, LIMITS.titre) || !isText(texte, LIMITS.texte)) {
       return badRequest(`Titre (${LIMITS.titre} caractères max) et texte (${LIMITS.texte} max) obligatoires`);
     }
-    if (!isObjectId(userId)) {
-      return badRequest("Données manquantes");
-    }
     // Seules les images televersees via /api/uploads sont acceptees.
     if (imageUrl !== undefined && !isBlobImageUrl(imageUrl)) {
       return badRequest("Image invalide");
-    }
-
-    const author = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
-    if (!author) {
-      return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
     }
 
     // Create article in database
@@ -75,7 +72,7 @@ export async function POST(request: Request) {
         reaction1: [],
         reaction2: [],
         auteur: {
-          connect: { id: userId },
+          connect: { id: user.id },
         },
       },
     });

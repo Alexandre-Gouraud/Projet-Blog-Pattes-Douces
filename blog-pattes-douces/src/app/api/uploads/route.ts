@@ -1,5 +1,6 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import { requireUser } from '@/lib/auth/server';
 import { ALLOWED_IMAGE_TYPES, LIMITS } from '@/lib/validation';
 
 const EXTENSIONS: Record<(typeof ALLOWED_IMAGE_TYPES)[number], string> = {
@@ -21,6 +22,10 @@ function safeFilename(filename: string, extension: string): string {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
+  // Seuls les membres connectes televersent (le stockage est public et payant).
+  const auth = await requireUser(request);
+  if (auth.response) return auth.response;
+
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json({ error: "L'upload d'images n'est pas configuré" }, { status: 503 });
   }

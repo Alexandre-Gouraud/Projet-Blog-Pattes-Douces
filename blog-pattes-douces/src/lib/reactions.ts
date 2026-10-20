@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { badRequest, readJson } from "@/lib/http";
+import { badRequest } from "@/lib/http";
+import { requireUser } from "@/lib/auth/server";
 import { isObjectId } from "@/lib/validation";
 
 /**
@@ -13,24 +14,22 @@ export async function toggleReaction(
   articleId: string,
   field: "reaction1" | "reaction2"
 ) {
-  try {
-    const body = await readJson(request);
-    const userId = body?.userId;
+  const auth = await requireUser(request);
+  if (auth.response) return auth.response;
+  const userId = auth.user.id;
 
-    if (!isObjectId(articleId) || !isObjectId(userId)) {
+  try {
+    if (!isObjectId(articleId)) {
       return badRequest("Identifiant invalide");
     }
 
-    const [article, user] = await Promise.all([
-      prisma.article.findUnique({ where: { id: articleId }, select: { reaction1: true, reaction2: true } }),
-      prisma.user.findUnique({ where: { id: userId }, select: { id: true } }),
-    ]);
+    const article = await prisma.article.findUnique({
+      where: { id: articleId },
+      select: { reaction1: true, reaction2: true },
+    });
 
     if (!article) {
       return NextResponse.json({ error: "Article non trouvé" }, { status: 404 });
-    }
-    if (!user) {
-      return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
     }
 
     const reactions = article[field];

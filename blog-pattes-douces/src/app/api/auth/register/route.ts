@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { Prisma } from "@prisma/client";
 import { readJson } from "@/lib/http";
+import { rejectCrossOrigin } from "@/lib/auth/server";
 import { LIMITS, isEmail, isSpecies, passwordError } from "@/lib/validation";
 
 export async function POST(request: Request) {
+    const crossOrigin = rejectCrossOrigin(request);
+    if (crossOrigin) return crossOrigin;
     const body = await readJson(request);
     const pseudo = typeof body?.pseudo === "string" ? body.pseudo.trim() : "";
     const mail = typeof body?.mail === "string" ? body.mail.trim() : "";

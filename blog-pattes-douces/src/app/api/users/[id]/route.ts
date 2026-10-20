@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest } from "@/lib/http";
+import { forbidden, requireUser } from "@/lib/auth/server";
 import { isObjectId } from "@/lib/validation";
 
 export async function GET(req: Request, { params }: RouteContext<"/api/users/[id]">) {
@@ -27,12 +28,18 @@ export async function GET(req: Request, { params }: RouteContext<"/api/users/[id
 }
 
 export async function DELETE(req: Request, { params }: RouteContext<"/api/users/[id]">) {
+  const auth = await requireUser(req);
+  if (auth.response) return auth.response;
+
   try {
     const { id } = await params;
 
     if (!isObjectId(id)) {
       return badRequest("ID utilisateur manquant");
     }
+
+    // Seul le titulaire peut supprimer son compte.
+    if (id !== auth.user.id) return forbidden();
 
     const articleIds = (
       await prisma.article.findMany({ where: { auteurId: id }, select: { id: true } })
@@ -42,13 +49,14 @@ export async function DELETE(req: Request, { params }: RouteContext<"/api/users/
     // l'utilisateur ET ceux recus sur ses articles, sinon la suppression des
     // articles echoue), puis les articles, puis le compte. En transaction pour
     // ne jamais laisser un compte a moitie supprime.
-    const [, , deleted] = await prisma.$transaction([
+    const [, , , deleted] = await prisma.$transaction([
       prisma.commentaire.deleteMany({
         where: { OR: [{ commentataireId: id }, { article_sourceId: { in: articleIds } }] },
       }),
       prisma.article.deleteMany({
         where: { auteurId: id },
       }),
+      prisma.session.deleteMany({ where: { userId: id } }),
       prisma.user.deleteMany({
         where: { id },
       }),

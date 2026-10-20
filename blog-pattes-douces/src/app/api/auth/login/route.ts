@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { readJson } from "@/lib/http";
+import { createSession, rejectCrossOrigin } from "@/lib/auth/server";
 
 // Meme message et meme statut que le pseudo existe ou non : la reponse ne doit
 // pas permettre de savoir quels comptes existent.
@@ -11,6 +12,8 @@ const INVALID_CREDENTIALS = "Pseudo ou mot de passe incorrect";
 const DUMMY_HASH = bcrypt.hashSync("pattes-douces-dummy-password", 10);
 
 export async function POST(request: Request) {
+    const crossOrigin = rejectCrossOrigin(request);
+    if (crossOrigin) return crossOrigin;
     const body = await readJson(request);
     const pseudo = body?.pseudo;
     const password = body?.password;
@@ -29,6 +32,8 @@ export async function POST(request: Request) {
         if (!user || !passwordOk) {
             return NextResponse.json({ message: INVALID_CREDENTIALS }, { status: 401 });
         }
+        // Session serveur : le cookie httpOnly pd_session est pose ici.
+        await createSession(user.id);
         return NextResponse.json(
             { message: "Connexion réussie", user: { id: user.id, pseudo: user.pseudo, espece: user.espece } },
             { status: 200 }
