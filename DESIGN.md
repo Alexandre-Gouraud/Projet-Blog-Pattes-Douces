@@ -363,6 +363,23 @@ Intégrée au shell : logo, h1 « Page introuvable », texte, bouton primaire «
 
 Intégrée au shell : icône, h1 « Une erreur est survenue », texte sans détail technique, bouton « Réessayer ».
 
+### 9.15 Traduction des contenus
+
+Les articles (titre et texte) et les commentaires écrits dans une autre langue que celle de l'interface reçoivent un bouton « Traduire en {langue} ».
+
+- **Moteur** : la librairie libre Transformers.js, avec les modèles de traduction Opus-MT (q8, WebAssembly), exécutée dans un Web Worker. Les modèles (`public/models`) et le moteur ONNX (`public/ort`) sont servis par le site : le texte ne quitte pas l'appareil et aucun service tiers n'est appelé.
+- **Langues** : modèles directs de et vers l'anglais ; les autres paires passent par l'anglais (pivot).
+- **Comportement** :
+  - le bouton bascule entre la traduction et l'original ;
+  - le texte traduit porte la langue de l'interface (`lang`) ;
+  - une zone `role="status"` annonce le chargement du modèle (en %), la traduction en cours, le résultat (« Traduction automatique · langue d'origine : … ») et les erreurs.
+- **Performances** :
+  - un seul worker pour la page, et chaque modèle n'est chargé qu'une fois ;
+  - le chargement commence dès le survol ou le focus du bouton ;
+  - le texte s'affiche au fil de la traduction ;
+  - les traductions déjà faites sont gardées pour la session.
+- Sur les commentaires, le bouton répété précise en texte masqué le commentaire visé (« commentaire de {pseudo} »).
+
 ---
 
 ## 10. États de l'interface
@@ -545,5 +562,7 @@ Les anciennes URL (`/Connexion`, `/Feed`, `/Article_page/{id}`…) sont redirig�
 | Données ajoutées à l'API | Champs facultatifs `User.espece`, `Article.langue`, `Commentaire.langue` ; nombre de commentaires par article ; identifiant de l'article créé |
 | Suppression du compte | Efface le compte, ses articles, ses commentaires et les commentaires reçus sur ses articles. Les réactions laissées sur les articles des autres ne sont pas effacées : le texte du dialogue le reflète. |
 | Titre de la 404 | Seul un `not-found` à la racine de `app/` peut exporter des métadonnées. Le titre est donc rendu par la page elle-même (`<title>` de React 19). |
-| Vérification | Après chaque modification : `pnpm typecheck`, `pnpm lint` et l'outil `get_errors` du MCP next-devtools sur le serveur de dev |
+| Tests | Vitest (`pnpm test`, aussi lancé en CI) : modules purs (i18n, validation, routes, proxy, traduction). La parité des clés entre les 4 fichiers de messages est vérifiée. |
+| Fichiers de traduction | `pnpm translation:setup` télécharge les 6 modèles Opus-MT (environ 680 Mo) dans `public/models` et copie le moteur ONNX dans `public/ort`. Ces dossiers sont ignorés par git ; le Dockerfile les prépare dans une étape mise en cache. |
+| Vérification | Après chaque modification : `pnpm typecheck`, `pnpm lint`, `pnpm test` et l'outil `get_errors` du MCP next-devtools sur le serveur de dev |
 
