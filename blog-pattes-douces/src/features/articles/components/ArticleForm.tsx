@@ -61,7 +61,7 @@ export default function ArticleForm() {
     try {
       // Image envoyee seulement une fois le formulaire valide : jamais d'image orpheline.
       const imageUrl = file ? (await uploadImage(file)).url : undefined;
-      const { id } = await createArticle({ titre: title.trim(), texte: body.trim(), userId, imageUrl, langue: locale });
+      const { id } = await createArticle({ titre: title.trim(), texte: body.trim(), imageUrl, langue: locale });
       toast(t.editor.posted);
       router.push(ROUTES.article(id));
     } catch {

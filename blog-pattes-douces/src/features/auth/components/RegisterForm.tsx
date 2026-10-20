@@ -10,7 +10,7 @@ import { useI18n } from "@/i18n/I18nProvider";
 import type { Messages } from "@/i18n/messages";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError, login, register } from "@/lib/api-client";
-import { saveSession } from "@/lib/auth/session";
+import { setSessionUser } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 import { LIMITS, type PasswordIssue, SPECIES, isEmail, passwordIssue } from "@/lib/validation";
 
@@ -86,7 +86,7 @@ export default function RegisterForm() {
         password: values.password,
       });
       const { user } = await login(pseudo, values.password);
-      saveSession(user);
+      setSessionUser(user);
       toast(f(t.register.welcome, { name: user.pseudo }));
       router.push(ROUTES.feed);
     } catch (err) {

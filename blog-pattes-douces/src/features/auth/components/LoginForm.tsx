@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/Toast";
 import { useI18n } from "@/i18n/I18nProvider";
 import { Link, useRouter } from "@/i18n/navigation";
 import { ApiError, login } from "@/lib/api-client";
-import { saveSession } from "@/lib/auth/session";
+import { setSessionUser } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 
 type LoginError = "errEmpty" | "errBad" | "errServer";
@@ -43,7 +43,7 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
     setSubmitting(true);
     try {
       const { user } = await login(pseudo, password);
-      saveSession(user);
+      setSessionUser(user);
       toast(f(t.login.welcomeBack, { name: user.pseudo }));
       router.push(next ?? ROUTES.feed);
     } catch (err) {

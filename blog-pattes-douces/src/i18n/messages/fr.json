@@ -41,6 +41,7 @@
     "chooseLang": "Choisir la langue",
     "langChanged": "Langue : Français",
     "loggedOut": "Vous êtes déconnecté. À bientôt !",
+    "logoutFailed": "La déconnexion a échoué. Réessayez.",
     "copyright": "© 2026 Pattes Douces",
     "footerNav": "Liens de pied de page",
     "nav": {
