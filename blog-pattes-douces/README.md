@@ -234,6 +234,26 @@ Les composants React ne sont pas testés unitairement (les Server Components
 asynchrones ne sont pas pris en charge par Vitest) ; ils sont vérifiés dans le
 navigateur.
 
+### Tests d'accessibilité (e2e)
+
+[Playwright](https://playwright.dev) + [axe-core](https://github.com/dequelabs/axe-core)
+(`playwright.config.ts`, dossier `e2e/`) sur le build de production servi sur le
+port 3102 : zéro violation WCAG 2.0 / 2.1 / 2.2 A et AA sur les pages publiques
+(fil, connexion, inscription, à propos, contact, confidentialité, accessibilité,
+404, un article s'il en existe) dans les 4 langues et les 2 thèmes, plus le lien
+d'évitement, le `h1` unique et `lang` / `dir` (DESIGN.md §14).
+
+```bash
+pnpm exec playwright install chromium   # une fois
+pnpm test:e2e                           # construit, démarre l'application et teste
+```
+
+Les tests « membre » créent un compte de test (`e2e-membre`) : ils sont ignorés en
+local, sauf avec `E2E_CREATE_USER=1`. Pour ne pas toucher à vos données, pointez
+alors `DATABASE_URL` vers une base dédiée (puis `pnpm db:push` et, si vous
+voulez un article, `node scripts/e2e-seed.mjs`). En CI (workflow `e2e.yml`) tout
+est exécuté sur une base jetable.
+
 ## Docker
 
 **`Dockerfile`** : build en plusieurs étapes sur `node:24-slim`.
