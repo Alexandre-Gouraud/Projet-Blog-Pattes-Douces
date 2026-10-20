@@ -220,6 +220,7 @@ To run from `blog-pattes-douces/`:
 | `pnpm lint` | ESLint analysis |
 | `pnpm typecheck` | TypeScript check (route types included) |
 | `pnpm test` / `pnpm test:watch` | Unit tests (Vitest), once / in watch mode |
+| `pnpm test:e2e` | Accessibility tests (Playwright + axe) on a production build, port 3102 |
 | `pnpm translation:setup` | Downloads and converts (Python 3.12+) the translation models into `public/models` |
 | `pnpm db:up` / `pnpm db:down` | Start / stop MongoDB (Docker) |
 | `pnpm db:push` | Sync the database indexes with the Prisma schema |
@@ -340,12 +341,15 @@ Every push and pull request to `main` or `development` triggers:
 | Workflow | Checks |
 |---|---|
 | **Build** | Install, Prisma schema, ESLint, unit tests (Vitest), TypeScript, Next.js build, Docker image build |
+| **Accessibility E2E** | MongoDB, seed, production build, Playwright + axe on public and member pages (4 languages, 2 themes), keyboard checks; HTML report uploaded on failure |
 | **CodeQL** | Security analysis of the JavaScript / TypeScript code and workflows |
 | **Actions & CI Files** | Workflow lint (actionlint) and security audit (zizmor) |
 
 The unit tests cover the i18n (plurals, language negotiation, parity of the
 4 message files), validation, routes, the language proxy and the translation
-module. [Dependabot](.github/dependabot.yml) proposes weekly updates for npm
+module. The end-to-end tests run axe-core (WCAG 2.2 A/AA) and keyboard checks;
+member pages are only tested in CI, or locally with `E2E_CREATE_USER=1` (use a
+dedicated database). [Dependabot](.github/dependabot.yml) proposes weekly updates for npm
 dependencies, GitHub Actions and the Docker image, with a 7-day delay after
 each release.
 

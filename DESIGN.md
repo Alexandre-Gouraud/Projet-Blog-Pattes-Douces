@@ -483,7 +483,7 @@ Niveau visé : **WCAG 2.2 AA**, soit le **RGAA 4.1.2** (106 critères).
 
 ### Outils
 
-- **Analyse automatique** : axe DevTools, WAVE, Lighthouse (score visé : 100).
+- **Analyse automatique** : axe DevTools, WAVE, Lighthouse (score visé : 100). Axe est aussi exécuté automatiquement en CI par Playwright (`pnpm test:e2e`, dossier `blog-pattes-douces/e2e/`) : 0 violation WCAG 2.2 A/AA sur les pages publiques et membres, dans les 4 langues et les 2 thèmes, plus le lien d'évitement (scénario 1), le `h1` unique et `lang` / `dir` (scénario 3). Cela ne remplace pas la recette manuelle ci-dessous.
 - **Contraste** : Colour Contrast Analyser, sur les deux thèmes.
 - **Lecteurs d'écran** : NVDA + Firefox, JAWS + Chrome, VoiceOver sur macOS et iOS, TalkBack sur Android.
 - **Navigation clavier seule** sur l'ensemble du parcours.
