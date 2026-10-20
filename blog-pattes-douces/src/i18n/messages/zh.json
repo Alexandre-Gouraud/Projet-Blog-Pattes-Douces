@@ -148,6 +148,7 @@
     "submit": "创建我的账户",
     "alreadyAccount": "已有账户？",
     "welcome": "欢迎加入 Pattes Douces，{name}！",
+    "errLocked": { "other": "您的网络注册次数过多。请在 {count} 分钟后重试。" },
     "errors": {
       "pseudoLength": "用户名需为 3 到 30 个字符。",
       "pseudoTaken": "该用户名已被占用。",

@@ -148,6 +148,7 @@
     "submit": "Create my account",
     "alreadyAccount": "Already have an account?",
     "welcome": "Welcome to Pattes Douces, {name}!",
+    "errLocked": { "one": "too many sign-ups from your connection. Please try again in {count} minute.", "other": "too many sign-ups from your connection. Please try again in {count} minutes." },
     "errors": {
       "pseudoLength": "username must be between 3 and 30 characters.",
       "pseudoTaken": "this username is already taken.",

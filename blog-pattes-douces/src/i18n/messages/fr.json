@@ -148,6 +148,7 @@
     "submit": "Créer mon compte",
     "alreadyAccount": "Déjà un compte ?",
     "welcome": "Bienvenue sur Pattes Douces, {name} !",
+    "errLocked": { "one": "trop d'inscriptions depuis votre connexion. Réessayez dans {count} minute.", "other": "trop d'inscriptions depuis votre connexion. Réessayez dans {count} minutes." },
     "errors": {
       "pseudoLength": "le pseudo doit contenir entre 3 et 30 caractères.",
       "pseudoTaken": "ce pseudo est déjà pris.",
