@@ -237,6 +237,18 @@
     "errorTitle": "出错了",
     "errorText": "我们这边出了点问题。请重试；如果问题仍然存在，请联系我们。"
   },
+  "translation": {
+    "translateTo": "翻译成{language}",
+    "showOriginal": "查看原文",
+    "translating": "正在翻译…",
+    "downloading": "正在下载翻译模型… {percent}%",
+    "notice": "机器翻译 · 原文语言：{language}",
+    "failed": "翻译失败，请重试。",
+    "external": "使用 Google 翻译",
+    "newTab": "（在新标签页中打开）",
+    "commentOf": "{name} 的评论",
+    "languages": { "fr": "法语", "en": "英语", "ar": "阿拉伯语", "zh": "中文" }
+  },
   "pages": {
     "about": {
       "intro": "Pattes Douces 是一个社区博客：宠物们在主人的一点帮助下，分享自己的冒险、发表评论并互动。",
@@ -255,6 +267,8 @@
       "content": "你的文章、图片、评论、互动以及你读过的文章。图片由 Vercel Blob 托管。",
       "browserHeading": "浏览器中的存储",
       "browser": "你的会话和主题选择保存在浏览器的本地存储中；语言保存在一个技术性 Cookie（NEXT_LOCALE）中。",
+      "translationHeading": "内容翻译",
+      "translation": "在浏览器支持的情况下（Chrome），文章和评论会直接在你的浏览器中翻译：文本不会离开你的设备。否则，「使用 Google 翻译」链接会在 Google 网站上打开文本，Google 会收到该文本。",
       "deletionHeading": "删除",
       "deletion": "在个人资料中，点击「删除账户」即可删除你的账户、文章和评论。"
     },

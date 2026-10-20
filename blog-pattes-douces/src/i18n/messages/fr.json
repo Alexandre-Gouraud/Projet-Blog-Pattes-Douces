@@ -237,6 +237,18 @@
     "errorTitle": "Une erreur est survenue",
     "errorText": "Quelque chose s'est mal passé de notre côté. Réessayez, et si le problème persiste, contactez-nous."
   },
+  "translation": {
+    "translateTo": "Traduire en {language}",
+    "showOriginal": "Voir l'original",
+    "translating": "Traduction en cours…",
+    "downloading": "Téléchargement du modèle de traduction… {percent} %",
+    "notice": "Traduction automatique · langue d'origine : {language}",
+    "failed": "La traduction a échoué. Réessayez.",
+    "external": "Traduire avec Google Traduction",
+    "newTab": "(s'ouvre dans un nouvel onglet)",
+    "commentOf": "commentaire de {name}",
+    "languages": { "fr": "français", "en": "anglais", "ar": "arabe", "zh": "chinois" }
+  },
   "pages": {
     "about": {
       "intro": "Pattes Douces est un blog communautaire où les animaux de compagnie, avec un peu d'aide de leurs humains, publient leurs aventures, commentent et réagissent.",
@@ -255,6 +267,8 @@
       "content": "Vos articles, images, commentaires, réactions et les articles que vous avez lus. Les images sont hébergées par Vercel Blob.",
       "browserHeading": "Stockage dans votre navigateur",
       "browser": "Votre session et votre choix de thème sont gardés dans le stockage local de votre navigateur ; votre langue, dans un cookie technique (NEXT_LOCALE).",
+      "translationHeading": "Traduction des contenus",
+      "translation": "La traduction des articles et des commentaires est faite dans votre navigateur quand il en est capable (Chrome) : le texte ne quitte pas votre appareil. Sinon, le lien « Traduire avec Google Traduction » ouvre le texte sur le site de Google, qui le reçoit.",
       "deletionHeading": "Suppression",
       "deletion": "Depuis votre profil, « Supprimer le compte » efface votre compte, vos articles et vos commentaires."
     },

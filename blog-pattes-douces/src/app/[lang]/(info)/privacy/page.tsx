@@ -10,6 +10,7 @@ export default async function PrivacyPage() {
     { id: "compte", heading: page.accountHeading, text: page.account },
     { id: "contributions", heading: page.contentHeading, text: page.content },
     { id: "navigateur", heading: page.browserHeading, text: page.browser },
+    { id: "traduction", heading: page.translationHeading, text: page.translation },
     { id: "suppression", heading: page.deletionHeading, text: page.deletion },
   ];
   return (

@@ -237,6 +237,18 @@
     "errorTitle": "Something went wrong",
     "errorText": "Something went wrong on our side. Please try again, and contact us if the problem persists."
   },
+  "translation": {
+    "translateTo": "Translate to {language}",
+    "showOriginal": "Show original",
+    "translating": "Translating…",
+    "downloading": "Downloading the translation model… {percent}%",
+    "notice": "Automatic translation · original language: {language}",
+    "failed": "Translation failed. Please try again.",
+    "external": "Translate with Google Translate",
+    "newTab": "(opens in a new tab)",
+    "commentOf": "comment by {name}",
+    "languages": { "fr": "French", "en": "English", "ar": "Arabic", "zh": "Chinese" }
+  },
   "pages": {
     "about": {
       "intro": "Pattes Douces is a community blog where pets, with a little help from their humans, share their adventures, comment and react.",
@@ -255,6 +267,8 @@
       "content": "Your articles, images, comments, reactions and the articles you have read. Images are hosted by Vercel Blob.",
       "browserHeading": "Storage in your browser",
       "browser": "Your session and theme choice are kept in your browser’s local storage; your language in a technical cookie (NEXT_LOCALE).",
+      "translationHeading": "Content translation",
+      "translation": "Articles and comments are translated in your browser when it can do so (Chrome): the text never leaves your device. Otherwise, the “Translate with Google Translate” link opens the text on Google’s website, which receives it.",
       "deletionHeading": "Deletion",
       "deletion": "From your profile, “Delete account” erases your account, your articles and your comments."
     },
