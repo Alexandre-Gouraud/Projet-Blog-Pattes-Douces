@@ -91,9 +91,12 @@ export default function StatsView() {
               <p className="m-0 text-ink2">{t.stats.publishFirst}</p>
             ) : (
               // Seul ce tableau peut defiler horizontalement, dans son conteneur (DESIGN.md §6.3).
-              <div className="overflow-x-auto" tabIndex={0} role="region" aria-labelledby="titre-detail">
+              // Nomme par la legende du tableau : un nom distinct de la section (repere unique, RGAA 9.1).
+              <div className="overflow-x-auto" tabIndex={0} role="region" aria-labelledby="legende-detail">
                 <table className="w-full min-w-[480px] border-collapse text-[15px]">
-                  <caption className="sr-only">{t.stats.caption}</caption>
+                  <caption id="legende-detail" className="sr-only">
+                    {t.stats.caption}
+                  </caption>
                   <thead>
                     <tr className="border-b-2 border-line">
                       <th scope="col" className="px-2 py-2.5 text-start">
