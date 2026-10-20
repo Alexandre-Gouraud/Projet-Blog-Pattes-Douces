@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { readJson } from "@/lib/http";
 import { createSession, rejectCrossOrigin } from "@/lib/auth/server";
+import { getClientIp } from "@/lib/auth/client-ip";
+import { countAttempt, loginRules, releaseOnSuccess, tooManyAttempts } from "@/lib/auth/throttle";
 
 // Meme message et meme statut que le pseudo existe ou non : la reponse ne doit
 // pas permettre de savoir quels comptes existent.
@@ -23,6 +25,12 @@ export async function POST(request: Request) {
     }
 
     try {
+        // La tentative est comptee (increment atomique) AVANT toute lecture du
+        // compte : meme comportement que le pseudo existe ou non.
+        const rules = loginRules(getClientIp(request.headers), pseudo);
+        const retryAfter = await countAttempt(rules);
+        if (retryAfter !== null) return tooManyAttempts(retryAfter);
+
         const user = await prisma.user.findUnique({
             where: { pseudo },
             select: { id: true, pseudo: true, espece: true, password: true },
@@ -34,6 +42,9 @@ export async function POST(request: Request) {
         }
         // Session serveur : le cookie httpOnly pd_session est pose ici.
         await createSession(user.id);
+        // Remet a zero le compteur du compte ; celui de l'IP ne perd qu'une tentative,
+        // sinon un compte valide servirait a le contourner.
+        await releaseOnSuccess(rules);
         return NextResponse.json(
             { message: "Connexion réussie", user: { id: user.id, pseudo: user.pseudo, espece: user.espece } },
             { status: 200 }

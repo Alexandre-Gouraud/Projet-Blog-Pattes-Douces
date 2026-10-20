@@ -12,7 +12,7 @@ import { ApiError, login } from "@/lib/api-client";
 import { setSessionUser } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 
-type LoginError = "errEmpty" | "errBad" | "errServer";
+type LoginError = "errEmpty" | "errBad" | "errServer" | "errLocked";
 
 /**
  * Connexion (DESIGN.md §9.8) : validation a la soumission seulement, erreur
@@ -20,10 +20,11 @@ type LoginError = "errEmpty" | "errBad" | "errServer";
  * corriger. Le message ne dit pas lequel du pseudo ou du mot de passe est faux.
  */
 export default function LoginForm({ notice, next }: { notice: boolean; next: string | null }) {
-  const { t, f } = useI18n();
+  const { t, f, p } = useI18n();
   const toast = useToast();
   const router = useRouter();
   const [error, setError] = useState<LoginError | null>(null);
+  const [lockedMinutes, setLockedMinutes] = useState(15);
   const [submitting, setSubmitting] = useState(false);
   const pseudoRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -47,8 +48,13 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
       toast(f(t.login.welcomeBack, { name: user.pseudo }));
       router.push(next ?? ROUTES.feed);
     } catch (err) {
-      const unreachable = err instanceof ApiError && (err.status === 0 || err.status >= 500);
-      setError(unreachable ? "errServer" : "errBad");
+      if (err instanceof ApiError && err.status === 429) {
+        setLockedMinutes(Math.max(1, Math.ceil((err.retryAfter ?? 60) / 60)));
+        setError("errLocked");
+      } else {
+        const unreachable = err instanceof ApiError && (err.status === 0 || err.status >= 500);
+        setError(unreachable ? "errServer" : "errBad");
+      }
       pseudoRef.current?.focus();
       setSubmitting(false);
     }
@@ -113,7 +119,7 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
           >
             <AlertIcon className="mt-px shrink-0" />
             <span>
-              {t.common.error} {t.login[error]}
+              {t.common.error} {error === "errLocked" ? p(t.login.errLocked, lockedMinutes) : t.login[error]}
             </span>
           </p>
         )}

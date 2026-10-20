@@ -7,7 +7,8 @@ import type { CurrentUser } from "./auth/session";
  * (les messages du serveur sont en francais). 0 = reseau indisponible.
  */
 export class ApiError extends Error {
-  constructor(message: string, readonly status: number) {
+  /** `retryAfter` : secondes avant de pouvoir reessayer (reponse 429). */
+  constructor(message: string, readonly status: number, readonly retryAfter?: number) {
     super(message);
     this.name = "ApiError";
   }
@@ -22,7 +23,9 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   }
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    throw new ApiError(body.message || body.error || "Erreur reseau", response.status);
+    const header = Number(response.headers.get("Retry-After"));
+    const retryAfter = Number.isFinite(header) && header > 0 ? header : undefined;
+    throw new ApiError(body.message || body.error || "Erreur reseau", response.status, retryAfter);
   }
   return response.json() as Promise<T>;
 }

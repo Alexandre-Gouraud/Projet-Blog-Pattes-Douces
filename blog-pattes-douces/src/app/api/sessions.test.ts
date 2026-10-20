@@ -33,6 +33,13 @@ vi.mock("@/lib/prisma", async () => {
   return { prisma, publicUserSelect: actual?.publicUserSelect ?? { id: true, pseudo: true, espece: true } };
 });
 
+// La limitation des tentatives a ses propres tests (auth/throttle.test.ts) : ici elle ne bloque rien.
+vi.mock("@/lib/auth/throttle", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/auth/throttle")>()),
+  countAttempt: async () => null,
+  releaseOnSuccess: async () => undefined,
+}));
+
 import { SESSION_COOKIE, hashToken } from "@/lib/auth/token";
 import { POST as login } from "./auth/login/route";
 import { POST as logout } from "./auth/logout/route";
