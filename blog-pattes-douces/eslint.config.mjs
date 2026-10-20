@@ -12,7 +12,7 @@ import tsParser from "@typescript-eslint/parser";
  * n'accepte pas TypeScript 7 (peerDependency `<6.1.0`).
  */
 export default defineConfig([
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "node_modules/**"]),
+  globalIgnores([".next/**", "playwright-report/**", "test-results/**", "out/**", "build/**", "next-env.d.ts", "node_modules/**"]),
   {
     files: ["**/*.{js,mjs,ts,tsx}"],
     languageOptions: {
