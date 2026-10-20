@@ -34,6 +34,8 @@
     "createAccount": "创建账户",
     "openMenu": "打开菜单",
     "closeMenu": "关闭菜单",
+    "showMenu": "显示菜单",
+    "hideMenu": "隐藏菜单",
     "myProfile": "我的资料",
     "menu": "菜单",
     "mainNav": "主导航",

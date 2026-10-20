@@ -14,18 +14,22 @@ import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Bouton burger : rotation de 180° et passage burger ↔ croix (DESIGN.md §8).
- * Son libelle alterne entre « Ouvrir le menu » et « Fermer le menu ».
+ * Son libelle alterne entre « Ouvrir le menu » et « Fermer le menu » pour le
+ * tiroir mobile, et entre « Afficher le menu » et « Masquer le menu » pour la
+ * barre laterale : deux boutons distincts ne portent jamais le meme nom.
  */
 export function BurgerButton({
   open,
   controls,
   onClick,
   ref,
+  sidebar = false,
 }: {
   open: boolean;
   controls: string;
   onClick: () => void;
   ref?: React.Ref<HTMLButtonElement>;
+  sidebar?: boolean;
 }) {
   const { t } = useI18n();
   return (
@@ -43,7 +47,9 @@ export function BurgerButton({
       >
         {open ? <CloseIcon /> : <BurgerIcon />}
       </span>
-      <span className="sr-only">{open ? t.shell.closeMenu : t.shell.openMenu}</span>
+      <span className="sr-only">
+        {sidebar ? (open ? t.shell.hideMenu : t.shell.showMenu) : open ? t.shell.closeMenu : t.shell.openMenu}
+      </span>
     </button>
   );
 }
@@ -68,7 +74,7 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: { sidebarOpen: boolean;
 
   return (
     <header className="sticky top-0 z-20 hidden min-h-[60px] items-center gap-3 border-b border-line bg-app px-4 py-2 desk:flex">
-      <BurgerButton open={sidebarOpen} controls={SIDEBAR_ID} onClick={onToggleSidebar} />
+      <BurgerButton open={sidebarOpen} controls={SIDEBAR_ID} onClick={onToggleSidebar} sidebar />
       {!sidebarOpen && (
         <>
           <HomeLink />
