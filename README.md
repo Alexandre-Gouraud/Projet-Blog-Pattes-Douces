@@ -261,11 +261,14 @@ the i18n are detailed in the [technical reference](blog-pattes-douces/README.md)
 - Content translation runs in the browser with self-hosted models: no text is
   sent to a translation service.
 
-> [!WARNING]
-> **Known limitation:** the user's identity is kept in the browser
-> (`localStorage`) and is not verified by the server. A real session
-> (`httpOnly` cookie) is required before any production deployment. Details in the
-> [technical reference](blog-pattes-douces/README.md#sécurité) (in French).
+- Server-side sessions: a random token in an `httpOnly`, `SameSite=Lax`
+  cookie (`Secure` in production), only its SHA-256 hash is stored in the
+  database; 30-day sliding expiry, destroyed on logout and account deletion.
+- Every write takes the acting user from the session, never from the request
+  body: 401 without a session, 403 if you are not the owner (article author,
+  account holder). Cross-origin writes are rejected (`Origin` check).
+- Remaining limits: no login rate limiting or two-factor authentication yet.
+  Details in the [technical reference](blog-pattes-douces/README.md#sécurité) (in French).
 
 ## Troubleshooting
 
@@ -609,11 +612,17 @@ dans [`DESIGN.md`](DESIGN.md).
 - La traduction des contenus se fait dans le navigateur avec des modèles
   hébergés par le site : aucun texte n'est envoyé à un service de traduction.
 
-> [!WARNING]
-> **Limite connue :** l'identité de l'utilisateur est conservée dans le
-> navigateur (`localStorage`) et n'est pas vérifiée par le serveur. Une
-> véritable session (cookie `httpOnly`) est nécessaire avant toute mise en
-> production. Détails dans la [référence technique](blog-pattes-douces/README.md#sécurité).
+- Sessions côté serveur : jeton aléatoire dans un cookie `httpOnly`,
+  `SameSite=Lax` (`Secure` en production) ; seul son hash SHA-256 est stocké en
+  base ; expiration glissante de 30 jours, détruite à la déconnexion et à la
+  suppression du compte.
+- Toute écriture prend l'utilisateur dans la session, jamais dans le corps de
+  la requête : 401 sans session, 403 si l'on n'est pas propriétaire (auteur de
+  l'article, titulaire du compte). Les écritures d'une autre origine sont
+  refusées (contrôle de `Origin`).
+- Limites restantes : pas encore de limitation des tentatives de connexion ni
+  d'authentification à deux facteurs. Détails dans la
+  [référence technique](blog-pattes-douces/README.md#sécurité).
 
 ## Dépannage
 
