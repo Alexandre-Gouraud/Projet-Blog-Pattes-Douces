@@ -18,7 +18,7 @@ export function CommentItem({ comment }: { comment: Comment }) {
   return (
     <li className="flex flex-col gap-1 rounded-xl bg-cream px-4 py-3.5">
       <p className="m-0 break-words">
-        {r(t.common.quote, { text: <span key="texte" lang={comment.langue ?? undefined}>{comment.texte}</span> })}
+        {r(t.common.quote, { text: <span key="texte" lang={comment.langue ?? undefined} dir="auto">{comment.texte}</span> })}
       </p>
       <p className="m-0 text-sm text-ink2">
         <time dateTime={comment.date}>{date(comment.date)}</time> · {t.common.on}{" "}
