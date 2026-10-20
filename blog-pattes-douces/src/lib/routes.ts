@@ -29,6 +29,8 @@ export const ROUTES = {
 export const API = {
   login: "/api/auth/login",
   register: "/api/auth/register",
+  logout: "/api/auth/logout",
+  me: "/api/auth/me",
   user: (id: string) => `/api/users/${id}`,
   articles: "/api/articles",
   articlesByAuthor: (authorId: string) => `/api/articles?authorId=${encodeURIComponent(authorId)}`,

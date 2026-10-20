@@ -1,5 +1,6 @@
 import { API } from "./routes";
 import type { Article, ArticleWithComments, Comment, CurrentUserResponse, User } from "./api-types";
+import type { CurrentUser } from "./auth/session";
 
 /**
  * Erreur d'API : `status` permet a l'interface d'afficher un message traduit
@@ -40,6 +41,22 @@ export function login(pseudo: string, password: string) {
   return request<CurrentUserResponse>(API.login, postJson(API.login, { pseudo, password }));
 }
 
+/** Deconnexion : le serveur detruit la session et efface le cookie. */
+export function logout() {
+  return request<{ message: string }>(API.logout, { method: "POST" });
+}
+
+/** Utilisateur de la session serveur, ou null si personne n'est connecte. */
+export async function fetchMe(): Promise<CurrentUser | null> {
+  try {
+    const { user } = await request<{ user: CurrentUser }>(API.me, { cache: "no-store" });
+    return user;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) return null;
+    throw error;
+  }
+}
+
 export function register(payload: { pseudo: string; mail: string; biographie?: string; espece?: string; password: string }) {
   return request<{ message: string }>(API.register, postJson(API.register, payload));
 }
@@ -48,6 +65,7 @@ export function fetchUser(id: string) {
   return request<User>(API.user(id));
 }
 
+/** Supprime le compte de la session (le serveur refuse tout autre identifiant). */
 export function deleteAccount(userId: string) {
   return request<{ message: string }>(API.user(userId), { method: "DELETE" });
 }
@@ -70,7 +88,6 @@ export function fetchArticle(id: string) {
 export function createArticle(payload: {
   titre: string;
   texte: string;
-  userId: string;
   imageUrl?: string;
   langue?: string;
 }) {
@@ -81,16 +98,16 @@ export function deleteArticle(id: string) {
   return request<{ success: boolean }>(API.article(id), { method: "DELETE" });
 }
 
-export function addView(articleId: string, userId: string) {
-  return request<{ success: boolean }>(API.articleViews(articleId), postJson("", { userId }));
+export function addView(articleId: string) {
+  return request<{ success: boolean }>(API.articleViews(articleId), { method: "POST" });
 }
 
-export function likeArticle(articleId: string, userId: string) {
-  return request<Article>(API.articleLike(articleId), postJson("", { userId }));
+export function likeArticle(articleId: string) {
+  return request<Article>(API.articleLike(articleId), { method: "POST" });
 }
 
-export function dislikeArticle(articleId: string, userId: string) {
-  return request<Article>(API.articleDislike(articleId), postJson("", { userId }));
+export function dislikeArticle(articleId: string) {
+  return request<Article>(API.articleDislike(articleId), { method: "POST" });
 }
 
 /* --- Commentaires --- */
@@ -105,7 +122,7 @@ export function fetchCommentsOnAuthorArticles(authorId: string) {
   return request<Comment[]>(API.commentsOnAuthorArticles(authorId));
 }
 
-export function createComment(payload: { id_article: string; texte: string; commentataireId: string; langue?: string }) {
+export function createComment(payload: { id_article: string; texte: string; langue?: string }) {
   return request<Comment>(API.comments, postJson(API.comments, payload));
 }
 

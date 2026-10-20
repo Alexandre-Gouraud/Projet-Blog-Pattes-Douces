@@ -62,6 +62,7 @@
     "chooseLang": "اختر اللغة",
     "langChanged": "اللغة: العربية",
     "loggedOut": "تم تسجيل خروجك. إلى اللقاء!",
+    "logoutFailed": "فشل تسجيل الخروج. حاول مرة أخرى.",
     "copyright": "© 2026 Pattes Douces",
     "footerNav": "روابط التذييل",
     "nav": {

@@ -68,7 +68,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
     if (!article || !userId || viewCounted.current) return;
     viewCounted.current = true;
     if (article.vue.includes(userId)) return;
-    addView(article.id, userId)
+    addView(article.id)
       .then(() =>
         setState((current) =>
           current.status === "ready"
@@ -148,7 +148,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
     setCommentError(null);
     setSending(true);
     try {
-      await createComment({ id_article: id, texte: text, commentataireId: userId, langue: locale });
+      await createComment({ id_article: id, texte: text, langue: locale });
       setComment("");
       toast(t.article.commentPosted);
       setState({ status: "ready", article: await fetchArticle(id) });

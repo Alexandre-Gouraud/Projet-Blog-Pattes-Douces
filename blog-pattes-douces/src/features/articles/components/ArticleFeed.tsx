@@ -8,7 +8,7 @@ import { PageTitle } from "@/components/ui/PageTitle";
 import { CardSkeleton, Loading } from "@/components/ui/Skeleton";
 import { useI18n } from "@/i18n/I18nProvider";
 import { fetchArticles } from "@/lib/api-client";
-import { useHydrated, useIsLoggedIn, useUserId } from "@/lib/auth/session";
+import { useIsLoggedIn, useSessionReady, useUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 import type { Article } from "@/types";
 import { type ReactionType, useReact } from "../useReact";
@@ -27,7 +27,7 @@ function matches(article: Article, query: string): boolean {
  */
 export default function ArticleFeed() {
   const { t, f, p } = useI18n();
-  const hydrated = useHydrated();
+  const sessionReady = useSessionReady();
   const loggedIn = useIsLoggedIn();
   const userId = useUserId();
   const react = useReact();
@@ -63,7 +63,7 @@ export default function ArticleFeed() {
 
   return (
     <>
-      {hydrated && !loggedIn && <VisitorBanner />}
+      {sessionReady && !loggedIn && <VisitorBanner />}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <PageTitle>{t.titles.feed}</PageTitle>
         {loggedIn && <ButtonLink href={ROUTES.newArticle}>{t.common.write}</ButtonLink>}

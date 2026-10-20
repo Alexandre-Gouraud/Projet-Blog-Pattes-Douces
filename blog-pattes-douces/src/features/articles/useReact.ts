@@ -27,7 +27,7 @@ export function useReact() {
       }
       try {
         const toggle = type === "like" ? likeArticle : dislikeArticle;
-        const updated = await toggle(article.id, userId);
+        const updated = await toggle(article.id);
         // La reponse ne contient ni l'auteur ni les compteurs : on ne reprend que les reactions.
         return { ...article, reaction1: updated.reaction1, reaction2: updated.reaction2 };
       } catch {

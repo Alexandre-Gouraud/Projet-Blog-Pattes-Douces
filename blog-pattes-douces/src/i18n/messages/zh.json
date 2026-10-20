@@ -41,6 +41,7 @@
     "chooseLang": "选择语言",
     "langChanged": "语言：中文",
     "loggedOut": "你已退出登录，再见！",
+    "logoutFailed": "退出登录失败，请重试。",
     "copyright": "© 2026 Pattes Douces",
     "footerNav": "页脚链接",
     "nav": {

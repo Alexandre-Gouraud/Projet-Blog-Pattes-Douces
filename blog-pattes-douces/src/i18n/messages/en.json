@@ -41,6 +41,7 @@
     "chooseLang": "Choose language",
     "langChanged": "Language: English",
     "loggedOut": "You are logged out. See you soon!",
+    "logoutFailed": "Logging out failed. Please try again.",
     "copyright": "© 2026 Pattes Douces",
     "footerNav": "Footer links",
     "nav": {

@@ -1,106 +1,116 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { fetchMe } from "@/lib/api-client";
 
 /**
- * Identite de l'utilisateur courant.
+ * Identite de l'utilisateur courant, cote navigateur.
  *
- * ATTENTION : aujourd'hui l'identite vit uniquement dans le localStorage et
- * n'est jamais verifiee cote serveur. Ce module centralise les acces pour
- * qu'une vraie session (cookie httpOnly) puisse les remplacer en un seul
- * endroit. Voir la section "Hors perimetre" du plan de restructuration.
+ * La source de verite est la session SERVEUR (cookie httpOnly `pd_session`,
+ * illisible par JavaScript) : ce module n'en garde qu'une copie d'affichage,
+ * obtenue par GET /api/auth/me. Elle sert a adapter l'interface (menu, boutons) ;
+ * chaque action est de toute facon re-verifiee par le serveur, qui ignore
+ * tout identifiant envoye par le client.
  */
-
-const PSEUDO_KEY = "pseudo";
-const USER_ID_KEY = "user_id";
-const SPECIES_KEY = "espece";
-// Le localStorage n'emet "storage" que dans les AUTRES onglets : cet evenement
-// previent l'onglet courant d'une connexion ou d'une deconnexion.
-const SESSION_EVENT = "pd-session-change";
 
 export type CurrentUser = { id: string; pseudo: string; espece?: string | null };
 
-function read(key: string): string | null {
-  if (typeof window === "undefined") return null;
+type SessionState = {
+  /** false tant que /api/auth/me n'a pas repondu (et pendant le rendu serveur). */
+  ready: boolean;
+  user: CurrentUser | null;
+};
+
+const UNKNOWN: SessionState = { ready: false, user: null };
+
+let state: SessionState = UNKNOWN;
+// Incremente a chaque changement local : une reponse de /me partie avant un
+// login ou un logout ne doit pas ecraser l'etat plus recent.
+let version = 0;
+let started = false;
+const listeners = new Set<() => void>();
+
+function emit(next: SessionState) {
+  state = next;
+  version += 1;
+  listeners.forEach((listener) => listener());
+}
+
+/** Interroge le serveur et met la copie locale a jour. */
+export async function refreshSession(): Promise<void> {
+  const requested = version;
+  let user: CurrentUser | null = null;
   try {
-    return localStorage.getItem(key);
+    user = await fetchMe();
   } catch {
-    return null;
+    // Reseau ou serveur indisponible : on garde l'etat connu (visiteur au premier chargement).
+    if (state.ready) return;
   }
+  if (requested !== version) return;
+  const same =
+    state.ready &&
+    state.user?.id === user?.id &&
+    state.user?.pseudo === user?.pseudo &&
+    state.user?.espece === user?.espece;
+  if (!same) emit({ ready: true, user });
 }
 
-export function getUserId(): string | null {
-  return read(USER_ID_KEY);
+/** Apres une connexion reussie : le serveur a pose le cookie, on connait l'utilisateur. */
+export function setSessionUser(user: CurrentUser): void {
+  emit({ ready: true, user });
 }
 
-export function getPseudo(): string | null {
-  return read(PSEUDO_KEY);
-}
-
-export function getSpecies(): string | null {
-  return read(SPECIES_KEY);
-}
-
-export function isLoggedIn(): boolean {
-  return getPseudo() !== null;
-}
-
-export function saveSession(user: CurrentUser): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(PSEUDO_KEY, user.pseudo);
-  localStorage.setItem(USER_ID_KEY, user.id);
-  if (user.espece) localStorage.setItem(SPECIES_KEY, user.espece);
-  else localStorage.removeItem(SPECIES_KEY);
-  window.dispatchEvent(new Event(SESSION_EVENT));
-}
-
+/** Apres une deconnexion ou une suppression de compte (le serveur a detruit la session). */
 export function clearSession(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(PSEUDO_KEY);
-  localStorage.removeItem(USER_ID_KEY);
-  localStorage.removeItem(SPECIES_KEY);
-  window.dispatchEvent(new Event(SESSION_EVENT));
+  emit({ ready: true, user: null });
+}
+
+function start() {
+  if (started || typeof window === "undefined") return;
+  started = true;
+  void refreshSession();
+  // Une connexion ou une deconnexion dans un autre onglet est reprise au retour.
+  window.addEventListener("focus", () => void refreshSession());
+}
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  start();
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+const getSnapshot = () => state;
+const getServerSnapshot = () => UNKNOWN;
+
+function useSession(): SessionState {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 /* --- Hooks --- */
 
-/**
- * Le localStorage est une source externe a React : on le lit via
- * useSyncExternalStore plutot que dans un useEffect + setState, ce qui evite
- * les rendus en cascade et reste correct au rendu serveur.
- */
-function subscribe(onChange: () => void): () => void {
-  if (typeof window === "undefined") return () => {};
-  window.addEventListener("storage", onChange);
-  window.addEventListener(SESSION_EVENT, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(SESSION_EVENT, onChange);
-  };
-}
-
 export function useIsLoggedIn(): boolean {
-  return useSyncExternalStore(subscribe, isLoggedIn, () => false);
+  return useSession().user !== null;
 }
 
 export function usePseudo(): string | null {
-  return useSyncExternalStore(subscribe, getPseudo, () => null);
+  return useSession().user?.pseudo ?? null;
 }
 
 export function useUserId(): string | null {
-  return useSyncExternalStore(subscribe, getUserId, () => null);
+  return useSession().user?.id ?? null;
 }
 
 export function useSpecies(): string | null {
-  return useSyncExternalStore(subscribe, getSpecies, () => null);
+  return useSession().user?.espece ?? null;
 }
 
-const noop = () => () => {};
-
 /**
- * false pendant le rendu serveur et l'hydratation, true ensuite. Permet
- * d'attendre la lecture du localStorage avant de rediriger un visiteur.
+ * true quand la session est connue (reponse de /api/auth/me recue). Avant,
+ * on ne sait pas encore si le visiteur est connecte : il ne faut ni le
+ * rediriger ni lui montrer le bandeau visiteur.
  */
-export function useHydrated(): boolean {
-  return useSyncExternalStore(noop, () => true, () => false);
+export function useSessionReady(): boolean {
+  return useSession().ready;
 }
