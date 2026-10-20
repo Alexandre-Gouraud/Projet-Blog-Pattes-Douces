@@ -195,6 +195,7 @@ They are defined in `.env` (copied from [`.env.example`](blog-pattes-douces/.env
 |---|---|---|
 | `DATABASE_URL` | Option A | MongoDB connection. The default value points to the local Docker database. In option B, `compose.yaml` provides it to the application. |
 | `BLOB_READ_WRITE_TOKEN` | For images | Vercel Blob token (*Storage > Blob > Tokens*). Without it, everything works except adding an image to an article. |
+| `COOKIE_SECURE` | No | `true` or `false` to force the `Secure` attribute of the session cookie. Default: `true` when `NODE_ENV=production`, `false` otherwise. Set `false` only to serve the Docker image over plain HTTP (browsers refuse `Secure` cookies there, except on `localhost`). |
 
 Ports already in use? Prefix the Docker commands with `MONGO_PORT=27019`
 and/or `APP_PORT=3005` (then remember to adapt `DATABASE_URL` in option A).
@@ -262,7 +263,7 @@ the i18n are detailed in the [technical reference](blog-pattes-douces/README.md)
   sent to a translation service.
 
 - Server-side sessions: a random token in an `httpOnly`, `SameSite=Lax`
-  cookie (`Secure` in production), only its SHA-256 hash is stored in the
+  cookie (`Secure` in production, see `COOKIE_SECURE`), only its SHA-256 hash is stored in the
   database; 30-day sliding expiry, destroyed on logout and account deletion.
 - Every write takes the acting user from the session, never from the request
   body: 401 without a session, 403 if you are not the owner (article author,
@@ -545,6 +546,7 @@ Elles se définissent dans `.env` (copié depuis [`.env.example`](blog-pattes-do
 |---|---|---|
 | `DATABASE_URL` | Option A | Connexion MongoDB. La valeur par défaut pointe sur la base Docker locale. En option B, `compose.yaml` la fournit à l'application. |
 | `BLOB_READ_WRITE_TOKEN` | Pour les images | Jeton Vercel Blob (*Storage > Blob > Tokens*). Sans lui, tout fonctionne sauf l'ajout d'une image à un article. |
+| `COOKIE_SECURE` | Non | `true` ou `false` pour forcer l'attribut `Secure` du cookie de session. Par défaut : `true` si `NODE_ENV=production`, `false` sinon. À mettre à `false` uniquement pour servir l'image Docker en HTTP simple (les navigateurs refusent les cookies `Secure` hors `localhost`). |
 
 Ports déjà utilisés ? Préfixez les commandes Docker avec `MONGO_PORT=27019`
 et/ou `APP_PORT=3005` (pensez alors à adapter `DATABASE_URL` en option A).
@@ -613,7 +615,7 @@ dans [`DESIGN.md`](DESIGN.md).
   hébergés par le site : aucun texte n'est envoyé à un service de traduction.
 
 - Sessions côté serveur : jeton aléatoire dans un cookie `httpOnly`,
-  `SameSite=Lax` (`Secure` en production) ; seul son hash SHA-256 est stocké en
+  `SameSite=Lax` (`Secure` en production, voir `COOKIE_SECURE`) ; seul son hash SHA-256 est stocké en
   base ; expiration glissante de 30 jours, détruite à la déconnexion et à la
   suppression du compte.
 - Toute écriture prend l'utilisateur dans la session, jamais dans le corps de
