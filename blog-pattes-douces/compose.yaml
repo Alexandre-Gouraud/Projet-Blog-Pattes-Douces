@@ -54,6 +54,8 @@ services:
     environment:
       DATABASE_URL: *database-url
       BLOB_READ_WRITE_TOKEN: ${BLOB_READ_WRITE_TOKEN:-}
+      # Vide : cookie Secure (build de production). COOKIE_SECURE=false pour tester en http simple.
+      COOKIE_SECURE: ${COOKIE_SECURE:-}
     depends_on:
       db-init:
         condition: service_completed_successfully
