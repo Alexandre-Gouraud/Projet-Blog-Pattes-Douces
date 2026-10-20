@@ -134,8 +134,10 @@ Two methods to choose from:
 | [Docker](https://docs.docker.com/get-docker/) + Compose | recent | ✅ ¹ | ✅ | `docker compose version` |
 | [Node.js](https://nodejs.org) | 24 LTS | ✅ | — | `node -v` |
 | [pnpm](https://pnpm.io) | 10 | ✅ | — | `pnpm -v` |
+| [Python](https://www.python.org) | 3.12+ | ✅ ² | — | `python3 --version` |
 
 ¹ For the local database only; not needed with a [MongoDB Atlas](https://www.mongodb.com/atlas) database.
+² Only to convert the French <-> Arabic translation models (`pnpm translation:setup`); optional, and not needed with Docker.
 pnpm is installed with `corepack enable` (bundled with Node.js), which
 automatically uses the version pinned in `package.json`.
 
@@ -153,16 +155,23 @@ cp .env.example .env
 pnpm install              # 1. dependencies (also generates the Prisma client)
 pnpm db:up                # 2. starts MongoDB as a replica set (Docker) and waits until it is ready
 pnpm db:push              # 3. creates the database indexes (unique username and email)
-pnpm translation:setup    # 4. translation models (~680 MB, once) — optional, see below
+pnpm translation:setup    # 4. translation models (~1 GB, once; needs Python 3.12+) — optional, see below
 pnpm dev                  # 5. development server
 ```
 
 The application is available at **http://localhost:3000** (redirected to
 `/fr`, `/en`, `/ar` or `/zh`). To stop the database: `pnpm db:down` (data is kept).
 
-> **Step 4** downloads the 6 translation models into `public/models` (ignored by
-> git). Without it,
-> everything works except the "Translate to…" button on articles and comments.
+> **Step 4** downloads 6 translation models into `public/models` (ignored by git)
+> and converts the 2 direct French <-> Arabic models from the official
+> Helsinki-NLP ones with Python 3.12+ (`scripts/convert-opus-mt.py`, in a
+> `.venv-translation` virtualenv, a few minutes, CPU-only torch, pinned
+> dependencies with hashes). Without Python, a warning is shown and
+> French <-> Arabic goes through English (less accurate); a conversion or
+> validation failure makes the command fail. On Debian/Ubuntu, install
+> `python3-venv`. The Python lock was generated on Linux: the conversion is
+> supported on Linux (and in Docker). Without step 4, everything works except the "Translate to…"
+> button on articles and comments.
 
 > **With MongoDB Atlas** instead of Docker: skip step 2 and replace
 > `DATABASE_URL` in `.env` with the Atlas connection string (already a replica set).
@@ -182,7 +191,7 @@ This command builds the application image, then starts three services:
 | `app` | The application (Next.js production build), on **http://localhost:3000** |
 
 The image build prepares the translation models in a cached stage: the first
-build downloads them (~680 MB), the following ones reuse them.
+build downloads and converts them (~1 GB; Python only in a throwaway stage, the final image has none), the following ones reuse them.
 `--wait` returns once the application responds. To stop everything:
 `docker compose --profile app down` (add `-v` to also erase the data).
 
@@ -211,7 +220,7 @@ To run from `blog-pattes-douces/`:
 | `pnpm lint` | ESLint analysis |
 | `pnpm typecheck` | TypeScript check (route types included) |
 | `pnpm test` / `pnpm test:watch` | Unit tests (Vitest), once / in watch mode |
-| `pnpm translation:setup` | Downloads the translation models into `public/models` |
+| `pnpm translation:setup` | Downloads and converts (Python 3.12+) the translation models into `public/models` |
 | `pnpm db:up` / `pnpm db:down` | Start / stop MongoDB (Docker) |
 | `pnpm db:push` | Sync the database indexes with the Prisma schema |
 | `pnpm docker:up` / `pnpm docker:down` | Start / stop the whole application in Docker |
@@ -344,6 +353,12 @@ each release.
 
 This project is distributed under the **MIT** license. The Opus-MT translation
 models (Helsinki-NLP) are distributed under the Apache-2.0 license.
+
+**Attribution:** `Helsinki-NLP/opus-mt-fr-ar` and `Helsinki-NLP/opus-mt-ar-fr` are
+(c) Helsinki-NLP, Apache-2.0. They are converted to ONNX (int8 quantization) and
+given a fast `tokenizer.json` by `scripts/convert-opus-mt.py`, from the exact
+upstream commits recorded in the script and in each model's `conversion.json`.
+The other pairs are the ONNX conversions of the same family published by Xenova.
 
 ---
 
@@ -484,8 +499,10 @@ Deux méthodes au choix :
 | [Docker](https://docs.docker.com/get-docker/) + Compose | récente | ✅ ¹ | ✅ | `docker compose version` |
 | [Node.js](https://nodejs.org) | 24 LTS | ✅ | — | `node -v` |
 | [pnpm](https://pnpm.io) | 10 | ✅ | — | `pnpm -v` |
+| [Python](https://www.python.org) | 3.12+ | ✅ ² | — | `python3 --version` |
 
 ¹ Pour la base locale uniquement ; inutile avec une base [MongoDB Atlas](https://www.mongodb.com/atlas).
+² Uniquement pour convertir les modèles de traduction français <-> arabe (`pnpm translation:setup`) ; facultatif, et inutile avec Docker.
 pnpm s'installe avec `corepack enable` (fourni avec Node.js), qui utilise
 automatiquement la version fixée dans `package.json`.
 
@@ -503,7 +520,7 @@ cp .env.example .env
 pnpm install              # 1. dépendances (génère aussi le client Prisma)
 pnpm db:up                # 2. démarre MongoDB en replica set (Docker) et attend qu'il soit prêt
 pnpm db:push              # 3. crée les index de la base (pseudo et email uniques)
-pnpm translation:setup    # 4. modèles de traduction (~680 Mo, une fois) — facultatif, voir plus bas
+pnpm translation:setup    # 4. modèles de traduction (~1 Go, une fois ; Python 3.12+) — facultatif, voir plus bas
 pnpm dev                  # 5. serveur de développement
 ```
 
@@ -511,9 +528,16 @@ L'application est disponible sur **http://localhost:3000** (redirigée vers
 `/fr`, `/en`, `/ar` ou `/zh`). Pour arrêter la base : `pnpm db:down` (les
 données sont conservées).
 
-> **L'étape 4** télécharge les 6 modèles de traduction dans `public/models`
-> (ignoré par git). Sans elle,
-> tout fonctionne sauf le bouton « Traduire en… » des articles et commentaires.
+> **L'étape 4** télécharge 6 modèles de traduction dans `public/models` (ignoré
+> par git) et convertit les 2 modèles directs français <-> arabe depuis les
+> modèles officiels Helsinki-NLP avec Python 3.12+ (`scripts/convert-opus-mt.py`,
+> dans un environnement virtuel `.venv-translation`, quelques minutes, torch CPU,
+> dépendances épinglées avec empreintes). Sans Python, un avertissement est
+> affiché et français <-> arabe passe par l'anglais (moins précis) ; un échec de
+> conversion ou de validation fait échouer la commande. Sous Debian/Ubuntu,
+> installez `python3-venv`. Le verrou Python a été généré sous Linux : la
+> conversion est prise en charge sous Linux (et dans Docker). Sans l'étape 4, tout fonctionne sauf le bouton
+> « Traduire en… » des articles et commentaires.
 
 > **Avec MongoDB Atlas** à la place de Docker : sautez l'étape 2 et remplacez
 > `DATABASE_URL` dans `.env` par la chaîne de connexion Atlas (déjà en replica set).
@@ -533,7 +557,7 @@ Cette commande construit l'image de l'application puis démarre trois services :
 | `app` | L'application (build de production Next.js), sur **http://localhost:3000** |
 
 Le build de l'image prépare les modèles de traduction dans une étape mise en
-cache : le premier build les télécharge (~680 Mo), les suivants les réutilisent.
+cache : le premier build les télécharge et les convertit (~1 Go ; Python seulement dans une étape jetable, l'image finale n'en a pas), les suivants les réutilisent.
 `--wait` rend la main quand l'application répond. Pour tout arrêter :
 `docker compose --profile app down` (ajouter `-v` pour effacer aussi les données).
 
@@ -562,7 +586,7 @@ et/ou `APP_PORT=3005` (pensez alors à adapter `DATABASE_URL` en option A).
 | `pnpm lint` | Analyse ESLint |
 | `pnpm typecheck` | Vérification TypeScript (types de routes inclus) |
 | `pnpm test` / `pnpm test:watch` | Tests unitaires (Vitest), une fois / en continu |
-| `pnpm translation:setup` | Télécharge les modèles de traduction dans `public/models` |
+| `pnpm translation:setup` | Télécharge et convertit (Python 3.12+) les modèles de traduction dans `public/models` |
 | `pnpm db:up` / `pnpm db:down` | Démarre / arrête MongoDB (Docker) |
 | `pnpm db:push` | Synchronise les index de la base avec le schéma Prisma |
 | `pnpm docker:up` / `pnpm docker:down` | Démarre / arrête toute l'application dans Docker |
@@ -699,3 +723,10 @@ Docker, avec un délai de 7 jours après chaque publication.
 
 Ce projet est distribué sous licence **MIT**. Les modèles de traduction
 Opus-MT (Helsinki-NLP) sont distribués sous licence Apache-2.0.
+
+**Attribution :** `Helsinki-NLP/opus-mt-fr-ar` et `Helsinki-NLP/opus-mt-ar-fr` sont
+(c) Helsinki-NLP, Apache-2.0. Ils sont convertis en ONNX (quantification int8) et
+dotés d'un `tokenizer.json` rapide par `scripts/convert-opus-mt.py`, depuis les
+commits amont exacts notés dans le script et dans le `conversion.json` de chaque
+modèle. Les autres paires sont les conversions ONNX de la même famille publiées
+par Xenova.

@@ -369,7 +369,7 @@ Les articles (titre et texte) et les commentaires écrits dans une autre langue 
 
 - **Moteur** : la librairie libre Transformers.js, avec les modèles de traduction Opus-MT (q8, WebAssembly), exécutée dans un Web Worker. Les modèles (`public/models`) sont servis par le site, et le moteur ONNX WebAssembly par le build Next.js (`/_next/static/`, un seul exemplaire) : le texte ne quitte pas l'appareil et aucun service tiers n'est appelé.
 - **Navigateurs** : tout navigateur récent prenant en charge WebAssembly et les modules dans les Web Workers. Seule la variante « asyncify » du moteur est servie : Safari antérieur à la version 26 sans WebGPU n'est pas pris en charge.
-- **Langues** : modèles directs de et vers l'anglais ; les autres paires passent par l'anglais (pivot).
+- **Langues** : modèles directs de et vers l'anglais, et français <-> arabe en direct (modèles officiels Helsinki-NLP à une révision exacte, convertis en ONNX par `scripts/convert-opus-mt.py` avec Python 3.12+, à l'installation seulement ; si le modèle direct manque, repli sur le pivot par l'anglais) ; les paires avec le chinois passent par l'anglais (pivot).
 - **Comportement** :
   - le bouton bascule entre la traduction et l'original ;
   - le texte traduit porte la langue de l'interface (`lang`) ;
@@ -564,6 +564,6 @@ Les anciennes URL (`/Connexion`, `/Feed`, `/Article_page/{id}`…) sont redirig�
 | Suppression du compte | Efface le compte, ses articles, ses commentaires et les commentaires reçus sur ses articles. Les réactions laissées sur les articles des autres ne sont pas effacées : le texte du dialogue le reflète. |
 | Titre de la 404 | Seul un `not-found` à la racine de `app/` peut exporter des métadonnées. Le titre est donc rendu par la page elle-même (`<title>` de React 19). |
 | Tests | Vitest (`pnpm test`, aussi lancé en CI) : modules purs (i18n, validation, routes, proxy, traduction). La parité des clés entre les 4 fichiers de messages est vérifiée. |
-| Fichiers de traduction | `pnpm translation:setup` télécharge les 6 modèles Opus-MT (environ 680 Mo) dans `public/models`, ignoré par git ; le Dockerfile le prépare dans une étape mise en cache. Le moteur ONNX Runtime WebAssembly n'est pas copié : il est émis par le build Next.js dans `/_next/static/`. |
+| Fichiers de traduction | `pnpm translation:setup` télécharge 6 modèles Opus-MT et convertit les 2 modèles français <-> arabe (environ 1 Go au total) dans `public/models`, ignoré par git ; le Dockerfile le prépare dans des étapes mises en cache (la conversion Python dans une étape jetable). Le moteur ONNX Runtime WebAssembly n'est pas copié : il est émis par le build Next.js dans `/_next/static/`. |
 | Vérification | Après chaque modification : `pnpm typecheck`, `pnpm lint`, `pnpm test` et l'outil `get_errors` du MCP next-devtools sur le serveur de dev |
 
