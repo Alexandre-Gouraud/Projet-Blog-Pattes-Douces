@@ -18,7 +18,23 @@ model User {
  
   articles Article[]
   commentaires Commentaire[]
- 
+  sessions Session[]
+
+}
+
+// Session serveur : seul le hash SHA-256 du jeton (cookie pd_session) est stocke.
+model Session {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  tokenHash  String   @unique
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  lastSeenAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.ObjectId
+
+  @@index([userId])
+  @@index([expiresAt])
 }
  
 model Article{
