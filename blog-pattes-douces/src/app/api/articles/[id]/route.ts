@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest } from "@/lib/http";
+import { forbidden, requireUser } from "@/lib/auth/server";
 import { isObjectId } from "@/lib/validation";
 
 export async function GET(request: Request, { params }: RouteContext<"/api/articles/[id]">) {
@@ -59,11 +60,21 @@ export async function GET(request: Request, { params }: RouteContext<"/api/artic
 }
 
 export async function DELETE(request: Request, { params }: RouteContext<"/api/articles/[id]">) {
+  const auth = await requireUser(request);
+  if (auth.response) return auth.response;
+
   try {
     const { id } = await params;
     if (!isObjectId(id)) {
       return badRequest("Identifiant invalide");
     }
+
+    // Seul l'auteur peut supprimer son article.
+    const article = await prisma.article.findUnique({ where: { id }, select: { auteurId: true } });
+    if (!article) {
+      return NextResponse.json({ success: false, error: "Article non trouvé" }, { status: 404 });
+    }
+    if (article.auteurId !== auth.user.id) return forbidden();
 
     // Transaction : les commentaires ne sont pas supprimes si l'article ne l'est pas.
     const [, deleted] = await prisma.$transaction([

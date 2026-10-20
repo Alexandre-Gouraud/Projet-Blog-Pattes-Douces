@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest, readJson } from "@/lib/http";
 import { isLocale } from "@/i18n/config";
+import { requireUser } from "@/lib/auth/server";
 import { LIMITS, isObjectId, isText } from "@/lib/validation";
 
 export async function GET(request: Request) {
@@ -50,27 +51,27 @@ export async function GET(request: Request) {
 }
 
 export async function POST(req: Request) {
+  const auth = await requireUser(req);
+  if (auth.response) return auth.response;
+  const commentataireId = auth.user.id;
+
   try {
     const body = await readJson(req);
     const id_article = body?.id_article;
     const texte = body?.texte;
-    const commentataireId = body?.commentataireId;
     const langue = isLocale(body?.langue) ? body.langue : undefined;
 
-    if (!isObjectId(id_article) || !isObjectId(commentataireId) || !isText(texte, LIMITS.commentaire)) {
+    if (!isObjectId(id_article) || !isText(texte, LIMITS.commentaire)) {
       return NextResponse.json(
-        { error: `Les champs id_article, texte (${LIMITS.commentaire} caractères max) et commentataireId sont obligatoires.` },
+        { error: `Les champs id_article, texte (${LIMITS.commentaire} caractères max) sont obligatoires.` },
         { status: 400 }
       );
     }
 
-    // Un commentaire sur un article ou par un utilisateur inexistant deviendrait orphelin.
-    const [article, commentataire] = await Promise.all([
-      prisma.article.findUnique({ where: { id: id_article }, select: { id: true } }),
-      prisma.user.findUnique({ where: { id: commentataireId }, select: { id: true } }),
-    ]);
-    if (!article || !commentataire) {
-      return NextResponse.json({ error: "Article ou utilisateur introuvable" }, { status: 404 });
+    // Un commentaire sur un article inexistant deviendrait orphelin.
+    const article = await prisma.article.findUnique({ where: { id: id_article }, select: { id: true } });
+    if (!article) {
+      return NextResponse.json({ error: "Article introuvable" }, { status: 404 });
     }
 
     const commentaire = await prisma.commentaire.create({
