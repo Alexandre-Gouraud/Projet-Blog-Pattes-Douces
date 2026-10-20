@@ -56,6 +56,10 @@ services:
       BLOB_READ_WRITE_TOKEN: ${BLOB_READ_WRITE_TOKEN:-}
       # Vide : cookie Secure (build de production). COOKIE_SECURE=false pour tester en http simple.
       COOKIE_SECURE: ${COOKIE_SECURE:-}
+      # true uniquement derriere un reverse proxy de confiance (limitation des tentatives par IP).
+      TRUST_PROXY: ${TRUST_PROXY:-}
+      # Secret facultatif : cles de limitation en HMAC-SHA-256 au lieu de SHA-256.
+      THROTTLE_SECRET: ${THROTTLE_SECRET:-}
     depends_on:
       db-init:
         condition: service_completed_successfully

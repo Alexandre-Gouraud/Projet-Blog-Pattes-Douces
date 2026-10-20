@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import { Prisma } from "@prisma/client";
 import { readJson } from "@/lib/http";
 import { rejectCrossOrigin } from "@/lib/auth/server";
+import { getClientIp } from "@/lib/auth/client-ip";
+import { countAttempt, registerRules, tooManyAttempts } from "@/lib/auth/throttle";
 import { LIMITS, isEmail, isSpecies, passwordError } from "@/lib/validation";
 
 export async function POST(request: Request) {
@@ -37,6 +39,12 @@ export async function POST(request: Request) {
     }
 
     try {
+        // Au plus 20 tentatives d'inscription par IP et par fenetre de 15 min,
+        // comptees des qu'elles atteignent le controle d'unicite (succes ET 409),
+        // et seulement si l'IP du client est fiable (TRUST_PROXY).
+        const retryAfter = await countAttempt(registerRules(getClientIp(request.headers)));
+        if (retryAfter !== null) return tooManyAttempts(retryAfter);
+
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [

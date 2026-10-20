@@ -72,6 +72,16 @@ model Commentaire{
   commentataireId  String @db.ObjectId
 }
  
+// Compteurs d'echecs de connexion et d'inscription (src/lib/auth/throttle.ts).
+// `key` est une empreinte : jamais de pseudo ni d'IP en clair en base.
+model LoginThrottle {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  key         String    @unique
+  count       Int
+  windowStart DateTime
+  lockedUntil DateTime?
+}
+
 enum Reactions{
   Like
   Dislike
