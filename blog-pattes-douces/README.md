@@ -40,7 +40,7 @@ docker compose --profile app up -d --build --wait
 ```
 
 Application sur http://localhost:3000 (redirigée vers `/fr`, `/en`, `/ar` ou
-`/zh`). `pnpm translation:setup` n'est utile que pour la traduction des
+`/zh`). `pnpm translation:setup` (Python 3.12+ pour français <-> arabe) n'est utile que pour la traduction des
 contenus. Prérequis, variables d'environnement et dépannage : voir le
 [README principal](../README.md#installation-locale).
 
@@ -131,18 +131,27 @@ une autre langue que celle de l'interface (voir [DESIGN.md §9.15](../DESIGN.md)
 
 | Élément | Fichier | Rôle |
 |---|---|---|
-| Modèles | `src/features/translation/models.ts` | 6 modèles Opus-MT (fr, ar, zh ↔ en) ; pivot par l'anglais ; découpage par paragraphe et par phrase |
+| Modèles | `src/features/translation/models.ts` | 8 modèles Opus-MT (fr, ar, zh ↔ en, plus fr ↔ ar en direct, avec repli sur l'anglais s'il manque) ; pivot par l'anglais pour le chinois ; découpage par paragraphe et par phrase |
 | Worker | `src/features/translation/translation.worker.ts` | Transformers.js (q8, WebAssembly), modèles chargés une fois, texte renvoyé au fil de la traduction |
 | Client | `src/features/translation/translator.ts` | Un worker par page, cache des traductions pour la session, préchauffage au survol / focus |
 | Interface | `useContentTranslation.ts`, `TranslateControl.tsx` | Bascule traduction / original, zone `role="status"`, `lang` par texte |
-| Fichiers | `scripts/translation-assets.mjs` | `pnpm translation:setup` : modèles dans `public/models` (~680 Mo). Le moteur ONNX WebAssembly n'est pas copié : le build Next.js l'émet dans `/_next/static/`, en un seul exemplaire |
+| Fichiers | `scripts/translation-assets.mjs` | `pnpm translation:setup` : modèles dans `public/models` (~1 Go). Le moteur ONNX WebAssembly n'est pas copié : le build Next.js l'émet dans `/_next/static/`, en un seul exemplaire |
+| Conversion | `scripts/convert-opus-mt.py`, `scripts/requirements-*.txt` | Convertit `Helsinki-NLP/opus-mt-fr-ar` et `-ar-fr` (révisions épinglées) en ONNX q8 avec optimum, génère leur `tokenizer.json`, valide, puis écrit `conversion.json` ; ignoré si déjà fait |
 
 - Tout est servi par le site (`env.allowRemoteModels = false`) : aucun texte
   n'est envoyé à un service tiers.
 - Le dossier `public/models` est ignoré par git ; le Dockerfile le prépare
-  dans une étape mise en cache.
+  dans des étapes mises en cache.
+- Les modèles fr ↔ ar sont convertis localement depuis les modèles officiels
+  Helsinki-NLP (révision exacte, Apache-2.0) : Python 3.12+, environnement
+  virtuel `.venv-translation`, torch CPU, dépendances verrouillées avec
+  empreintes (`requirements-torch.txt`, `requirements-translation.txt`). Le
+  script valide chaque conversion (tokenizer comparé à SentencePiece, traduction
+  de test avec onnxruntime) et échoue sinon. Sans Python, un avertissement est
+  affiché et ces deux paires passent par l'anglais ; de même à l'exécution si
+  un modèle direct est absent.
 - Limite : ces petits modèles traduisent bien fr ↔ en ; les paires qui passent
-  par l'anglais (vers l'arabe notamment) restent approximatives.
+  par l'anglais (chinois) restent approximatives.
 
 ## Modèle de données
 
@@ -232,7 +241,8 @@ navigateur.
 | Étape | Contenu |
 |---|---|
 | `deps` | Dépendances (`pnpm install --frozen-lockfile`) et client Prisma |
-| `translation` | `scripts/translation-assets.mjs` : modèles, en cache tant que le script et le lockfile ne changent pas |
+| `translation-convert` | `python:3.12-slim` (épinglée par empreinte) : installe les dépendances verrouillées (torch CPU) et convertit les modèles fr ↔ ar ; jetable, Python n'arrive pas dans l'image finale |
+| `translation` | `scripts/translation-assets.mjs --no-convert` : modèles, en cache tant que le script et le lockfile ne changent pas ; reprend les modèles convertis |
 | `builder` | `pnpm build` en mode `standalone` (`NEXT_OUTPUT_STANDALONE=true`) |
 | `runner` | Image finale : serveur autonome, `public/` avec les modèles, utilisateur non root |
 
@@ -313,6 +323,7 @@ Ce qui est en place :
 | **deepmerge-ts** | 8.x (override) | Prisma 6 fige la 7.1.5, vulnérable. La 8.x est forcée via `pnpm.overrides` (vérifiée avec `prisma validate` et `generate`). À retirer quand Prisma l'embarquera. |
 | **TypeScript** | 6.x | `@typescript-eslint/parser` n'accepte pas TypeScript 7 (`<6.1.0`). |
 | **Transformers.js** | 4.x | Exécute les modèles Opus-MT dans le navigateur. Le script d'installation de sa dépendance Node `onnxruntime-node` est ignoré par pnpm : elle ne sert qu'hors du navigateur. |
+| **Python (traduction)** | 3.12+ ; `scripts/requirements-*.txt` (hashes) | Verrou généré sous Python 3.12 (numpy 2.5 l'exige) et sous Linux x86_64 : conversion prise en charge sous Linux et dans Docker (sous Windows, des dépendances propres à la plateforme manquent au verrou). optimum 1.27 ne s'importe pas avec torch 2.14 (testé) et exige transformers < 4.57 : torch 2.7.1 et transformers 4.53.3 épinglés, uniquement à l'installation. |
 | **Node.js** | 24 LTS | Version de la CI et de l'image Docker ; les majeures de l'image sont bloquées dans Dependabot. |
 | **pnpm** | 10.x | Fixée par `packageManager` dans `package.json`. |
 | **MongoDB** | 8.0 | Branche stable à support long. |
