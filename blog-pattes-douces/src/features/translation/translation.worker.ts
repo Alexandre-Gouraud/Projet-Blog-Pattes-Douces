@@ -2,8 +2,8 @@
 /**
  * Web Worker de traduction : Transformers.js et les modeles Opus-MT tournent
  * hors du fil principal, pour que la page reste fluide pendant le calcul.
- * Tous les fichiers (modeles et moteur ONNX en WebAssembly) sont servis par le
- * site lui-meme (public/models, public/ort) : aucun appel a un service tiers.
+ * Les modeles sont servis par le site (public/models) et le moteur ONNX en
+ * WebAssembly par le build Next.js (/_next/static) : aucun appel a un service tiers.
  */
 import { env, pipeline, type TranslationPipeline } from "@huggingface/transformers";
 import type { ModelId } from "./models";
@@ -14,15 +14,11 @@ env.allowRemoteModels = false;
 env.allowLocalModels = true;
 env.localModelPath = "/models/";
 
-// La librairie choisit la variante WebAssembly adaptee au navigateur et pointe
-// vers un CDN : on garde son choix mais on sert les fichiers depuis /ort/.
-const wasmPaths = env.backends.onnx.wasm?.wasmPaths;
-if (wasmPaths && typeof wasmPaths === "object") {
-  for (const key of ["mjs", "wasm"] as const) {
-    const url = wasmPaths[key];
-    if (typeof url === "string") wasmPaths[key] = `/ort/${url.slice(url.lastIndexOf("/") + 1)}`;
-  }
-}
+// Transformers.js pointe ONNX Runtime vers un CDN (jsDelivr) au chargement du
+// module. On retire ce choix : sans wasmPaths, ONNX Runtime charge son .wasm via
+// new URL(..., import.meta.url), que le bundler emet dans /_next/static/. Un
+// seul exemplaire du moteur, servi par le site et mis en cache de facon immuable.
+if (env.backends.onnx.wasm) env.backends.onnx.wasm.wasmPaths = undefined;
 
 const post = (message: WorkerResponse) => self.postMessage(message);
 

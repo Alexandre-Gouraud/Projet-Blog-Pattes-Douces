@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
- * Prepare les fichiers de la traduction des contenus, auto-heberges sur le site :
+ * Telecharge les modeles de la traduction des contenus dans public/models :
+ * Opus-MT (Helsinki-NLP, convertis en ONNX par Xenova) en precision q8, un par
+ * sens de traduction avec l'anglais comme pivot. Telecharges une fois depuis
+ * Hugging Face (environ 680 Mo), puis servis par le site.
  *
- * - public/models : modeles Opus-MT (Helsinki-NLP, convertis en ONNX par
- *   Xenova) en precision q8, un par sens de traduction avec l'anglais comme
- *   pivot. Telecharges une fois depuis Hugging Face (environ 680 Mo).
- * - public/ort : moteur ONNX Runtime en WebAssembly, copie depuis node_modules.
+ * Le moteur ONNX Runtime (WebAssembly) n'est pas copie ici : il est emis par le
+ * build Next.js, dans /_next/static/ (voir translation.worker.ts).
  *
- * Aucun de ces fichiers n'est versionne (voir .gitignore). A lancer apres
+ * Les modeles ne sont pas versionnes (voir .gitignore). A lancer apres
  * l'installation : `pnpm translation:setup` (fait aussi par le Dockerfile).
  * Les fichiers deja presents sont conserves : relancer le script est rapide.
  */
-import { copyFile, mkdir, rename, stat } from "node:fs/promises";
+import { mkdir, rename, stat } from "node:fs/promises";
 import { createWriteStream } from "node:fs";
-import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -21,7 +21,6 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MODELS_DIR = join(ROOT, "public", "models");
-const ORT_DIR = join(ROOT, "public", "ort");
 
 /** Doit rester aligne sur MODEL_IDS dans src/features/translation/models.ts. */
 const MODELS = ["fr-en", "en-fr", "ar-en", "en-ar", "zh-en", "en-zh"].map((pair) => `Xenova/opus-mt-${pair}`);
@@ -34,14 +33,6 @@ const MODEL_FILES = [
   "tokenizer_config.json",
   "onnx/encoder_model_quantized.onnx",
   "onnx/decoder_model_merged_quantized.onnx",
-];
-
-/** Variantes WebAssembly choisies par Transformers.js (asyncify, ou simple pour Safari < 26). */
-const ORT_FILES = [
-  "ort-wasm-simd-threaded.asyncify.mjs",
-  "ort-wasm-simd-threaded.asyncify.wasm",
-  "ort-wasm-simd-threaded.mjs",
-  "ort-wasm-simd-threaded.wasm",
 ];
 
 async function exists(path) {
@@ -73,19 +64,5 @@ async function downloadModels() {
   }
 }
 
-async function copyRuntime() {
-  // onnxruntime-web est une dependance de Transformers.js : on le resout depuis celle-ci.
-  const require = createRequire(import.meta.url);
-  const transformers = require.resolve("@huggingface/transformers");
-  const ortEntry = createRequire(transformers).resolve("onnxruntime-web");
-  const ortDist = dirname(ortEntry);
-  await mkdir(ORT_DIR, { recursive: true });
-  for (const file of ORT_FILES) {
-    await copyFile(join(ortDist, file), join(ORT_DIR, file));
-  }
-}
-
-await copyRuntime();
-process.stdout.write(`Moteur ONNX copie dans ${ORT_DIR}\n`);
 await downloadModels();
 process.stdout.write(`Modeles de traduction prets dans ${MODELS_DIR}\n`);
