@@ -6,6 +6,7 @@
     "quote": "« {text} »",
     "error": "Erreur :",
     "retry": "Réessayer",
+    "retrying": "Nouvelle tentative…",
     "loadError": "Impossible de charger le contenu. Vérifiez votre connexion puis réessayez.",
     "cancel": "Annuler",
     "publishedOn": "Publié le",
@@ -118,6 +119,7 @@
   },
   "login": {
     "allRequired": "Tous les champs sont obligatoires.",
+    "submitting": "Connexion…",
     "pseudo": "Pseudo",
     "password": "Mot de passe",
     "firstTime": "Première fois sur Pattes Douces ?",
@@ -130,6 +132,7 @@
   },
   "register": {
     "starRequired": "Les champs marqués d'un astérisque (*) sont obligatoires.",
+    "submitting": "Création du compte…",
     "pseudo": "Pseudo de votre animal *",
     "pseudoHelp": "Entre 3 et 30 caractères.",
     "email": "Adresse e-mail *",

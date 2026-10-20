@@ -70,6 +70,7 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
         // POST : meme envoye avant l'hydratation, le mot de passe ne finit jamais dans l'URL.
         method="post"
         noValidate
+        aria-busy={submitting}
         className="flex flex-col gap-[18px] rounded-2xl bg-form p-7 shadow-md"
       >
         <p className="m-0 text-sm">{t.login.allRequired}</p>
@@ -116,8 +117,8 @@ export default function LoginForm({ notice, next }: { notice: boolean; next: str
             </span>
           </p>
         )}
-        <Button type="submit" size="lg">
-          {t.shell.login}
+        <Button type="submit" size="lg" aria-disabled={submitting}>
+          {submitting ? t.login.submitting : t.shell.login}
         </Button>
       </form>
       <p className="m-0 rounded-xl bg-surface px-4 py-3.5 text-center">

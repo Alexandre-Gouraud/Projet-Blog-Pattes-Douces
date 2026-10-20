@@ -6,6 +6,7 @@
     "quote": "“{text}”",
     "error": "Error:",
     "retry": "Try again",
+    "retrying": "Retrying…",
     "loadError": "The content could not be loaded. Check your connection and try again.",
     "cancel": "Cancel",
     "publishedOn": "Published on",
@@ -118,6 +119,7 @@
   },
   "login": {
     "allRequired": "All fields are required.",
+    "submitting": "Logging in…",
     "pseudo": "Username",
     "password": "Password",
     "firstTime": "New to Pattes Douces?",
@@ -130,6 +132,7 @@
   },
   "register": {
     "starRequired": "Fields marked with an asterisk (*) are required.",
+    "submitting": "Creating account…",
     "pseudo": "Your pet’s name *",
     "pseudoHelp": "Between 3 and 30 characters.",
     "email": "Email address *",
