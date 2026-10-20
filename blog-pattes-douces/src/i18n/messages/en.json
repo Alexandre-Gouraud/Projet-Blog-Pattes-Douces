@@ -128,6 +128,7 @@
     "errEmpty": "enter your username and password.",
     "errBad": "incorrect username or password.",
     "errServer": "the server is not responding. Please try again in a moment.",
+    "errLocked": { "one": "too many sign-in attempts. Please try again in {count} minute.", "other": "too many sign-in attempts. Please try again in {count} minutes." },
     "required": "Log in to access this page.",
     "welcomeBack": "Welcome back, {name}!"
   },
