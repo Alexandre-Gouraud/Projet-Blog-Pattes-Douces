@@ -81,7 +81,7 @@ src/
 │   ├── reactions.ts          Bascule j'aime / je n'aime pas (partagée par les deux routes)
 │   ├── routes.ts             Toutes les URL : pages (sans langue) et API
 │   ├── api-client.ts         Tous les appels réseau du navigateur (ApiError avec le statut HTTP)
-│   └── auth/session.ts       Identité de l'utilisateur courant (localStorage)
+│   └── auth/                 Sessions : token.ts (jeton, hash, cookie), origin.ts (CSRF), server.ts (base + cookie), session.ts (copie côté navigateur)
 ├── types/                    Types partagés, alignés sur Prisma
 └── proxy.ts                  Choix de la langue et redirection des anciennes URL
 scripts/
@@ -152,6 +152,7 @@ sont ceux de la base (en français).
 | Modèle | Champs principaux | Remarques |
 |---|---|---|
 | **User** | `pseudo` (unique), `email` (unique), `password`, `biographie`, `espece` | `password` est un hash bcrypt, jamais renvoyé ; `espece` : `cat`, `dog`, `rabbit`, `kitten`, `puppy`, `pet` (facultatif) |
+| **Session** | `tokenHash` (unique), `userId`, `createdAt`, `expiresAt`, `lastSeenAt` | Seul le hash SHA-256 du jeton est stocké ; supprimée avec le compte, à la déconnexion et à l'expiration |
 | **Article** | `titre`, `texte`, `image`, `langue`, `date`, `auteurId` | `vue`, `reaction1` (j'aime), `reaction2` (je n'aime pas) : listes d'id d'utilisateurs ; `langue` : langue de rédaction (facultatif) |
 | **Commentaire** | `texte`, `langue`, `date`, `article_sourceId`, `commentataireId` | Supprimé avec son article ou avec le compte de son auteur |
 
@@ -167,16 +168,18 @@ de langue, non concernées par le proxy).
 
 | Méthode | Route | Rôle |
 |---|---|---|
-| `POST` | `/api/auth/login` | Connexion, renvoie `{ user: { id, pseudo, espece } }` |
+| `POST` | `/api/auth/login` | Connexion : pose le cookie de session, renvoie `{ user: { id, pseudo, espece } }` |
+| `POST` | `/api/auth/logout` | Déconnexion : supprime la session et le cookie |
+| `GET` | `/api/auth/me` | Utilisateur de la session (`{ user }`) ou 401 |
 | `POST` | `/api/auth/register` | Inscription (pseudo 3-30 caractères, email, mot de passe fort, `espece` facultative) |
-| `GET` `DELETE` | `/api/users/[id]` | Lit (`id`, `pseudo`, `espece`, `biographie`) ou supprime un compte et tout son contenu |
-| `GET` `POST` | `/api/articles` | Liste (avec `_count.commentaires`) ou crée un article (renvoie son `id`) |
-| `GET` `DELETE` | `/api/articles/[id]` | Lit (commentaires du plus ancien au plus récent) ou supprime un article et ses commentaires |
-| `POST` | `/api/articles/[id]/views` | Enregistre une vue (une par utilisateur) |
-| `POST` | `/api/articles/[id]/like` | Ajoute ou retire un j'aime |
-| `POST` | `/api/articles/[id]/dislike` | Ajoute ou retire un je n'aime pas |
-| `GET` `POST` | `/api/comments` | Liste ou crée un commentaire |
-| `POST` | `/api/uploads?filename=` | Téléverse une image vers Vercel Blob |
+| `GET` `DELETE` | `/api/users/[id]` | Lit (`id`, `pseudo`, `espece`, `biographie`) ou supprime un compte et tout son contenu (session requise, titulaire seulement : 401 / 403) |
+| `GET` `POST` | `/api/articles` | Liste (avec `_count.commentaires`) ou crée un article (renvoie son `id`) ; la création exige une session, l'auteur est l'utilisateur connecté |
+| `GET` `DELETE` | `/api/articles/[id]` | Lit (commentaires du plus ancien au plus récent) ou supprime un article et ses commentaires (session requise, auteur seulement : 401 / 403) |
+| `POST` | `/api/articles/[id]/views` | Enregistre une vue (une par utilisateur de la session ; 401 sans session) |
+| `POST` | `/api/articles/[id]/like` | Ajoute ou retire un j'aime de l'utilisateur de la session (401 sans session) |
+| `POST` | `/api/articles/[id]/dislike` | Ajoute ou retire un je n'aime pas de l'utilisateur de la session (401 sans session) |
+| `GET` `POST` | `/api/comments` | Liste ou crée un commentaire (création : session requise, auteur = utilisateur connecté) |
+| `POST` | `/api/uploads?filename=` | Téléverse une image vers Vercel Blob (session requise) |
 
 Les créations d'article et de commentaire acceptent un champ `langue`
 (`fr`, `en`, `ar`, `zh`) : la langue de l'interface au moment de la rédaction.
@@ -253,6 +256,27 @@ Ce qui est en place :
 - **Validation serveur de toutes les entrées** (`lib/validation.ts`) :
   identifiants, longueurs, email, politique de mot de passe, URL d'image,
   espèce et langue.
+- **Sessions serveur** (`lib/auth/`) : à la connexion, un jeton aléatoire de
+  32 octets est posé dans le cookie `pd_session` (`HttpOnly`, `SameSite=Lax`,
+  `Path=/`, `Secure` en production, 30 jours). La base ne stocke que son hash
+  SHA-256 (modèle `Session`) : une fuite de la base ne donne aucune session
+  valide. La session est prolongée au plus une fois par jour d'activité
+  (renouvellement glissant) ; une session expirée est refusée et supprimée.
+  La déconnexion (`POST /api/auth/logout`) et la suppression du compte
+  détruisent les sessions. Les cookies `Secure` supposent HTTPS ou
+  `localhost` : en HTTP sur une autre machine, le navigateur les refuse.
+- **Identité et propriété** : toute route qui modifie des données appelle
+  `requireUser()` et prend l'utilisateur dans la session, jamais dans le
+  corps (un `userId` envoyé est ignoré). Sans session : 401. Seul l'auteur
+  supprime un article, seul le titulaire supprime son compte : 403 sinon.
+  Les lectures (articles, commentaires, profils publics) restent publiques.
+- **CSRF** : `SameSite=Lax`, mutations en `POST` / `DELETE` uniquement, et
+  contrôle de l'en-tête `Origin` (repli sur `Sec-Fetch-Site`) comparé à
+  l'hôte du site (`lib/auth/origin.ts`) : une requête venue d'une autre
+  origine reçoit 403, connexion et déconnexion comprises.
+- **Côté navigateur** : `lib/auth/session.ts` ne garde qu'une copie
+  d'affichage de l'utilisateur, lue par `GET /api/auth/me` ; plus aucune
+  identité dans le `localStorage`.
 - **Connexion** : même message et même temps de réponse, que le pseudo existe
   ou non (pas d'énumération des comptes). Les formulaires de connexion et
   d'inscription sont en `method="post"` : jamais de mot de passe dans l'URL.
@@ -271,13 +295,11 @@ Ce qui est en place :
   L'alerte `braces` (GHSA-vfj7-8cjw-p6xm) ne concerne que l'outillage de lint
   (`@next/eslint-plugin-next`) et n'a pas de version corrigée.
 
-> [!WARNING]
-> **Limite connue : authentification.** L'identité de l'utilisateur vit dans le
-> `localStorage` et n'est jamais vérifiée côté serveur : les routes font
-> confiance au `userId` envoyé par le client. N'importe qui peut donc liker,
-> commenter, supprimer un article ou un compte à la place d'un autre. À traiter
-> dans un chantier dédié (session par cookie `httpOnly`, vérification de
-> propriété dans chaque route) ; le module `src/lib/auth/` est prévu pour.
+> [!NOTE]
+> **Limites restantes :** pas de limitation du nombre de tentatives de
+> connexion (force brute), pas d'authentification à deux facteurs ni de
+> liste des sessions actives, et la session est liée au seul cookie (pas à
+> l'appareil). À traiter avant une mise en production à large échelle.
 
 ## Contraintes de versions
 

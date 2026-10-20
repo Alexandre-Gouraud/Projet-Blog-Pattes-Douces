@@ -559,7 +559,7 @@ Les anciennes URL (`/Connexion`, `/Feed`, `/Article_page/{id}`…) sont redirig�
 |---|---|
 | Arborescence | `src/app/[lang]/` (pages), `src/components/` (`ui/`, `layout/`, `icons/`, `info/`), `src/features/` (par domaine), `src/i18n/`, `src/theme/` |
 | Composants du §9 | `Button` / `ButtonLink`, `FormField`, `Toast`, `ConfirmDialog`, `Skeleton`, `EmptyState` / `ErrorState`, `StatTile`, `Donut`, `Bars`, `ArticleCard`, `ReactionButton` |
-| Session | Pseudo, identifiant et espèce dans le `localStorage`. Les pages réservées attendent l'hydratation avant de rediriger (`RequireAuth`). |
+| Session | Session serveur : cookie `pd_session` (`httpOnly`, `SameSite=Lax`), hash du jeton en base (modèle `Session`). Le navigateur lit `GET /api/auth/me` une fois et partage le résultat (`useIsLoggedIn`, `usePseudo`, `useUserId`, `useSpecies`, `useSessionReady`). Les pages réservées attendent cette réponse avant de rediriger (`RequireAuth`) ; chaque route d'écriture revérifie la session et la propriété. |
 | Données ajoutées à l'API | Champs facultatifs `User.espece`, `Article.langue`, `Commentaire.langue` ; nombre de commentaires par article ; identifiant de l'article créé |
 | Suppression du compte | Efface le compte, ses articles, ses commentaires et les commentaires reçus sur ses articles. Les réactions laissées sur les articles des autres ne sont pas effacées : le texte du dialogue le reflète. |
 | Titre de la 404 | Seul un `not-found` à la racine de `app/` peut exporter des métadonnées. Le titre est donc rendu par la page elle-même (`<title>` de React 19). |
