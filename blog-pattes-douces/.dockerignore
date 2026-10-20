@@ -20,3 +20,7 @@ Dockerfile
 .dockerignore
 compose.yaml
 README.md
+
+# Reinstalles dans l'image par scripts/translation-assets.mjs
+public/models
+public/ort

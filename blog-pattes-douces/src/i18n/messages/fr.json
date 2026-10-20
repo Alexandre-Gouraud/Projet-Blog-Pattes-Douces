@@ -239,11 +239,9 @@
     "translateTo": "Traduire en {language}",
     "showOriginal": "Voir l'original",
     "translating": "Traduction en cours…",
-    "downloading": "Téléchargement du modèle de traduction… {percent} %",
+    "downloading": "Chargement du modèle de traduction… {percent} %",
     "notice": "Traduction automatique · langue d'origine : {language}",
     "failed": "La traduction a échoué. Réessayez.",
-    "external": "Traduire avec Google Traduction",
-    "newTab": "(s'ouvre dans un nouvel onglet)",
     "commentOf": "commentaire de {name}",
     "languages": { "fr": "français", "en": "anglais", "ar": "arabe", "zh": "chinois" }
   },
@@ -266,7 +264,7 @@
       "browserHeading": "Stockage dans votre navigateur",
       "browser": "Votre session et votre choix de thème sont gardés dans le stockage local de votre navigateur ; votre langue, dans un cookie technique (NEXT_LOCALE).",
       "translationHeading": "Traduction des contenus",
-      "translation": "La traduction des articles et des commentaires est faite dans votre navigateur quand il en est capable (Chrome) : le texte ne quitte pas votre appareil. Sinon, le lien « Traduire avec Google Traduction » ouvre le texte sur le site de Google, qui le reçoit.",
+      "translation": "Les articles et les commentaires sont traduits dans votre navigateur, par une librairie libre (Transformers.js) et des modèles de traduction hébergés sur ce site : le texte ne quitte pas votre appareil et aucun service tiers n'est appelé. Au premier usage, le modèle d'une langue (environ 110 Mo) est téléchargé depuis ce site, puis gardé en cache par votre navigateur.",
       "deletionHeading": "Suppression",
       "deletion": "Depuis votre profil, « Supprimer le compte » efface votre compte, vos articles et vos commentaires."
     },

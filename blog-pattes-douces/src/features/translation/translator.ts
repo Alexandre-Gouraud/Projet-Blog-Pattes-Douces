@@ -1,98 +1,132 @@
 import { DEFAULT_LOCALE, type Locale, isLocale } from "@/i18n/config";
+import { modelRoute } from "./models";
+import type { WorkerRequest, WorkerResponse } from "./protocol";
 
 /**
  * Traduction des contenus des membres (articles, commentaires) dans la langue
- * de l'interface.
+ * de l'interface, avec la librairie Transformers.js et des modeles Opus-MT
+ * executes dans un Web Worker. Modeles et moteur sont servis par le site :
+ * le texte ne quitte jamais l'appareil et aucun service tiers n'est appele.
  *
- * - Si le navigateur expose l'API Translator (Chrome 138+), la traduction est
- *   faite sur l'appareil : le texte ne quitte pas le navigateur.
- * - Sinon, on propose un lien vers Google Traduction, ouvert dans un nouvel
- *   onglet (le texte est alors envoye a Google, voir la page Confidentialite).
+ * Pour que ce soit rapide : un seul worker pour toute la page, modeles
+ * charges une fois (puis gardes en cache par le navigateur), prechauffage au
+ * survol ou au focus du bouton, affichage au fil de la traduction et
+ * traductions deja faites gardees pour la session.
  */
-
-type Availability = "unavailable" | "downloadable" | "downloading" | "available";
-
-type LanguagePair = { sourceLanguage: string; targetLanguage: string };
-
-/** Sous-ensemble de l'API Translator utilise ici (pas encore dans lib.dom). */
-type BuiltInTranslator = { translate: (text: string) => Promise<string> };
-
-type DownloadMonitor = {
-  addEventListener: (type: "downloadprogress", listener: (event: { loaded: number }) => void) => void;
-};
-
-type TranslatorApi = {
-  availability: (pair: LanguagePair) => Promise<Availability>;
-  create: (options: LanguagePair & { monitor?: (monitor: DownloadMonitor) => void }) => Promise<BuiltInTranslator>;
-};
-
-export type TranslationMode = "builtin" | "external";
-
-function translatorApi(): TranslatorApi | null {
-  if (typeof self === "undefined" || !("Translator" in self)) return null;
-  return (self as unknown as { Translator: TranslatorApi }).Translator;
-}
 
 /** Langue d'origine d'un contenu ; les contenus anterieurs au champ `langue` sont en francais. */
 export function sourceLocale(langue: string | null | undefined): Locale {
   return isLocale(langue) ? langue : DEFAULT_LOCALE;
 }
 
-/** Traduction sur l'appareil si possible pour cette paire de langues, sinon lien externe. */
-export async function translationMode(source: Locale, target: Locale): Promise<TranslationMode> {
-  const api = translatorApi();
-  if (!api) return "external";
+export type TranslateOptions = {
+  /** Avancement du chargement des modeles (0 a 1). */
+  onProgress?: (loaded: number) => void;
+  /** Traduction partielle d'un texte, au fil du calcul. */
+  onPartial?: (index: number, partial: string) => void;
+};
+
+type Pending = TranslateOptions & { resolve: (texts: string[]) => void; reject: (error: Error) => void };
+
+let worker: Worker | null = null;
+let nextId = 1;
+const pending = new Map<number, Pending>();
+
+function getWorker(): Worker {
+  if (worker) return worker;
+  worker = new Worker(new URL("./translation.worker.ts", import.meta.url), { type: "module" });
+  worker.addEventListener("message", (event: MessageEvent<WorkerResponse>) => {
+    const message = event.data;
+    const request = pending.get(message.id);
+    if (!request) return;
+    if (message.type === "progress") request.onProgress?.(message.loaded);
+    else if (message.type === "partial") request.onPartial?.(message.index, message.text);
+    else {
+      pending.delete(message.id);
+      if (message.type === "done") request.resolve(message.texts);
+      else request.reject(new Error(message.message));
+    }
+  });
+  // Worker inutilisable (fichiers absents...) : toutes les demandes en cours echouent.
+  worker.addEventListener("error", () => {
+    for (const request of pending.values()) request.reject(new Error("Worker de traduction indisponible"));
+    pending.clear();
+    worker = null;
+  });
+  return worker;
+}
+
+function send(message: WorkerRequest) {
+  getWorker().postMessage(message);
+}
+
+/** Commence a charger les modeles d'une paire avant le clic (survol, focus). */
+export function warmUp(source: Locale, target: Locale): void {
+  const models = modelRoute(source, target);
+  if (models.length > 0) send({ type: "warm", models });
+}
+
+/* --- Traductions deja faites (memoire + sessionStorage) --- */
+
+const memory = new Map<string, string>();
+
+function resultKey(text: string, source: Locale, target: Locale): string {
+  // Empreinte FNV-1a 32 bits : courte et suffisante pour une cle de cache.
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return `pd-tr:${source}>${target}:${text.length}:${hash.toString(36)}`;
+}
+
+function cachedResult(key: string): string | null {
+  const hit = memory.get(key);
+  if (hit !== undefined) return hit;
   try {
-    const availability = await api.availability({ sourceLanguage: source, targetLanguage: target });
-    return availability === "unavailable" ? "external" : "builtin";
+    return typeof sessionStorage === "undefined" ? null : sessionStorage.getItem(key);
   } catch {
-    return "external";
+    return null;
   }
 }
 
-// Un traducteur par paire de langues, reutilise par tous les contenus de la page.
-const translators = new Map<string, Promise<BuiltInTranslator>>();
+function storeResult(key: string, value: string) {
+  memory.set(key, value);
+  try {
+    if (typeof sessionStorage !== "undefined") sessionStorage.setItem(key, value);
+  } catch {
+    // Stockage plein ou indisponible : le cache memoire suffit.
+  }
+}
 
-/**
- * Traduit plusieurs textes avec l'API du navigateur. `onProgress` recoit
- * l'avancement (0 a 1) si le modele de langue doit d'abord etre telecharge.
- */
+/** Traduit plusieurs textes ; ceux deja traduits dans la session sont rendus tout de suite. */
 export async function translateTexts(
   texts: string[],
   source: Locale,
   target: Locale,
-  onProgress?: (loaded: number) => void,
+  options: TranslateOptions = {},
 ): Promise<string[]> {
-  const api = translatorApi();
-  if (!api) throw new Error("API Translator indisponible");
-  const key = `${source}>${target}`;
-  let translator = translators.get(key);
-  if (!translator) {
-    translator = api.create({
-      sourceLanguage: source,
-      targetLanguage: target,
-      monitor: (monitor) => monitor.addEventListener("downloadprogress", (event) => onProgress?.(event.loaded)),
+  const keys = texts.map((text) => resultKey(text, source, target));
+  const cached = keys.map(cachedResult);
+  const missing = texts.map((_, i) => i).filter((i) => cached[i] === null);
+  if (missing.length === 0) return cached as string[];
+
+  const models = modelRoute(source, target);
+  const id = nextId++;
+  const translated = await new Promise<string[]>((resolve, reject) => {
+    pending.set(id, {
+      resolve,
+      reject,
+      onProgress: options.onProgress,
+      onPartial: options.onPartial && ((index, partial) => options.onPartial?.(missing[index], partial)),
     });
-    translators.set(key, translator);
-    // Un echec (telechargement interrompu...) ne doit pas bloquer les essais suivants.
-    translator.catch(() => translators.delete(key));
-  }
-  const ready = await translator;
-  return Promise.all(texts.map((text) => ready.translate(text)));
-}
-
-/** Codes de langue de Google Traduction (le chinois simplifie est zh-CN). */
-const GOOGLE_CODES: Record<Locale, string> = { fr: "fr", en: "en", ar: "ar", zh: "zh-CN" };
-
-/** Limite prudente : au-dela, l'URL risque d'etre refusee. */
-const MAX_URL_TEXT = 4000;
-
-export function externalTranslationUrl(text: string, source: Locale, target: Locale): string {
-  const params = new URLSearchParams({
-    sl: GOOGLE_CODES[source],
-    tl: GOOGLE_CODES[target],
-    text: text.slice(0, MAX_URL_TEXT),
-    op: "translate",
+    send({ type: "translate", id, models, texts: missing.map((i) => texts[i]) });
   });
-  return `https://translate.google.com/?${params.toString()}`;
+
+  const results = [...cached];
+  missing.forEach((i, position) => {
+    results[i] = translated[position];
+    storeResult(keys[i], translated[position]);
+  });
+  return results as string[];
 }

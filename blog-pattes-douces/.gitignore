@@ -42,3 +42,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# traduction : modeles et moteur ONNX installes par `pnpm translation:setup`
+/public/models/
+/public/ort/

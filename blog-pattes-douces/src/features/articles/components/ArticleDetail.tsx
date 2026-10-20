@@ -164,7 +164,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
       <BackLink label={t.article.back} />
       <article className={`${cardClass} flex flex-col gap-[18px] p-5 desk:p-8`}>
         <PageTitle className="text-balance">
-          <span lang={translation.lang}>{translation.text(0)}</span>
+          <span lang={translation.lang(0)}>{translation.text(0)}</span>
         </PageTitle>
         <div className="flex items-center gap-3">
           <Avatar name={author ?? "?"} seed={current.auteurId} size={44} />
@@ -187,9 +187,9 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
             className="h-auto max-h-[480px] w-full rounded-xl object-cover"
           />
         )}
-        <TranslateControl translation={translation} originalText={`${current.titre}\n\n${current.texte}`} />
+        <TranslateControl translation={translation} />
         <p className="m-0 max-w-[68ch] text-lg leading-[1.7] whitespace-pre-line text-ink">
-          <span lang={translation.lang}>{translation.text(1)}</span>
+          <span lang={translation.lang(1)}>{translation.text(1)}</span>
         </p>
         <div className="flex flex-wrap gap-2 border-t border-line pt-4">
           <ReactionButton
@@ -283,11 +283,10 @@ function CommentEntry({ comment }: { comment: ArticleWithComments["commentaires"
           <strong className="text-ink">{author}</strong> · <time dateTime={comment.date}>{date(comment.date)}</time>
         </p>
         <p className="m-0 break-words whitespace-pre-line">
-          <span lang={translation.lang}>{translation.text(0)}</span>
+          <span lang={translation.lang(0)}>{translation.text(0)}</span>
         </p>
         <TranslateControl
           translation={translation}
-          originalText={comment.texte}
           context={f(t.translation.commentOf, { name: author })}
         />
       </div>

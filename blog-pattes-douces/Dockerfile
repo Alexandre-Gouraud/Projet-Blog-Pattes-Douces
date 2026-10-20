@@ -20,6 +20,13 @@ COPY prisma ./prisma
 # pnpm dans la version exacte du champ "packageManager" de package.json.
 RUN corepack enable && corepack install && pnpm install --frozen-lockfile
 
+# ---- Traduction des contenus : modeles Opus-MT et moteur ONNX ----------------
+# Couche separee, en cache tant que le script et le lockfile ne changent pas :
+# les ~680 Mo de modeles ne sont pas retelecharges a chaque build.
+FROM deps AS translation
+COPY scripts/translation-assets.mjs ./scripts/
+RUN node scripts/translation-assets.mjs
+
 # ---- Build de production -----------------------------------------------------
 FROM deps AS builder
 COPY . .
@@ -32,6 +39,8 @@ ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME=0.0.0.0
 COPY --from=builder --chown=node:node /app/public ./public
+COPY --from=translation --chown=node:node /app/public/models ./public/models
+COPY --from=translation --chown=node:node /app/public/ort ./public/ort
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 # Pas de droits root dans le conteneur.

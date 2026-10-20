@@ -239,11 +239,9 @@
     "translateTo": "Translate to {language}",
     "showOriginal": "Show original",
     "translating": "Translating…",
-    "downloading": "Downloading the translation model… {percent}%",
+    "downloading": "Loading the translation model… {percent}%",
     "notice": "Automatic translation · original language: {language}",
     "failed": "Translation failed. Please try again.",
-    "external": "Translate with Google Translate",
-    "newTab": "(opens in a new tab)",
     "commentOf": "comment by {name}",
     "languages": { "fr": "French", "en": "English", "ar": "Arabic", "zh": "Chinese" }
   },
@@ -266,7 +264,7 @@
       "browserHeading": "Storage in your browser",
       "browser": "Your session and theme choice are kept in your browser’s local storage; your language in a technical cookie (NEXT_LOCALE).",
       "translationHeading": "Content translation",
-      "translation": "Articles and comments are translated in your browser when it can do so (Chrome): the text never leaves your device. Otherwise, the “Translate with Google Translate” link opens the text on Google’s website, which receives it.",
+      "translation": "Articles and comments are translated in your browser by an open-source library (Transformers.js) and translation models hosted on this site: the text never leaves your device and no third-party service is called. On first use, a language model (about 110 MB) is downloaded from this site, then cached by your browser.",
       "deletionHeading": "Deletion",
       "deletion": "From your profile, “Delete account” erases your account, your articles and your comments."
     },

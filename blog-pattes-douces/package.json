@@ -11,6 +11,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "translation:setup": "node scripts/translation-assets.mjs",
     "db:up": "docker compose up -d --wait",
     "db:push": "prisma db push",
     "db:down": "docker compose down",
@@ -18,6 +19,7 @@
     "docker:down": "docker compose --profile app down"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.3.1",
     "@prisma/client": "^6.19.3",
     "@vercel/blob": "^2.8.2",
     "bcryptjs": "^3.0.3",
