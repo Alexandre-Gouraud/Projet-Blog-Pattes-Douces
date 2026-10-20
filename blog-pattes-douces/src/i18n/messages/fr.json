@@ -34,6 +34,8 @@
     "createAccount": "Créer un compte",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
+    "showMenu": "Afficher le menu",
+    "hideMenu": "Masquer le menu",
     "myProfile": "Mon profil",
     "menu": "Menu",
     "mainNav": "Navigation principale",

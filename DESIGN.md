@@ -257,7 +257,7 @@ Pile complète : `Inter, 'Noto Sans Arabic', 'Noto Sans SC', 'PingFang SC', 'Mic
 
 - Logo, puis `<nav aria-label="Navigation principale">` en liste `<ul>`, puis thème et langue, puis bloc compte (avatar, pseudo, espèce, « Se déconnecter ») ou « Se connecter » et « Créer un compte ».
 - Élément actif : fond `--surface`, graisse 650, `aria-current="page"`.
-- **Repliable** : bouton burger dans la barre supérieure, avec `aria-expanded` et `aria-controls="barre-laterale"`. Son libellé alterne entre « Ouvrir le menu » et « Fermer le menu ». Repliée, la barre supérieure reprend logo, langue, thème et profil.
+- **Repliable** : bouton burger dans la barre supérieure, avec `aria-expanded` et `aria-controls="barre-laterale"`. Son libellé alterne entre « Afficher le menu » et « Masquer le menu » (distinct du burger mobile « Ouvrir / Fermer le menu », pour que deux boutons ne portent jamais le même nom). Repliée, la barre supérieure reprend logo, langue, thème et profil.
 
 ### 9.3 Tiroir de navigation (mobile)
 

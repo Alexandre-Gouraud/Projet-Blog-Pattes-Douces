@@ -55,6 +55,8 @@
     "createAccount": "إنشاء حساب",
     "openMenu": "فتح القائمة",
     "closeMenu": "إغلاق القائمة",
+    "showMenu": "إظهار القائمة",
+    "hideMenu": "إخفاء القائمة",
     "myProfile": "ملفي الشخصي",
     "menu": "القائمة",
     "mainNav": "التنقل الرئيسي",
