@@ -368,6 +368,7 @@ Intégrée au shell : icône, h1 « Une erreur est survenue », texte sans déta
 Les articles (titre et texte) et les commentaires écrits dans une autre langue que celle de l'interface reçoivent un bouton « Traduire en {langue} ».
 
 - **Moteur** : la librairie libre Transformers.js, avec les modèles de traduction Opus-MT (q8, WebAssembly), exécutée dans un Web Worker. Les modèles (`public/models`) sont servis par le site, et le moteur ONNX WebAssembly par le build Next.js (`/_next/static/`, un seul exemplaire) : le texte ne quitte pas l'appareil et aucun service tiers n'est appelé.
+- **Navigateurs** : tout navigateur récent prenant en charge WebAssembly et les modules dans les Web Workers. Seule la variante « asyncify » du moteur est servie : Safari antérieur à la version 26 sans WebGPU n'est pas pris en charge.
 - **Langues** : modèles directs de et vers l'anglais ; les autres paires passent par l'anglais (pivot).
 - **Comportement** :
   - le bouton bascule entre la traduction et l'original ;

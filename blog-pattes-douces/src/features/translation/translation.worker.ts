@@ -18,6 +18,10 @@ env.localModelPath = "/models/";
 // module. On retire ce choix : sans wasmPaths, ONNX Runtime charge son .wasm via
 // new URL(..., import.meta.url), que le bundler emet dans /_next/static/. Un
 // seul exemplaire du moteur, servi par le site et mis en cache de facon immuable.
+// A reverifier a chaque montee de version de @huggingface/transformers : si la
+// forme de wasmPaths change, le moteur repartirait silencieusement vers le CDN
+// (allowRemoteModels ne couvre que les modeles). Seule la variante « asyncify »
+// est servie : Safari < 26 sans WebGPU n'est pas pris en charge (DESIGN.md §9.15).
 if (env.backends.onnx.wasm) env.backends.onnx.wasm.wasmPaths = undefined;
 
 const post = (message: WorkerResponse) => self.postMessage(message);
