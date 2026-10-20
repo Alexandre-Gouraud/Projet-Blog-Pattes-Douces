@@ -311,6 +311,7 @@ Structure : avatar, pseudo, espèce et date (`<time>`), puis titre (h2 contenant
   - à la connexion, un bloc `role="alert"` affiche le message avec une icône.
 - Validation à la soumission uniquement : aucune erreur affichée pendant la saisie.
 - Les messages ne révèlent pas d'information sensible (« Pseudo ou mot de passe incorrect »).
+- **Limitation des tentatives** : au-delà de 5 tentatives en 15 min pour un même pseudo depuis une même IP, ou de 20 depuis une même IP (avec `TRUST_PROXY=true`), la connexion répond 429 (`Retry-After`) pendant 15 min. Sans `TRUST_PROXY` (défaut), aucune IP n'est fiable : seule une limite de 10 tentatives par pseudo s'applique (quiconque connaît un pseudo peut donc le verrouiller 15 min) et l'inscription n'est pas limitée. Le bloc `role="alert"` affiche alors « Erreur : trop de tentatives de connexion. Réessayez dans N minutes. » (pluriel selon la langue) ; le pseudo n'est jamais cité comme existant ou non. L'inscription est limitée à 20 tentatives (réussies ou refusées) par IP et par fenêtre de 15 min, avec `TRUST_PROXY=true` seulement.
 - Les formulaires de connexion et d'inscription sont en `method="post"` : envoyés avant l'hydratation, ils ne placent jamais le mot de passe dans l'URL.
 
 **Règles de saisie** (identiques côté client et côté API, `src/lib/validation.ts`)

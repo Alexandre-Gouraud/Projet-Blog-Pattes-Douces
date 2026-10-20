@@ -165,6 +165,9 @@ sont ceux de la base (en français).
 | **Article** | `titre`, `texte`, `image`, `langue`, `date`, `auteurId` | `vue`, `reaction1` (j'aime), `reaction2` (je n'aime pas) : listes d'id d'utilisateurs ; `langue` : langue de rédaction (facultatif) |
 | **Commentaire** | `texte`, `langue`, `date`, `article_sourceId`, `commentataireId` | Supprimé avec son article ou avec le compte de son auteur |
 
+Le modèle **LoginThrottle** (`key` unique, `count`, `windowStart`, `lockedUntil`)
+stocke les compteurs de limitation des tentatives (voir Sécurité).
+
 Les champs `espece` et `langue` sont facultatifs : les documents existants
 restent valides sans migration (un contenu sans langue est considéré comme
 français). Les index uniques sont créés par `pnpm db:push` (service `db-init`
@@ -227,6 +230,7 @@ pnpm test:watch    # en continu
 | `src/i18n/messages.test.ts` | Mêmes clés, mêmes types et mêmes `{variables}` dans les 4 langues |
 | `src/i18n/navigation.test.ts` | `localizePath`, `stripLocale` |
 | `src/lib/validation.test.ts`, `src/lib/routes.test.ts` | Règles de saisie, `safeNext`, URL de connexion |
+| `src/lib/auth/*.test.ts`, `src/app/api/auth/login/route.test.ts` | Compteurs, verrou, remise à zéro, 429 + `Retry-After`, extraction de l'IP |
 | `src/proxy.test.ts` | Redirections de langue (cookie, `Accept-Language`), anciennes URL, matcher |
 | `src/features/translation/*.test.ts` | Routes de modèles et pivot, découpage du texte, messages avec le worker, cache |
 
@@ -314,6 +318,36 @@ Ce qui est en place :
 - **Connexion** : même message et même temps de réponse, que le pseudo existe
   ou non (pas d'énumération des comptes). Les formulaires de connexion et
   d'inscription sont en `method="post"` : jamais de mot de passe dans l'URL.
+- **Limitation des tentatives de connexion** (`lib/auth/throttle.ts`, modèle
+  `LoginThrottle` en base, donc conservée après un redémarrage) :
+  - avec `TRUST_PROXY=true` : 5 tentatives par couple IP + pseudo et 20 par IP
+    en 15 min, puis verrouillage de 15 min (429 + `Retry-After`) ;
+  - sans (défaut) : aucune clé IP (un seau partagé permettrait à n'importe qui de
+    bloquer tout le monde) ; seule une limite de 10 tentatives par pseudo en
+    15 min s'applique, et l'inscription n'est pas limitée. Un `console.warn`
+    l'indique au premier usage. Compromis : quiconque connaît un pseudo peut
+    le verrouiller 15 min ; avec `TRUST_PROXY`, une attaque répartie sur de
+    nombreuses IP n'est pas limitée globalement.
+
+  La tentative est comptée **avant** la comparaison bcrypt (incrément atomique
+  en base, décision sur la valeur retournée : des requêtes simultanées ne
+  contournent pas la limite) et un pseudo inconnu est traité comme un pseudo
+  connu. Une connexion réussie remet à zéro le compteur du compte ; le compteur
+  IP ne perd qu'une tentative. Les lignes expirées sont purgées au fil de l'eau
+  (environ 1 écriture sur 50).
+- **Inscription** : 20 tentatives par IP en 15 min (comptées dès le contrôle
+  d'unicité : réussies ou refusées en 409), uniquement avec `TRUST_PROXY=true`.
+- **Clés de limitation** : HMAC-SHA-256 si `THROTTLE_SECRET` est défini, SHA-256
+  simple sinon. Pseudonymisées, pas anonymes : sans secret, qui connaît un
+  pseudo peut recalculer sa clé.
+- **IP du client** (`lib/auth/client-ip.ts`) : `X-Forwarded-For` / `X-Real-IP`
+  sont falsifiables ; ils ne sont lus que si `TRUST_PROXY=true`, derrière un
+  reverse proxy de confiance qui ajoute l'adresse vue en fin de liste (on lit
+  l'entrée la plus à droite, vue du proxy de confiance le plus proche ; avec
+  plusieurs proxys en chaîne c'est l'adresse du précédent, donc un seau plus
+  large, jamais plus laxiste). Même hypothèse que pour `X-Forwarded-Host`.
+  Une valeur qui n'est pas une IP valide est refusée ; l'IPv6 est ramenée à son
+  préfixe /64.
 - **Upload** : JPEG, PNG, WebP ou GIF uniquement (ni HTML ni SVG), 4 Mo
   maximum, nom de fichier nettoyé, suffixe aléatoire.
 - **Intégrité** : suppressions en transaction ; les commentaires orphelins sont
@@ -330,9 +364,10 @@ Ce qui est en place :
   (`@next/eslint-plugin-next`) et n'a pas de version corrigée.
 
 > [!NOTE]
-> **Limites restantes :** pas de limitation du nombre de tentatives de
-> connexion (force brute), pas d'authentification à deux facteurs ni de
-> liste des sessions actives, et la session est liée au seul cookie (pas à
+> **Limites restantes :** la limitation des tentatives de connexion est
+> approximative (voir ci-dessus : verrouillage par pseudo possible sans
+> `TRUST_PROXY`, attaque distribuée non limitée globalement), pas
+> d'authentification à deux facteurs ni de liste des sessions actives, et la session est liée au seul cookie (pas à
 > l'appareil). À traiter avant une mise en production à large échelle.
 
 ## Contraintes de versions

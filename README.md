@@ -205,6 +205,8 @@ They are defined in `.env` (copied from [`.env.example`](blog-pattes-douces/.env
 | `DATABASE_URL` | Option A | MongoDB connection. The default value points to the local Docker database. In option B, `compose.yaml` provides it to the application. |
 | `BLOB_READ_WRITE_TOKEN` | For images | Vercel Blob token (*Storage > Blob > Tokens*). Without it, everything works except adding an image to an article. |
 | `COOKIE_SECURE` | No | `true` or `false` to force the `Secure` attribute of the session cookie. Default: `true` when `NODE_ENV=production`, `false` otherwise. Set `false` only to serve the Docker image over plain HTTP (browsers refuse `Secure` cookies there; whether `localhost` is exempt depends on the browser). |
+| `TRUST_PROXY` | No | `true` only behind a trusted reverse proxy that appends the client address at the end of `X-Forwarded-For`: enables per-IP rate limiting of login and sign-up attempts. Default: ignored, only a per-username limit applies (see Security). Same trust assumption as `X-Forwarded-Host` for the origin check. |
+| `THROTTLE_SECRET` | No | Secret that turns the rate-limit keys into HMAC-SHA-256 (plain SHA-256 otherwise). Pseudonymised, not anonymous. |
 
 Ports already in use? Prefix the Docker commands with `MONGO_PORT=27019`
 and/or `APP_PORT=3005` (then remember to adapt `DATABASE_URL` in option A).
@@ -267,6 +269,13 @@ the i18n are detailed in the [technical reference](blog-pattes-douces/README.md)
 - API responses never expose the password hash or the email.
 - All inputs are validated on the server; an invalid input returns 400 or 404.
 - Login does not reveal whether a username exists.
+- Login and sign-up attempts are limited and persisted in the database
+  (HTTP 429 with `Retry-After`, 15-minute lock). With `TRUST_PROXY=true` behind a
+  trusted reverse proxy: 5 attempts per username + IP and 20 per IP for login,
+  20 per IP for sign-up. Without it (default) no IP is trusted, so only a
+  per-username limit (10 attempts) applies and sign-up is not limited: anyone who
+  knows a username can lock it for 15 minutes, and with `TRUST_PROXY` an attack
+  spread over many IPs is not limited globally.
 - Uploads are limited to images (JPEG, PNG, WebP, GIF) of 4 MB maximum.
 - Security HTTP headers, secrets kept out of the repository, monitored dependencies.
 - Content translation runs in the browser with self-hosted models: no text is
@@ -278,7 +287,7 @@ the i18n are detailed in the [technical reference](blog-pattes-douces/README.md)
 - Every write takes the acting user from the session, never from the request
   body: 401 without a session, 403 if you are not the owner (article author,
   account holder). Cross-origin writes are rejected (`Origin` check).
-- Remaining limits: no login rate limiting or two-factor authentication yet.
+- Remaining limits: login rate limiting is approximate (see above) and there is no two-factor authentication yet.
   Details in the [technical reference](blog-pattes-douces/README.md#sécurité) (in French).
 
 ## Troubleshooting
@@ -575,6 +584,8 @@ Elles se définissent dans `.env` (copié depuis [`.env.example`](blog-pattes-do
 | `DATABASE_URL` | Option A | Connexion MongoDB. La valeur par défaut pointe sur la base Docker locale. En option B, `compose.yaml` la fournit à l'application. |
 | `BLOB_READ_WRITE_TOKEN` | Pour les images | Jeton Vercel Blob (*Storage > Blob > Tokens*). Sans lui, tout fonctionne sauf l'ajout d'une image à un article. |
 | `COOKIE_SECURE` | Non | `true` ou `false` pour forcer l'attribut `Secure` du cookie de session. Par défaut : `true` si `NODE_ENV=production`, `false` sinon. À mettre à `false` uniquement pour servir l'image Docker en HTTP simple (les navigateurs refusent les cookies `Secure` ; l'exception de `localhost` dépend du navigateur). |
+| `TRUST_PROXY` | Non | `true` uniquement derrière un reverse proxy de confiance qui ajoute l'adresse du client en fin de `X-Forwarded-For` : active la limitation des tentatives de connexion et d'inscription par IP. Par défaut : ignoré, seule une limite par pseudo s'applique (voir Sécurité). Même hypothèse de confiance que `X-Forwarded-Host` pour le contrôle d'origine. |
+| `THROTTLE_SECRET` | Non | Secret qui transforme les clés de limitation en HMAC-SHA-256 (SHA-256 simple sinon). Pseudonymisées, pas anonymes. |
 
 Ports déjà utilisés ? Préfixez les commandes Docker avec `MONGO_PORT=27019`
 et/ou `APP_PORT=3005` (pensez alors à adapter `DATABASE_URL` en option A).
@@ -637,6 +648,14 @@ dans [`DESIGN.md`](DESIGN.md).
 - Les réponses de l'API n'exposent jamais le hash du mot de passe ni l'email.
 - Toutes les entrées sont validées côté serveur ; une entrée invalide renvoie 400 ou 404.
 - La connexion ne révèle pas si un pseudo existe.
+- Les tentatives de connexion et d'inscription sont limitées et conservées en base
+  (HTTP 429 avec `Retry-After`, verrou de 15 minutes). Avec `TRUST_PROXY=true`
+  derrière un reverse proxy de confiance : 5 tentatives par pseudo + IP et 20 par
+  IP pour la connexion, 20 par IP pour l'inscription. Sans (défaut), aucune IP
+  n'est fiable : seule une limite par pseudo (10 tentatives) s'applique et
+  l'inscription n'est pas limitée ; quiconque connaît un pseudo peut le verrouiller
+  15 minutes, et avec `TRUST_PROXY` une attaque répartie sur de nombreuses IP
+  n'est pas limitée globalement.
 - Upload limité aux images (JPEG, PNG, WebP, GIF) de 4 Mo maximum.
 - En-têtes HTTP de sécurité, secrets hors du dépôt, dépendances surveillées.
 - La traduction des contenus se fait dans le navigateur avec des modèles
@@ -650,8 +669,8 @@ dans [`DESIGN.md`](DESIGN.md).
   la requête : 401 sans session, 403 si l'on n'est pas propriétaire (auteur de
   l'article, titulaire du compte). Les écritures d'une autre origine sont
   refusées (contrôle de `Origin`).
-- Limites restantes : pas encore de limitation des tentatives de connexion ni
-  d'authentification à deux facteurs. Détails dans la
+- Limites restantes : la limitation des tentatives de connexion est approximative
+  (voir ci-dessus) et il n'y a pas encore d'authentification à deux facteurs. Détails dans la
   [référence technique](blog-pattes-douces/README.md#sécurité).
 
 ## Dépannage
