@@ -351,8 +351,8 @@ Les `alert()` natifs du navigateur sont supprimés.
 
 ### 9.12 Pied de page
 
-- Fond `--surface`, © 2026, `<nav aria-label="Liens de pied de page">` : À propos, Contact, Confidentialité, puis la mention **« Accessibilité : partiellement conforme »**.
-- Cette mention d'état de conformité est obligatoire dès la page d'accueil (RGAA, « Mentions et pages obligatoires »). Elle reste lisible en entier : seul le mot « Accessibilité » est un lien vers la page Accessibilité, souligné car il est placé dans une phrase (sa couleur seule ne le distingue pas assez du texte voisin, RGAA 10.6), et l'état est écrit à la suite en texte simple. L'état doit correspondre au dernier audit : « partiellement conforme » exige qu'au moins 50 % des critères soient respectés ; sans audit en cours de validité, le RGAA impose « non conforme ».
+- Fond `--surface`, © 2026, `<nav aria-label="Liens de pied de page">` : À propos, Contact, Confidentialité, Accessibilité.
+- Aucun état de conformité n'est affiché (choix du propriétaire du site) : le lien « Accessibilité » mène à la déclaration. Le RGAA demande pourtant une mention d'état dès la page d'accueil (« Mentions et pages obligatoires ») ; elle sera à rétablir avec l'état mesuré par un audit complet.
 - Les quatre liens mènent à de vraies pages : À propos, Contact (tickets GitHub), Confidentialité (données réellement collectées) et la page Accessibilité, qui contient la déclaration selon le modèle du RGAA, le schéma pluriannuel 2026-2028 et le plan d'actions de l'année.
 
 ### 9.13 Page 404

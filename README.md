@@ -97,8 +97,8 @@ them back to the page they asked for.
 - **Accessibility** (RGAA 4.1.2 / WCAG 2.2 AA): skip link, landmarks,
   visible focus, keyboard-only navigation, 44 px targets, status messages
   announced to screen readers, confirmation dialogs, forms with linked errors.
-  The site is declared **partially compliant** until a full audit is done
-  (see `/accessibility`).
+  No compliance status is declared yet: the footer links to the
+  accessibility statement (`/accessibility`).
 - **Content translation**: the [Transformers.js](https://huggingface.co/docs/transformers.js)
   library runs Opus-MT models in a Web Worker. Models are served by the site
   itself: the text never leaves the device and no third-party service is called.
@@ -461,8 +461,8 @@ le ramènent sur la page demandée.
 - **Accessibilité** (RGAA 4.1.2 / WCAG 2.2 AA) : lien d'évitement, landmarks,
   focus visible, navigation au clavier seul, cibles de 44 px, messages de
   statut annoncés aux lecteurs d'écran, dialogues de confirmation, formulaires
-  aux erreurs reliées. Le site est déclaré **partiellement conforme** tant
-  qu'un audit complet n'est pas fait (voir `/accessibility`).
+  aux erreurs reliées. Aucun état de conformité n'est encore déclaré : le
+  pied de page mène à la déclaration d'accessibilité (`/accessibility`).
 - **Traduction des contenus** : la librairie [Transformers.js](https://huggingface.co/docs/transformers.js)
   exécute des modèles Opus-MT dans un Web Worker. Les modèles sont servis par
   le site lui-même : le texte ne quitte pas l'appareil et aucun service tiers
