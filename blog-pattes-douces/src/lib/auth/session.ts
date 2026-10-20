@@ -97,6 +97,7 @@ export function clearSession(options: { onPurpose?: boolean } = {}): void {
 export function resetSessionForTests(): void {
   state = UNKNOWN;
   version = 0;
+  started = false;
   signedOutOnPurposeAt = 0;
 }
 

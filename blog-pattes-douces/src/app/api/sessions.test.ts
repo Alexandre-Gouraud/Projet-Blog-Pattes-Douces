@@ -40,7 +40,7 @@ import { GET as me } from "./auth/me/route";
 import { POST as dislike } from "./articles/[id]/dislike/route";
 import { POST as addView } from "./articles/[id]/views/route";
 import { POST as upload } from "./uploads/route";
-import { GET as getUser } from "./users/[id]/route";
+import { DELETE as deleteUser, GET as getUser } from "./users/[id]/route";
 import { POST as like } from "./articles/[id]/like/route";
 
 const user = { id: ME, pseudo: "Pistache", espece: "cat" };
@@ -202,6 +202,33 @@ describe("GET /api/auth/me", () => {
     const res = await me();
     expect(res.status).toBe(500);
     expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+});
+
+describe("DELETE /api/users/[id]", () => {
+  it("deletes the account and clears the session cookie", async () => {
+    store.set(SESSION_COOKIE, "t");
+    validSession();
+    prisma.article.findMany.mockResolvedValue([]);
+    prisma.$transaction.mockResolvedValue([{ count: 0 }, { count: 0 }, { count: 1 }, { count: 1 }]);
+    const res = await deleteUser(
+      new NextRequest("http://localhost:3000/api/users/x", { method: "DELETE", headers: { host: "localhost:3000" } }),
+      ctx(ME) as never
+    );
+    expect(res.status).toBe(200);
+    expect(cookieStore.delete).toHaveBeenCalledWith(SESSION_COOKIE);
+    expect(store.has(SESSION_COOKIE)).toBe(false);
+  });
+
+  it("keeps the cookie when the deletion is refused", async () => {
+    store.set(SESSION_COOKIE, "t");
+    validSession();
+    const res = await deleteUser(
+      new NextRequest("http://localhost:3000/api/users/x", { method: "DELETE", headers: { host: "localhost:3000" } }),
+      ctx("b".repeat(24)) as never
+    );
+    expect(res.status).toBe(403);
+    expect(cookieStore.delete).not.toHaveBeenCalled();
   });
 });
 
