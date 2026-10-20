@@ -1,7 +1,7 @@
 # DESIGN.md — Pattes Douces
 
 > Système de design de **Pattes Douces**, le blog communautaire où les animaux de compagnie (et leurs humains) publient, commentent et réagissent.
-> Version : 2.0 — octobre 2026 · Prototype de référence : `Pattes Douces.dc.html`
+> Version : 2.1 — octobre 2026 · Implémentation : `blog-pattes-douces/` (Next.js 16, Tailwind CSS 4)
 > Référentiels : **RGAA 4.1.2** et **WCAG 2.2**, niveau **AA**.
 
 ---
@@ -24,6 +24,7 @@
 14. Recette accessibilité (checklist)
 15. Inventaire des écrans
 16. Correspondance avec l'audit de l'ancienne version
+17. Notes d'implémentation
 
 ---
 
@@ -44,7 +45,7 @@
 ## 2. Identité de marque
 
 - **Nom** : Pattes Douces.
-- **Logo** : chat dessiné au trait noir sur fond blanc (`assets/logo.png`, 320 × 320). Il est toujours posé sur une pastille blanche arrondie, y compris en thème sombre, pour préserver son contraste.
+- **Logo** : chat dessiné au trait noir sur fond blanc (`public/images/logo.png`, 320 × 320). Il est toujours posé sur une pastille blanche arrondie, y compris en thème sombre, pour préserver son contraste.
   - Tailles : 44 px dans la barre latérale, 36 px dans les barres, 80 à 112 px dans les états vides, la 404 et le bandeau d'accueil.
   - Le logo est accompagné du nom « Pattes Douces » en texte réel. L'image est donc décorative (`alt=""`) : le lien porte le texte.
 - **Signature visuelle** : le dégradé horizontal abricot → caramel en fond de la zone de contenu.
@@ -56,6 +57,10 @@
 ### 3.1 Architecture
 
 Toutes les couleurs d'interface passent par des **variables CSS** définies sur `:root`. Le thème est appliqué en remplaçant ces variables. Les composants n'utilisent jamais de couleur codée en dur, sauf pour les couleurs de marque invariantes (bouton primaire, graphiques).
+
+- Les jetons du §3.2 sont déclarés dans `src/app/globals.css` : thème clair sur `:root`, thème sombre sur `[data-theme="dark"]`.
+- Ils sont exposés à Tailwind CSS 4 par `@theme inline` (`bg-surface`, `text-ink`, `border-brand`…). Les couleurs invariantes du §3.3 sont déclarées dans `@theme` (`bg-primary`, `bg-danger-solid`, `chart-like`…).
+- Le dégradé `--grad` s'utilise avec l'utilitaire `bg-grad`.
 
 ### 3.2 Jetons sémantiques
 
@@ -175,7 +180,7 @@ Pile complète : `Inter, 'Noto Sans Arabic', 'Noto Sans SC', 'PingFang SC', 'Mic
 
 | Largeur | Disposition |
 |---|---|
-| **≥ 860 px** | Barre supérieure collante (60 px) avec bouton burger. Barre latérale collante de 260 px, pleine hauteur, repliable. Contenu centré, max. 960 px, marges de 40 à 48 px. |
+| **≥ 860 px** (variante Tailwind `desk:`) | Barre supérieure collante (60 px) avec bouton burger. Barre latérale collante de 260 px, pleine hauteur, repliable. Contenu centré, max. 960 px, marges de 40 à 48 px. |
 | **< 860 px** | Barre supérieure collante : burger, logo et nom, thème, langue, avatar. Navigation dans un tiroir modal. Une colonne, marges de 16 px. |
 
 ### 6.2 Structure (landmarks)
@@ -206,7 +211,8 @@ Pile complète : `Inter, 'Noto Sans Arabic', 'Noto Sans SC', 'PingFang SC', 'Mic
 - **Photos** : prévoir des emplacements (vignette d'article, en-tête de profil) pour `cat.webp`, `sassycat.webp` et `background-blog.jpg`.
   - Chaque image porteuse d'information a une alternative pertinente (RGAA 1.2, 1.3).
   - L'auteur est invité à décrire son image dans le texte (aide du champ « Image »).
-- **Drapeaux** : images décoratives (`alt=""` ou `aria-hidden`). Le nom de la langue est toujours écrit en toutes lettres.
+  - Faute de champ dédié au texte alternatif, l'image d'un article est traitée comme décorative (`alt=""`) : sa description est portée par le texte de l'article.
+- **Drapeaux** : images décoratives (`alt=""` ou `aria-hidden`), servies en local depuis `public/images/flags` (aucune requête externe). Le nom de la langue est toujours écrit en toutes lettres.
 
 ---
 
@@ -267,7 +273,8 @@ Pile complète : `Inter, 'Noto Sans Arabic', 'Noto Sans SC', 'PingFang SC', 'Mic
 ### 9.5 Bouton de thème
 
 - Bouton icône lune (thème clair) ou soleil (thème sombre), avec `aria-pressed` et le libellé « Mode sombre ».
-- Le choix est mémorisé (`localStorage`). Par défaut, il suit `prefers-color-scheme`.
+- Le choix est mémorisé (`localStorage`, clé `pd-theme`). Par défaut, il suit `prefers-color-scheme`, y compris quand la préférence du système change.
+- Le thème est posé sur `<html data-theme>` par un script inline, avant le premier rendu : aucun flash au chargement. L'icône et sa rotation suivent `data-theme` en CSS.
 
 ### 9.6 Carte article
 
@@ -279,12 +286,14 @@ Structure : avatar, pseudo, espèce et date (`<time>`), puis titre (h2 contenant
   - lien vers les commentaires, avec texte masqué « sur « titre » ».
 - **État réagi** : fond `--tint` et bordure `--brand`. Le changement est perceptible même sans la couleur, grâce à `aria-pressed` et à la variation de contour.
 - **Une seule variante dans tout le site.** Dans « Mes articles », la carte reçoit en pied les actions « Lire » et « Supprimer ».
+- **Bandeau d'accueil (visiteur)** : il précède le h1 « Articles récents ». Son titre est donc un paragraphe mis en forme, et non un h2 : la hiérarchie h1 → h2 reste sans saut (RGAA 9.1). La région porte ce titre comme nom accessible.
 
 ### 9.7 Détail d'article
 
 - Bouton « Retour aux articles » (sa flèche s'inverse en RTL).
 - Carte : h1, auteur, corps à 18 px, réactions.
-- Section « Commentaires (n) » : liste `<ul>` de blocs `--cream`, puis formulaire avec un label visible. Pour un visiteur : « Connectez-vous pour commenter et réagir ».
+- Section « Commentaires (n) » : liste `<ul>` de blocs `--cream`, puis formulaire avec un label visible. Pour un visiteur : « Connectez-vous pour commenter et réagir », avec retour sur l'article après la connexion.
+- Une vue est comptée à l'ouverture de l'article, une seule fois par membre.
 
 ### 9.8 Formulaires
 
@@ -302,6 +311,21 @@ Structure : avatar, pseudo, espèce et date (`<time>`), puis titre (h2 contenant
   - à la connexion, un bloc `role="alert"` affiche le message avec une icône.
 - Validation à la soumission uniquement : aucune erreur affichée pendant la saisie.
 - Les messages ne révèlent pas d'information sensible (« Pseudo ou mot de passe incorrect »).
+- Les formulaires de connexion et d'inscription sont en `method="post"` : envoyés avant l'hydratation, ils ne placent jamais le mot de passe dans l'URL.
+
+**Règles de saisie** (identiques côté client et côté API, `src/lib/validation.ts`)
+
+| Champ | Règle |
+|---|---|
+| Pseudo | 3 à 30 caractères, unique |
+| Adresse e-mail | format `nom@domaine.fr`, unique |
+| Biographie | facultative, 500 caractères maximum |
+| Espèce | facultative : Chat, Chien, Lapine, Chatonne, Chiot, Animal (par défaut) |
+| Mot de passe | 8 à 128 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial. Chaque règle manquante a son propre message. |
+| Titre d'article | obligatoire, 150 caractères maximum |
+| Texte d'article | 20 caractères minimum (compteur dans l'aide) |
+| Image d'article | facultative : JPG, PNG, WebP ou GIF, 4 Mo maximum |
+| Commentaire | non vide, 2 000 caractères maximum |
 
 ### 9.9 Recherche
 
@@ -321,7 +345,7 @@ Structure : avatar, pseudo, espèce et date (`<time>`), puis titre (h2 contenant
 |---|---|---|
 | Message temporaire (« toast ») | `role="status"`, `aria-live="polite"` | Confirmations : publié, connecté, langue changée. Affiché 4 s, en bas au centre. |
 | Alerte de formulaire | `role="alert"` | Erreur de connexion |
-| Dialogue de confirmation | `role="alertdialog"`, `aria-modal`, `aria-labelledby`, `aria-describedby` | Suppression d'article ou de compte. Le focus va sur « Annuler » ; `Échap` ferme. |
+| Dialogue de confirmation | `role="alertdialog"`, `aria-modal`, `aria-labelledby`, `aria-describedby` | Suppression d'article ou de compte, dans un `<dialog>` modal. Le focus va sur « Annuler » ; `Échap` ferme ; le focus revient au déclencheur, ou sur `<main>` s'il a disparu. |
 
 Les `alert()` natifs du navigateur sont supprimés.
 
@@ -329,10 +353,15 @@ Les `alert()` natifs du navigateur sont supprimés.
 
 - Fond `--surface`, © 2026, `<nav aria-label="Liens de pied de page">` : À propos, Contact, Confidentialité, et **Accessibilité : partiellement conforme**.
 - La mention d'état de conformité est obligatoire au sens du RGAA ; le lien mène à la déclaration d'accessibilité.
+- Les quatre liens mènent à de vraies pages : À propos, Contact (tickets GitHub), Confidentialité (données réellement collectées) et la déclaration d'accessibilité.
 
 ### 9.13 Page 404
 
-Intégrée au shell : logo, h1 « Page introuvable », texte, bouton primaire « Retour au fil d'actualité ».
+Intégrée au shell : logo, h1 « Page introuvable », texte, bouton primaire « Retour au fil d'actualité ». Toute URL inconnue sous `/{langue}` y mène, dans la bonne langue.
+
+### 9.14 Page d'erreur
+
+Intégrée au shell : icône, h1 « Une erreur est survenue », texte sans détail technique, bouton « Réessayer ».
 
 ---
 
@@ -340,10 +369,11 @@ Intégrée au shell : logo, h1 « Page introuvable », texte, bouton primaire «
 
 | État | Traitement |
 |---|---|
-| **Chargement** | Squelettes de cartes sur le fil, le détail d'article et « Mes articles ». `aria-busy="true"` et texte masqué « Chargement des articles… ». Squelettes en `--sk1` / `--sk2`. |
+| **Chargement** | Squelettes sur le fil, le détail d'article, « Mes articles », le profil, l'activité et les statistiques. `aria-busy="true"` et texte masqué (« Chargement des articles… »). Squelettes en `--sk1` / `--sk2`. |
+| **Erreur de chargement** | Bloc `--danger-bg` (`role="alert"`) avec une icône, « Impossible de charger le contenu… » et le bouton « Réessayer ». |
 | **Vide** | Bloc `--cream` avec une phrase chaleureuse et une action primaire. Exemples : « Vous n'avez encore rien publié » avec le bouton « Écrire mon premier article » ; « Aucun article ne correspond à… ». |
 | **Erreur de formulaire** | Voir §9.8 |
-| **Page protégée** | Redirection vers Connexion avec le message « Connectez-vous pour accéder à cette page » (`role="status"`). |
+| **Page protégée** | Redirection vers Connexion avec le message « Connectez-vous pour accéder à cette page » (`role="status"`), puis retour sur la page demandée après la connexion. |
 | **Visiteur qui réagit** | Message temporaire « Connectez-vous pour réagir aux articles ». |
 | **Sélectionné / actif** | Fond `--tint` ou `--surface` avec `aria-pressed` ou `aria-current`. |
 | **Focus** | Contour de 3 px en `--ink`, décalage de 2 px, sur tous les éléments interactifs. |
@@ -360,13 +390,29 @@ Intégrée au shell : logo, h1 « Page introuvable », texte, bouton primaire «
 | العربية | `ar` | Ligue arabe | **RTL** |
 | 中文 (mandarin, chinois simplifié) | `zh` | Chine | LTR |
 
+**Routage** (guide « Internationalization » de Next.js 16)
+
+- La langue fait partie de l'URL : `/fr/feed`, `/en/feed`, `/ar/feed`, `/zh/feed`. Toutes les pages sont sous `src/app/[lang]/`, dont le layout racine pose `lang` et `dir` sur `<html>` (RGAA 8.3 / WCAG 3.1.1).
+- `src/proxy.ts` redirige une URL sans langue vers :
+  1. le dernier choix du visiteur (cookie `NEXT_LOCALE`) ;
+  2. sinon, la langue du navigateur (`Accept-Language`) ;
+  3. sinon, le français.
+- Le sélecteur de langue mène à la même page dans l'autre langue, mémorise le choix, l'annonce par un message de statut et rend le focus au bouton.
+
+**Messages**
+
+- Un fichier JSON par langue (`src/i18n/messages/{fr,en,ar,zh}.json`), structuré par espaces de noms (`shell`, `feed`, `article`, `login`, `register`…). Le français est la référence : si une clé manque dans une autre langue, la compilation échoue.
+- Les messages sont chargés côté serveur (`getDictionary()`, langue lue avec `next/root-params`). Seul le dictionnaire de la langue courante est envoyé au navigateur.
+- Côté client, `useI18n()` fournit `t` (les messages), `f()` (variables `{nom}`), `p()` (pluriels), `r()` (variable qui est un élément React, par exemple un texte cité avec son propre `lang`) et `date()`.
+- Les liens et redirections passent par `src/i18n/navigation.tsx` (`Link`, `useRouter`, `usePathname`), qui ajoute la langue aux chemins de `src/lib/routes.ts`.
+
 **Règles**
 
-- `lang` et `dir` sont mis à jour sur `<html>` à chaque changement (RGAA 8.3 / WCAG 3.1.1). Le choix est mémorisé.
-- Le titre du document (`<title>`) est traduit : « {titre de page} – Pattes Douces » (RGAA 8.6 / WCAG 2.4.2).
-- **Contenus des membres** (articles, commentaires) : ils restent dans leur langue d'origine et portent leur propre attribut `lang` (RGAA 8.7 / WCAG 3.1.2). Un nouvel article prend la langue de l'interface au moment de sa rédaction.
+- Le titre du document (`<title>`) est traduit : « {titre de page} – Pattes Douces » (RGAA 8.6 / WCAG 2.4.2). Celui d'un article est son titre.
+- **Contenus des membres** (articles, commentaires) : ils restent dans leur langue d'origine et portent leur propre attribut `lang` (RGAA 8.7 / WCAG 3.1.2). Un nouvel article ou commentaire prend la langue de l'interface au moment de sa rédaction.
 - **RTL** : uniquement des propriétés logiques (`margin-inline-start`, `inset-inline-start/end`, `border-inline-end`, `text-align: start/end`). Les icônes directionnelles, comme la flèche retour, sont inversées.
-- **Pluriels et formats** : les textes dynamiques (« 3 commentaires », « 2 articles trouvés ») sont des fonctions par langue. Pas de concaténation figée.
+- **Pluriels et formats** : les textes dynamiques (« 3 commentaires », « 2 articles trouvés ») sont des objets de formes CLDR (`one`, `other`… ; 6 formes en arabe, 1 en chinois), accordés par `Intl.PluralRules`. Pas de concaténation figée.
+- Dates au format local `JJ/MM/AAAA` (`AAAA/MM/JJ` en chinois), en chiffres latins dans toutes les langues.
 - Les guillemets suivent la langue : « » (fr), “ ” (en), « » (ar), 「」 (zh).
 - Les libellés doivent supporter environ +35 % de longueur (allemand, arabe) sans casser la mise en page.
 
@@ -447,22 +493,26 @@ Niveau visé : **WCAG 2.2 AA**, soit le **RGAA 4.1.2** (106 critères).
 
 ## 15. Inventaire des écrans
 
-| Écran | Accès | États couverts |
-|---|---|---|
-| Accueil / fil | public | bandeau visiteur, recherche, chargement, aucun résultat |
-| Détail d'article | public | chargement, commentaires, invitation à se connecter |
-| Connexion | public | redirection protégée, erreur |
-| Inscription | public | validations |
-| Écrire un article | membre | validations |
-| Mes articles | membre | vide, suppression |
-| Profil | membre | suppression de compte |
-| Activité et historique | membre | vides |
-| Statistiques | membre | vide, graphiques, tableau |
-| 404 | public | — |
+Chaque route existe en 4 langues, préfixée par `/{langue}` (par exemple `/fr/feed`).
 
-**Comptes de démo** : Moustache, Caramel, Plume — mot de passe `patte`.
+| Écran | Route | Accès | États couverts |
+|---|---|---|---|
+| Accueil / fil | `/` et `/feed` | public | bandeau visiteur, recherche, chargement, aucun résultat, erreur |
+| Détail d'article | `/articles/{id}` | public | chargement, commentaires, invitation à se connecter, article introuvable, erreur |
+| Connexion | `/login` | public | redirection protégée, erreur |
+| Inscription | `/register` | public | validations |
+| Écrire un article | `/articles/new` | membre | validations, échec de publication |
+| Mes articles | `/my-articles` | membre | vide, suppression |
+| Profil | `/profile` | membre | suppression de compte |
+| Activité et historique | `/activity` | membre | vides |
+| Mes commentaires | `/comments` | membre | vide (liste complète, liée depuis Activité) |
+| Statistiques | `/dashboard` | membre | vide, graphiques, tableau |
+| À propos, Contact, Confidentialité | `/about`, `/contact`, `/privacy` | public | — |
+| Déclaration d'accessibilité | `/accessibility` | public | — |
+| 404 | toute URL inconnue | public | — |
+| Erreur | — | public | réessai |
 
-**Réglages de démo (Tweaks)** : simuler le chargement, démarrer connecté, compte neuf (états vides).
+Les anciennes URL (`/Connexion`, `/Feed`, `/Article_page/{id}`…) sont redirigées vers les nouvelles.
 
 ---
 
@@ -482,3 +532,18 @@ Niveau visé : **WCAG 2.2 AA**, soit le **RGAA 4.1.2** (106 critères).
 | 10 | Barre latérale tronquée | Barre collante pleine hauteur, repliable |
 | — | Mode sombre non relié | Thème sombre complet, mémorisé, conforme AA |
 | — | `alert()` natifs | Messages de statut ARIA et dialogue modal |
+
+---
+
+## 17. Notes d'implémentation
+
+| Sujet | Choix |
+|---|---|
+| Arborescence | `src/app/[lang]/` (pages), `src/components/` (`ui/`, `layout/`, `icons/`, `info/`), `src/features/` (par domaine), `src/i18n/`, `src/theme/` |
+| Composants du §9 | `Button` / `ButtonLink`, `FormField`, `Toast`, `ConfirmDialog`, `Skeleton`, `EmptyState` / `ErrorState`, `StatTile`, `Donut`, `Bars`, `ArticleCard`, `ReactionButton` |
+| Session | Pseudo, identifiant et espèce dans le `localStorage`. Les pages réservées attendent l'hydratation avant de rediriger (`RequireAuth`). |
+| Données ajoutées à l'API | Champs facultatifs `User.espece`, `Article.langue`, `Commentaire.langue` ; nombre de commentaires par article ; identifiant de l'article créé |
+| Suppression du compte | Efface le compte, ses articles, ses commentaires et les commentaires reçus sur ses articles. Les réactions laissées sur les articles des autres ne sont pas effacées : le texte du dialogue le reflète. |
+| Titre de la 404 | Seul un `not-found` à la racine de `app/` peut exporter des métadonnées. Le titre est donc rendu par la page elle-même (`<title>` de React 19). |
+| Vérification | Après chaque modification : `pnpm typecheck`, `pnpm lint` et l'outil `get_errors` du MCP next-devtools sur le serveur de dev |
+
