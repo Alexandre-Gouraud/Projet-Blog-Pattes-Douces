@@ -54,7 +54,8 @@
       "about": "About",
       "contact": "Contact",
       "privacy": "Privacy",
-      "accessibility": "Accessibility: partially compliant"
+      "accessibility": "Accessibility",
+      "mention": "{link}: partially compliant"
     }
   },
   "titles": {
@@ -269,11 +270,11 @@
       "deletion": "From your profile, “Delete account” erases your account, your articles and your comments."
     },
     "accessibility": {
-      "intro": "Pattes Douces is committed to making its website accessible, following the French accessibility framework RGAA version 4.1.2, which matches WCAG 2.2 level AA.",
+      "intro": "Pattes Douces is committed to making its website accessible, following the French accessibility framework RGAA version 4.1.2, which matches WCAG 2.2 level AA. This accessibility statement applies to the Pattes Douces website.",
       "statusHeading": "Compliance status",
       "status": "Pattes Douces is partially compliant with RGAA 4.1.2: the October 2026 redesign was built to meet level AA, but no full audit has been carried out yet.",
       "testsHeading": "Test results",
-      "tests": "Automated tests (axe, Lighthouse), keyboard-only journeys, tests at 320 px wide, at 200% and 400% zoom and in Arabic (right-to-left) have been carried out. An RGAA audit on a sample of pages is planned.",
+      "tests": "No full RGAA audit has been carried out yet, so the share of criteria met has not been measured. During the redesign, the following checks were done by hand: keyboard-only navigation, skip link, menus and dialogs (Escape key, focus return), display in Arabic (right-to-left) and in both themes. A full audit (automated tests and the grid of 106 criteria) is under way; its results will be published on this page.",
       "limitsHeading": "Non-accessible content",
       "limits": [
         "Article images have no text alternative of their own: authors are invited to describe them in the article text.",
@@ -281,15 +282,60 @@
         "Screen reader tests (NVDA, JAWS, VoiceOver, TalkBack) are still to be carried out."
       ],
       "dateHeading": "Date of this statement",
-      "date": "This statement was made on 19 October 2026.",
-      "techHeading": "Technologies used",
+      "date": "This statement was made on 19 October 2026 and updated on 20 October 2026.",
+      "techHeading": "Technologies used to build the site",
       "tech": "HTML, CSS, JavaScript (React and Next.js).",
+      "environmentHeading": "Test environment",
+      "environment": [
+        "Google Chrome (version 155) on Linux, with keyboard and mouse.",
+        "Screen widths from 320 to 1,440 pixels.",
+        "Planned screen reader tests: NVDA with Firefox, JAWS with Chrome, VoiceOver with Safari (macOS and iOS), TalkBack with Chrome (Android)."
+      ],
+      "toolsHeading": "Tools used to assess accessibility",
+      "tools": [
+        "Chrome developer tools (accessibility tree, theme and screen size emulation).",
+        "axe-core and Lighthouse (automated audit under way).",
+        "Contrast ratio calculation for the design system colours."
+      ],
+      "pagesHeading": "Pages checked",
+      "pages": [
+        "Home (news feed)",
+        "Article detail",
+        "Log in",
+        "Sign up",
+        "Write an article",
+        "My articles",
+        "Profile",
+        "Activity & history",
+        "Statistics",
+        "Accessibility statement",
+        "Page not found (404)"
+      ],
       "contactHeading": "Feedback and contact",
       "contact": "If you cannot access a piece of content or a service, contact us so we can direct you to an accessible alternative or provide the content in another form.",
       "contactLink": "Report a problem on GitHub",
       "remedyHeading": "Remedies",
-      "remedy": "If you notice an accessibility issue that prevents you from accessing content, have reported it to us and have not received a satisfactory answer, you can contact the French Defender of Rights (Défenseur des droits): through its online form, or by free mail to Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France.",
-      "remedyLink": "Defender of Rights online form"
+      "remedy": "Use this procedure if you have reported to the site manager an accessibility issue that prevents you from accessing content or a service of the site, and you have not received a satisfactory answer. You can:",
+      "remedyForm": "Write to the French Defender of Rights (Défenseur des droits)",
+      "remedyDelegate": "Contact the Defender of Rights' delegate in your region",
+      "remedyMail": "Send a letter by post (free, no stamp needed): Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France",
+      "remedyPhone": "Call the Defender of Rights: +33 9 69 39 00 00",
+      "schemaHeading": "Multi-year accessibility plan 2026-2028",
+      "schemaIntro": "Pattes Douces is a community project maintained by a small team. Accessibility is part of every change to the site, according to the following commitments:",
+      "schema": [
+        "Every new feature follows the project's design system and the RGAA requirements from the start.",
+        "Every change is checked by automated tests in continuous integration and tested with the keyboard before going live.",
+        "A full RGAA audit is carried out at least once a year and after each redesign; this statement is updated after each audit.",
+        "User reports are handled first, with an accessible alternative offered until the fix is released.",
+        "Contributors are trained in accessibility best practices."
+      ],
+      "planHeading": "2026 action plan",
+      "plan": [
+        "Full RGAA audit of the pages listed above, in both themes and all four languages.",
+        "Fixing the issues found and adding automated accessibility tests to continuous integration.",
+        "Tests with the NVDA, JAWS, VoiceOver and TalkBack screen readers.",
+        "Updating this statement with the measured compliance rate."
+      ]
     }
   }
 }

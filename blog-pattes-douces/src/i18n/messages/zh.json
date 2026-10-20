@@ -54,7 +54,8 @@
       "about": "关于我们",
       "contact": "联系我们",
       "privacy": "隐私",
-      "accessibility": "无障碍：部分符合"
+      "accessibility": "无障碍",
+      "mention": "{link}：部分符合"
     }
   },
   "titles": {
@@ -269,11 +270,11 @@
       "deletion": "在个人资料中，点击「删除账户」即可删除你的账户、文章和评论。"
     },
     "accessibility": {
-      "intro": "Pattes Douces 致力于让网站人人可用，遵循法国无障碍参考标准 RGAA 4.1.2 版，对应 WCAG 2.2 AA 级。",
+      "intro": "Pattes Douces 致力于让网站人人可用，遵循法国无障碍参考标准 RGAA 4.1.2 版，对应 WCAG 2.2 AA 级。本无障碍声明适用于 Pattes Douces 网站。",
       "statusHeading": "符合状态",
       "status": "Pattes Douces 网站部分符合 RGAA 4.1.2：2026 年 10 月的改版按 AA 级设计，但尚未进行完整审计。",
       "testsHeading": "测试结果",
-      "tests": "已进行自动化测试（axe、Lighthouse）、纯键盘操作测试，以及 320 像素宽度、200% 和 400% 缩放和阿拉伯语（从右到左）测试。计划对部分页面进行 RGAA 审计。",
+      "tests": "尚未进行完整的 RGAA 审计，因此尚未测量已满足标准的比例。改版期间已手动完成以下检查：纯键盘导航、跳转链接、菜单和对话框（Esc 键、焦点返回）、阿拉伯语（从右到左）显示以及两种主题。完整审计（自动化测试和 106 项标准评估表）正在进行中，结果将在本页公布。",
       "limitsHeading": "不可访问的内容",
       "limits": [
         "文章图片没有独立的替代文本：作者被邀请在正文中描述图片。",
@@ -281,15 +282,60 @@
         "尚未使用屏幕阅读器（NVDA、JAWS、VoiceOver、TalkBack）进行测试。"
       ],
       "dateHeading": "声明日期",
-      "date": "本声明于 2026 年 10 月 19 日制定。",
-      "techHeading": "使用的技术",
+      "date": "本声明于 2026 年 10 月 19 日制定，并于 2026 年 10 月 20 日更新。",
+      "techHeading": "网站使用的技术",
       "tech": "HTML、CSS、JavaScript（React 和 Next.js）。",
+      "environmentHeading": "测试环境",
+      "environment": [
+        "Linux 上的 Google Chrome（155 版），使用键盘和鼠标。",
+        "屏幕宽度 320 至 1440 像素。",
+        "计划进行的屏幕阅读器测试：NVDA 配合 Firefox、JAWS 配合 Chrome、VoiceOver 配合 Safari（macOS 和 iOS）、TalkBack 配合 Chrome（Android）。"
+      ],
+      "toolsHeading": "无障碍评估工具",
+      "tools": [
+        "Chrome 开发者工具（无障碍树、主题和屏幕尺寸模拟）。",
+        "axe-core 和 Lighthouse（自动审计进行中）。",
+        "设计系统颜色的对比度计算。"
+      ],
+      "pagesHeading": "已检查的页面",
+      "pages": [
+        "首页（最新文章）",
+        "文章详情",
+        "登录",
+        "注册",
+        "写文章",
+        "我的文章",
+        "个人资料",
+        "动态与历史",
+        "统计",
+        "无障碍声明",
+        "页面未找到（404）"
+      ],
       "contactHeading": "反馈与联系",
       "contact": "如果你无法访问某项内容或服务，请联系我们，我们会为你提供可访问的替代方案或以其他形式提供内容。",
       "contactLink": "在 GitHub 上报告问题",
       "remedyHeading": "救济途径",
-      "remedy": "如果你发现无障碍缺陷导致无法访问内容，并已向我们反映但未获得满意答复，可以联系法国权利保护官（Défenseur des droits）：通过其在线表格，或免费邮寄至 Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France。",
-      "remedyLink": "权利保护官在线表格"
+      "remedy": "如果你已向网站负责人报告了妨碍你访问内容或服务的无障碍缺陷，但未获得满意答复，可以采用以下途径：",
+      "remedyForm": "给法国权利保护官（Défenseur des droits）写信",
+      "remedyDelegate": "联系你所在地区的权利保护官代表",
+      "remedyMail": "邮寄信件（免费，无需贴邮票）：Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France",
+      "remedyPhone": "致电权利保护官：+33 9 69 39 00 00",
+      "schemaHeading": "2026-2028 年无障碍多年计划",
+      "schemaIntro": "Pattes Douces 是一个由小团队维护的社区项目。无障碍贯穿网站的每一次改进，并遵循以下承诺：",
+      "schema": [
+        "每项新功能从设计之初就遵循项目的设计系统和 RGAA 要求。",
+        "每次修改都经过持续集成中的自动化测试，并在上线前进行键盘测试。",
+        "每年至少进行一次完整的 RGAA 审计，每次改版后也会进行；每次审计后更新本声明。",
+        "优先处理用户的反馈，在修复前提供可访问的替代方案。",
+        "项目贡献者接受无障碍最佳实践培训。"
+      ],
+      "planHeading": "2026 年行动计划",
+      "plan": [
+        "对上述页面进行完整的 RGAA 审计，覆盖两种主题和四种语言。",
+        "修复发现的不符合项，并在持续集成中加入自动化无障碍测试。",
+        "使用 NVDA、JAWS、VoiceOver 和 TalkBack 屏幕阅读器进行测试。",
+        "以测得的符合率更新本声明。"
+      ]
     }
   }
 }
