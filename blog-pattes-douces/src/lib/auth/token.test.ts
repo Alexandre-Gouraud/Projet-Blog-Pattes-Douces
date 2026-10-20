@@ -55,4 +55,17 @@ describe("cookieOptions", () => {
     expect(cookieOptions("development").secure).toBe(false);
     expect(cookieOptions("test").secure).toBe(false);
   });
+
+  it("can be overridden with COOKIE_SECURE", () => {
+    expect(cookieOptions("production", "false").secure).toBe(false);
+    expect(cookieOptions("development", "true").secure).toBe(true);
+    expect(cookieOptions("production", " TRUE ").secure).toBe(true);
+  });
+
+  it("ignores an invalid COOKIE_SECURE and never defaults to insecure in production", () => {
+    expect(cookieOptions("production", "").secure).toBe(true);
+    expect(cookieOptions("production", "0").secure).toBe(true);
+    expect(cookieOptions("production", "other").secure).toBe(true);
+    expect(cookieOptions("development", "other").secure).toBe(false);
+  });
 });
