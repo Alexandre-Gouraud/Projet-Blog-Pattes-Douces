@@ -56,8 +56,7 @@
       "about": "关于我们",
       "contact": "联系我们",
       "privacy": "隐私",
-      "accessibility": "无障碍",
-      "mention": "{link}：部分符合"
+      "accessibility": "无障碍"
     }
   },
   "titles": {
@@ -275,8 +274,6 @@
     },
     "accessibility": {
       "intro": "Pattes Douces 致力于让网站人人可用，遵循法国无障碍参考标准 RGAA 4.1.2 版，对应 WCAG 2.2 AA 级。本无障碍声明适用于 Pattes Douces 网站。",
-      "statusHeading": "符合状态",
-      "status": "Pattes Douces 网站部分符合 RGAA 4.1.2：2026 年 10 月的改版按 AA 级设计，但尚未进行完整审计。",
       "testsHeading": "测试结果",
       "tests": "尚未进行完整的 RGAA 审计，因此尚未测量已满足标准的比例。改版期间已手动完成以下检查：纯键盘导航、跳转链接、菜单和对话框（Esc 键、焦点返回）、阿拉伯语（从右到左）显示以及两种主题。完整审计（自动化测试和 106 项标准评估表）正在进行中，结果将在本页公布。",
       "limitsHeading": "不可访问的内容",

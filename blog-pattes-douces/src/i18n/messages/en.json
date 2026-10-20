@@ -56,8 +56,7 @@
       "about": "About",
       "contact": "Contact",
       "privacy": "Privacy",
-      "accessibility": "Accessibility",
-      "mention": "{link}: partially compliant"
+      "accessibility": "Accessibility"
     }
   },
   "titles": {
@@ -275,8 +274,6 @@
     },
     "accessibility": {
       "intro": "Pattes Douces is committed to making its website accessible, following the French accessibility framework RGAA version 4.1.2, which matches WCAG 2.2 level AA. This accessibility statement applies to the Pattes Douces website.",
-      "statusHeading": "Compliance status",
-      "status": "Pattes Douces is partially compliant with RGAA 4.1.2: the October 2026 redesign was built to meet level AA, but no full audit has been carried out yet.",
       "testsHeading": "Test results",
       "tests": "No full RGAA audit has been carried out yet, so the share of criteria met has not been measured. During the redesign, the following checks were done by hand: keyboard-only navigation, skip link, menus and dialogs (Escape key, focus return), display in Arabic (right-to-left) and in both themes. A full audit (automated tests and the grid of 106 criteria) is under way; its results will be published on this page.",
       "limitsHeading": "Non-accessible content",
