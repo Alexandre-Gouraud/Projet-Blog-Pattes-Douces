@@ -7,7 +7,7 @@
  */
 import { env, pipeline, type TranslationPipeline } from "@huggingface/transformers";
 import type { ModelId } from "./models";
-import { joinTranslated, splitForTranslation } from "./models";
+import { joinTranslated, loadRoute, splitForTranslation } from "./models";
 import type { WorkerRequest, WorkerResponse } from "./protocol";
 
 env.allowRemoteModels = false;
@@ -71,17 +71,18 @@ async function handle(request: WorkerRequest) {
     return;
   }
 
-  const { id, texts, models } = request;
+  const { id, texts, models, fallback } = request;
   // Avancement du chargement : moyenne sur les modeles de la route (1 ou 2 avec le pivot).
-  const progress = models.map(() => 0);
-  const loaded = await Promise.all(
-    models.map((model, index) =>
-      loadModel(model, (value) => {
-        progress[index] = value;
-        post({ type: "progress", id, loaded: progress.reduce((a, b) => a + b, 0) / models.length });
-      }),
-    ),
-  );
+  // Si un modele direct manque, la route de secours (par l'anglais) prend le relais.
+  const progress: number[] = [];
+  const loaded = await loadRoute(models, fallback, (model, index, count) => {
+    if (index === 0) progress.length = 0;
+    progress[index] = 0;
+    return loadModel(model, (value) => {
+      progress[index] = value;
+      post({ type: "progress", id, loaded: progress.reduce((a, b) => a + b, 0) / count });
+    });
+  });
 
   const results: string[] = [];
   for (const [index, text] of texts.entries()) {
