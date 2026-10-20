@@ -85,7 +85,7 @@ src/
 ├── types/                    Types partagés, alignés sur Prisma
 └── proxy.ts                  Choix de la langue et redirection des anciennes URL
 scripts/
-└── translation-assets.mjs    Installe les modèles de traduction et le moteur ONNX dans public/
+└── translation-assets.mjs    Télécharge les modèles de traduction dans public/models/
 ```
 
 **Conventions**
@@ -135,12 +135,12 @@ une autre langue que celle de l'interface (voir [DESIGN.md §9.15](../DESIGN.md)
 | Worker | `src/features/translation/translation.worker.ts` | Transformers.js (q8, WebAssembly), modèles chargés une fois, texte renvoyé au fil de la traduction |
 | Client | `src/features/translation/translator.ts` | Un worker par page, cache des traductions pour la session, préchauffage au survol / focus |
 | Interface | `useContentTranslation.ts`, `TranslateControl.tsx` | Bascule traduction / original, zone `role="status"`, `lang` par texte |
-| Fichiers | `scripts/translation-assets.mjs` | `pnpm translation:setup` : modèles dans `public/models` (~680 Mo), moteur dans `public/ort` (~40 Mo) |
+| Fichiers | `scripts/translation-assets.mjs` | `pnpm translation:setup` : modèles dans `public/models` (~680 Mo). Le moteur ONNX WebAssembly n'est pas copié : le build Next.js l'émet dans `/_next/static/`, en un seul exemplaire |
 
 - Tout est servi par le site (`env.allowRemoteModels = false`) : aucun texte
   n'est envoyé à un service tiers.
-- Les dossiers `public/models` et `public/ort` sont ignorés par git ; le
-  Dockerfile les prépare dans une étape mise en cache.
+- Le dossier `public/models` est ignoré par git ; le Dockerfile le prépare
+  dans une étape mise en cache.
 - Limite : ces petits modèles traduisent bien fr ↔ en ; les paires qui passent
   par l'anglais (vers l'arabe notamment) restent approximatives.
 
@@ -229,9 +229,9 @@ navigateur.
 | Étape | Contenu |
 |---|---|
 | `deps` | Dépendances (`pnpm install --frozen-lockfile`) et client Prisma |
-| `translation` | `scripts/translation-assets.mjs` : modèles et moteur ONNX, en cache tant que le script et le lockfile ne changent pas |
+| `translation` | `scripts/translation-assets.mjs` : modèles, en cache tant que le script et le lockfile ne changent pas |
 | `builder` | `pnpm build` en mode `standalone` (`NEXT_OUTPUT_STANDALONE=true`) |
-| `runner` | Image finale : serveur autonome, `public/` avec modèles et moteur, utilisateur non root |
+| `runner` | Image finale : serveur autonome, `public/` avec les modèles, utilisateur non root |
 
 **`compose.yaml`**
 

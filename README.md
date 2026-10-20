@@ -160,8 +160,8 @@ pnpm dev                  # 5. development server
 The application is available at **http://localhost:3000** (redirected to
 `/fr`, `/en`, `/ar` or `/zh`). To stop the database: `pnpm db:down` (data is kept).
 
-> **Step 4** downloads the 6 translation models into `public/models` and copies
-> the ONNX runtime into `public/ort` (both ignored by git). Without it,
+> **Step 4** downloads the 6 translation models into `public/models` (ignored by
+> git). Without it,
 > everything works except the "Translate to…" button on articles and comments.
 
 > **With MongoDB Atlas** instead of Docker: skip step 2 and replace
@@ -210,7 +210,7 @@ To run from `blog-pattes-douces/`:
 | `pnpm lint` | ESLint analysis |
 | `pnpm typecheck` | TypeScript check (route types included) |
 | `pnpm test` / `pnpm test:watch` | Unit tests (Vitest), once / in watch mode |
-| `pnpm translation:setup` | Downloads the translation models and copies the ONNX runtime into `public/` |
+| `pnpm translation:setup` | Downloads the translation models into `public/models` |
 | `pnpm db:up` / `pnpm db:down` | Start / stop MongoDB (Docker) |
 | `pnpm db:push` | Sync the database indexes with the Prisma schema |
 | `pnpm docker:up` / `pnpm docker:down` | Start / stop the whole application in Docker |
@@ -225,13 +225,13 @@ flowchart LR
     A -- "image upload" --> V["Vercel Blob"]
     B -- "image display" --> V
     B -- "postMessage" --> W["Web Worker<br/>Transformers.js"]
-    W -- "/models, /ort" --> S["Files served<br/>by the site"]
+    W -- "/models, /_next/static" --> S["Files served<br/>by the site"]
 ```
 
 ```
 blog-pattes-douces/
 ├── prisma/schema.prisma    Data model (User, Article, Commentaire)
-├── public/                 Logo, flags; models/ and ort/ installed by translation:setup
+├── public/                 Logo, flags; models/ installed by translation:setup
 ├── scripts/                translation-assets.mjs (translation models and runtime)
 ├── src/
 │   ├── app/[lang]/         Pages and root layout, one version per language
@@ -507,8 +507,8 @@ L'application est disponible sur **http://localhost:3000** (redirigée vers
 `/fr`, `/en`, `/ar` ou `/zh`). Pour arrêter la base : `pnpm db:down` (les
 données sont conservées).
 
-> **L'étape 4** télécharge les 6 modèles de traduction dans `public/models` et
-> copie le moteur ONNX dans `public/ort` (tous deux ignorés par git). Sans elle,
+> **L'étape 4** télécharge les 6 modèles de traduction dans `public/models`
+> (ignoré par git). Sans elle,
 > tout fonctionne sauf le bouton « Traduire en… » des articles et commentaires.
 
 > **Avec MongoDB Atlas** à la place de Docker : sautez l'étape 2 et remplacez
@@ -557,7 +557,7 @@ et/ou `APP_PORT=3005` (pensez alors à adapter `DATABASE_URL` en option A).
 | `pnpm lint` | Analyse ESLint |
 | `pnpm typecheck` | Vérification TypeScript (types de routes inclus) |
 | `pnpm test` / `pnpm test:watch` | Tests unitaires (Vitest), une fois / en continu |
-| `pnpm translation:setup` | Télécharge les modèles de traduction et copie le moteur ONNX dans `public/` |
+| `pnpm translation:setup` | Télécharge les modèles de traduction dans `public/models` |
 | `pnpm db:up` / `pnpm db:down` | Démarre / arrête MongoDB (Docker) |
 | `pnpm db:push` | Synchronise les index de la base avec le schéma Prisma |
 | `pnpm docker:up` / `pnpm docker:down` | Démarre / arrête toute l'application dans Docker |
@@ -572,13 +572,13 @@ flowchart LR
     A -- "upload d'image" --> V["Vercel Blob"]
     B -- "affichage des images" --> V
     B -- "postMessage" --> W["Web Worker<br/>Transformers.js"]
-    W -- "/models, /ort" --> S["Fichiers servis<br/>par le site"]
+    W -- "/models, /_next/static" --> S["Fichiers servis<br/>par le site"]
 ```
 
 ```
 blog-pattes-douces/
 ├── prisma/schema.prisma    Modèle de données (User, Article, Commentaire)
-├── public/                 Logo, drapeaux ; models/ et ort/ installés par translation:setup
+├── public/                 Logo, drapeaux ; models/ installé par translation:setup
 ├── scripts/                translation-assets.mjs (modèles et moteur de traduction)
 ├── src/
 │   ├── app/[lang]/         Pages et layout racine, une version par langue
