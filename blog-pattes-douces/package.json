@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:up": "docker compose up -d --wait",
     "db:push": "prisma db push",
     "db:down": "docker compose down",
@@ -45,6 +47,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "prisma": "^6.19.3",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
   }
 }
