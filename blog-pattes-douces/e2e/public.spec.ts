@@ -19,7 +19,10 @@ for (const lang of LOCALES) {
 
       test("article", async ({ page, request }) => {
         const response = await request.get("/api/articles");
+        // En CI, le seed garantit un article : une API ou un seed en panne doit faire echouer le test.
+        if (process.env.CI) expect(response.ok()).toBe(true);
         const articles: { id: string }[] = response.ok() ? await response.json() : [];
+        if (process.env.CI) expect(articles.length).toBeGreaterThan(0);
         test.skip(articles.length === 0, "Aucun article en base");
         await page.goto(`/${lang}/articles/${articles[0].id}`);
         await settle(page);

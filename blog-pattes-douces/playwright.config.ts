@@ -22,6 +22,8 @@ export default defineConfig({
   webServer: {
     command: `pnpm exec next build && pnpm exec next start -p ${PORT} -H 127.0.0.1`,
     url: `${baseURL}/fr`,
+    // Le serveur de test tourne en http : le cookie de session ne doit pas etre Secure.
+    env: { COOKIE_SECURE: "false" },
     reuseExistingServer: !process.env.CI,
     timeout: 300_000,
   },
