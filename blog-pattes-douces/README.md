@@ -245,7 +245,9 @@ navigateur.
 | `app` | `app` | Application sur le port 3000, healthcheck sur `/api/articles` |
 
 Sans profil (`pnpm db:up`), seule la base démarre. Les ports se changent avec
-`MONGO_PORT` et `APP_PORT`. Le jeton `BLOB_READ_WRITE_TOKEN` est lu dans `.env`.
+`MONGO_PORT` et `APP_PORT`. Le jeton `BLOB_READ_WRITE_TOKEN` est lu dans `.env`. `COOKIE_SECURE=false` (variable
+d'environnement, vide par défaut) permet de servir l'image en HTTP simple sans que le
+navigateur refuse le cookie de session ; ne jamais s'en servir derrière un vrai site.
 
 ## Sécurité
 
@@ -264,7 +266,9 @@ Ce qui est en place :
   (renouvellement glissant) ; une session expirée est refusée et supprimée.
   La déconnexion (`POST /api/auth/logout`) et la suppression du compte
   détruisent les sessions. Les cookies `Secure` supposent HTTPS ou
-  `localhost` : en HTTP sur une autre machine, le navigateur les refuse.
+  `localhost` : en HTTP sur une autre machine, le navigateur les refuse ;
+  `COOKIE_SECURE=true|false` force l'attribut (par défaut : vrai en production,
+  jamais désactivé sans le demander explicitement).
 - **Identité et propriété** : toute route qui modifie des données appelle
   `requireUser()` et prend l'utilisateur dans la session, jamais dans le
   corps (un `userId` envoyé est ignoré). Sans session : 401. Seul l'auteur
