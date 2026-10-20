@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { ROUTES } from "@/lib/routes";
 
 const linkClass = "inline-flex min-h-11 items-center text-link";
+// Lien dans une phrase : souligne pour ne pas dependre de la seule couleur (RGAA 10.6, WCAG 1.4.1).
+const inlineLinkClass = `${linkClass} underline underline-offset-4`;
 
 /**
  * Pied de page (DESIGN.md §9.12). Contact et Accessibilite restent au meme
@@ -37,7 +39,7 @@ export default function Footer() {
             <span>
               {r(t.shell.footer.mention, {
                 link: (
-                  <Link key="lien" href={ROUTES.accessibility} className={linkClass}>
+                  <Link key="lien" href={ROUTES.accessibility} className={inlineLinkClass}>
                     {t.shell.footer.accessibility}
                   </Link>
                 ),
