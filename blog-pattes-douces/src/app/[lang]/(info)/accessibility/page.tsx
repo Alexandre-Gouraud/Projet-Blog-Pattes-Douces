@@ -9,8 +9,8 @@ const DEFENSEUR_DES_DROITS_DELEGATES = "https://www.defenseurdesdroits.fr/carte-
 /**
  * Page Accessibilite : declaration d'accessibilite selon le modele du RGAA
  * 4.1.2, schema pluriannuel et plan d'actions de l'annee (obligations
- * « Mentions et pages obligatoires »). Liee depuis le pied de page, ou la
- * mention de l'etat de conformite est affichee.
+ * « Mentions et pages obligatoires »). Liee depuis le pied de page. Aucun
+ * etat de conformite n'est declare.
  */
 export default async function AccessibilityPage() {
   const t = await getDictionary();
@@ -18,9 +18,6 @@ export default async function AccessibilityPage() {
   return (
     <InfoPage title={t.titles.accessibility}>
       <p className="m-0">{page.intro}</p>
-      <InfoSection id="etat" heading={page.statusHeading}>
-        <p className="m-0">{page.status}</p>
-      </InfoSection>
       <InfoSection id="tests" heading={page.testsHeading}>
         <p className="m-0">{page.tests}</p>
       </InfoSection>

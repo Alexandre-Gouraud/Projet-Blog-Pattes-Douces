@@ -56,8 +56,7 @@
       "about": "À propos",
       "contact": "Contact",
       "privacy": "Confidentialité",
-      "accessibility": "Accessibilité",
-      "mention": "{link} : partiellement conforme"
+      "accessibility": "Accessibilité"
     }
   },
   "titles": {
@@ -275,8 +274,6 @@
     },
     "accessibility": {
       "intro": "Pattes Douces s'engage à rendre son site accessible, en suivant le référentiel général d'amélioration de l'accessibilité (RGAA) version 4.1.2, qui correspond aux WCAG 2.2 niveau AA. Cette déclaration d'accessibilité s'applique au site Pattes Douces.",
-      "statusHeading": "État de conformité",
-      "status": "Le site Pattes Douces est partiellement conforme avec le RGAA 4.1.2 : la refonte d'octobre 2026 a été conçue pour respecter le niveau AA, mais aucun audit complet n'a encore été réalisé.",
       "testsHeading": "Résultats des tests",
       "tests": "Aucun audit RGAA complet n'a encore été réalisé : le taux de critères respectés n'est donc pas encore mesuré. Pendant la refonte, les vérifications suivantes ont été faites à la main : navigation au clavier seul, lien d'évitement, menus et dialogues (touche Échap, retour du focus), affichage en arabe (de droite à gauche) et dans les deux thèmes. Un audit complet (tests automatiques et grille des 106 critères) est en cours ; ses résultats seront publiés sur cette page.",
       "limitsHeading": "Contenus non accessibles",

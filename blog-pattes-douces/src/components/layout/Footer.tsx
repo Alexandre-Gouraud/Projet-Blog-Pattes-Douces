@@ -5,22 +5,19 @@ import { Link } from "@/i18n/navigation";
 import { ROUTES } from "@/lib/routes";
 
 const linkClass = "inline-flex min-h-11 items-center text-link";
-// Lien dans une phrase : souligne pour ne pas dependre de la seule couleur (RGAA 10.6, WCAG 1.4.1).
-const inlineLinkClass = `${linkClass} underline underline-offset-4`;
 
 /**
  * Pied de page (DESIGN.md §9.12). Contact et Accessibilite restent au meme
- * endroit sur toutes les pages (WCAG 3.2.6). La mention obligatoire de l'etat
- * de conformite (« Accessibilite : partiellement conforme », RGAA) reste
- * lisible en entier : seul le mot « Accessibilite » est un lien vers la
- * declaration, l'etat est ecrit a la suite.
+ * endroit sur toutes les pages (WCAG 3.2.6). Aucun etat de conformite n'est
+ * affiche : le lien « Accessibilite » mene a la declaration.
  */
 export default function Footer() {
-  const { t, r } = useI18n();
+  const { t } = useI18n();
   const links = [
     { href: ROUTES.about, label: t.shell.footer.about },
     { href: ROUTES.contact, label: t.shell.footer.contact },
     { href: ROUTES.privacy, label: t.shell.footer.privacy },
+    { href: ROUTES.accessibility, label: t.shell.footer.accessibility },
   ];
 
   return (
@@ -35,17 +32,6 @@ export default function Footer() {
               </Link>
             </li>
           ))}
-          <li className="inline-flex items-center text-ink2">
-            <span>
-              {r(t.shell.footer.mention, {
-                link: (
-                  <Link key="lien" href={ROUTES.accessibility} className={inlineLinkClass}>
-                    {t.shell.footer.accessibility}
-                  </Link>
-                ),
-              })}
-            </span>
-          </li>
         </ul>
       </nav>
     </footer>
