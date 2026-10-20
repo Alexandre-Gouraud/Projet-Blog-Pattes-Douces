@@ -11,14 +11,37 @@ export function InfoPage({ title, children }: { title: string; children: ReactNo
   );
 }
 
-export function InfoSection({ id, heading, children }: { id: string; heading: string; children: ReactNode }) {
+/** Section titree ; `level` 3 pour une sous-section (hierarchie sans saut, RGAA 9.1). */
+export function InfoSection({
+  id,
+  heading,
+  level = 2,
+  children,
+}: {
+  id: string;
+  heading: string;
+  level?: 2 | 3;
+  children: ReactNode;
+}) {
+  const Heading = level === 2 ? "h2" : "h3";
   return (
     <section aria-labelledby={id} className="flex flex-col gap-2">
-      <h2 id={id} className="m-0 text-[22px] font-bold">
+      <Heading id={id} className={`m-0 font-bold ${level === 2 ? "text-[22px]" : "text-lg"}`}>
         {heading}
-      </h2>
+      </Heading>
       {children}
     </section>
+  );
+}
+
+/** Liste a puces simple d'une page d'information. */
+export function InfoList({ items }: { items: string[] }) {
+  return (
+    <ul className="m-0 flex flex-col gap-1.5 ps-6">
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
   );
 }
 
