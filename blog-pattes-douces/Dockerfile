@@ -20,13 +20,29 @@ COPY prisma ./prisma
 # pnpm dans la version exacte du champ "packageManager" de package.json.
 RUN corepack enable && corepack install && pnpm install --frozen-lockfile
 
+# ---- Traduction des contenus : conversion des modeles fr<->ar (Python) -------
+# Etape jetable, en cache tant que les dependances et le script ne changent pas.
+# Python, torch et optimum restent dans cette etape : l'image finale n'a pas Python.
+# Image epinglee par empreinte (python:3.12-slim) ; dependances installees avec
+# leurs empreintes (--require-hashes), torch CPU depuis l'index PyTorch.
+FROM python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS translation-convert
+WORKDIR /convert
+COPY scripts/requirements-torch.txt scripts/requirements-translation.txt ./scripts/
+RUN pip install --no-cache-dir --require-hashes --no-deps \
+      --index-url https://download.pytorch.org/whl/cpu -r scripts/requirements-torch.txt \
+ && pip install --no-cache-dir --require-hashes -r scripts/requirements-translation.txt
+COPY scripts/convert-opus-mt.py ./scripts/
+RUN python scripts/convert-opus-mt.py --output /convert/models
+
 # ---- Traduction des contenus : modeles Opus-MT -------------------------------
 # Couche separee, en cache tant que le script et le lockfile ne changent pas :
 # les ~680 Mo de modeles ne sont pas retelecharges a chaque build.
 # Le moteur ONNX Runtime WebAssembly vient du build Next.js (/_next/static/).
 FROM deps AS translation
 COPY scripts/translation-assets.mjs ./scripts/
-RUN node scripts/translation-assets.mjs
+# Les modeles fr<->ar viennent de l'etape translation-convert (--no-convert).
+RUN node scripts/translation-assets.mjs --no-convert
+COPY --from=translation-convert /convert/models/local ./public/models/local
 
 # ---- Build de production -----------------------------------------------------
 FROM deps AS builder

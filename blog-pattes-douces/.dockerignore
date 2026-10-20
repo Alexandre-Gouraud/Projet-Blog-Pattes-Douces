@@ -1,5 +1,6 @@
 # Regeneres dans l'image : inutile (et lent) de les envoyer au build Docker.
 node_modules
+.venv-translation
 .next
 out
 build

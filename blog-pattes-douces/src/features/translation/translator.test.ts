@@ -62,7 +62,9 @@ describe("translateTexts", () => {
     expect(worker.translations).toHaveLength(1);
     const request = worker.translations[0];
     expect(request.type).toBe("translate");
-    expect(request.models).toEqual(["Xenova/opus-mt-fr-en", "Xenova/opus-mt-en-ar"]);
+    expect(request.models).toEqual(["local/opus-mt-fr-ar"]);
+    // Route de secours par l'anglais, si le modele direct manque.
+    expect(request.fallback).toEqual(["Xenova/opus-mt-fr-en", "Xenova/opus-mt-en-ar"]);
     expect(request.texts).toEqual(["t1a", "t1b"]);
     worker.emit({ type: "done", id: request.id, texts: ["x", "y"] });
     await expect(promise).resolves.toEqual(["x", "y"]);
@@ -152,7 +154,7 @@ describe("warmUp", () => {
   it("demande le prechauffage des modeles d'une paire", () => {
     mod.warmUp("fr", "ar");
     expect(lastWorker().posted).toEqual([
-      { type: "warm", models: ["Xenova/opus-mt-fr-en", "Xenova/opus-mt-en-ar"] },
+      { type: "warm", models: ["local/opus-mt-fr-ar"] },
     ]);
   });
 

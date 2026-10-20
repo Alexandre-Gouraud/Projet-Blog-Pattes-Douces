@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, type Locale, isLocale } from "@/i18n/config";
-import { modelRoute } from "./models";
+import { modelRoute, pivotFallback } from "./models";
 import type { WorkerRequest, WorkerResponse } from "./protocol";
 
 /**
@@ -120,7 +120,7 @@ export async function translateTexts(
       onProgress: options.onProgress,
       onPartial: options.onPartial && ((index, partial) => options.onPartial?.(missing[index], partial)),
     });
-    send({ type: "translate", id, models, texts: missing.map((i) => texts[i]) });
+    send({ type: "translate", id, models, fallback: pivotFallback(source, target), texts: missing.map((i) => texts[i]) });
   });
 
   const results = [...cached];

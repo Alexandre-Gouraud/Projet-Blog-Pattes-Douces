@@ -1,0 +1,9 @@
+# Entree de pip-compile (voir requirements-translation.txt). torch est verrouille a part.
+torch==2.7.1
+transformers==4.53.3
+optimum[onnxruntime]==1.27.0
+onnx
+onnxruntime
+sentencepiece
+tokenizers
+numpy

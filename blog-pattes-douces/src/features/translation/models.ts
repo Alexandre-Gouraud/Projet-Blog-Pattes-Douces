@@ -1,9 +1,11 @@
 import type { Locale } from "@/i18n/config";
 
 /**
- * Modeles Opus-MT disponibles : de et vers l'anglais. Les autres paires
- * passent par l'anglais (pivot). Doit rester aligne sur MODELS dans
- * scripts/translation-assets.mjs, qui les installe dans public/models.
+ * Modeles Opus-MT disponibles : de et vers l'anglais, plus le francais et
+ * l'arabe en direct (convertis localement, voir scripts/convert-opus-mt.py).
+ * Les autres paires passent par l'anglais (pivot). Doit rester aligne sur
+ * MODELS et LOCAL_MODELS dans scripts/translation-assets.mjs, qui les
+ * installent dans public/models.
  */
 export const MODEL_IDS = {
   "fr>en": "Xenova/opus-mt-fr-en",
@@ -12,6 +14,8 @@ export const MODEL_IDS = {
   "en>ar": "Xenova/opus-mt-en-ar",
   "zh>en": "Xenova/opus-mt-zh-en",
   "en>zh": "Xenova/opus-mt-en-zh",
+  "fr>ar": "local/opus-mt-fr-ar",
+  "ar>fr": "local/opus-mt-ar-fr",
 } as const;
 
 export type ModelId = (typeof MODEL_IDS)[keyof typeof MODEL_IDS];
@@ -19,9 +23,35 @@ export type ModelId = (typeof MODEL_IDS)[keyof typeof MODEL_IDS];
 /** Modeles a enchainer pour traduire de `source` vers `target` (vide si meme langue). */
 export function modelRoute(source: Locale, target: Locale): ModelId[] {
   if (source === target) return [];
-  if (source === "en") return [MODEL_IDS[`en>${target}` as keyof typeof MODEL_IDS]];
-  if (target === "en") return [MODEL_IDS[`${source}>en` as keyof typeof MODEL_IDS]];
+  const direct = MODEL_IDS[`${source}>${target}` as keyof typeof MODEL_IDS] as ModelId | undefined;
+  if (direct) return [direct];
   return [MODEL_IDS[`${source}>en` as keyof typeof MODEL_IDS], MODEL_IDS[`en>${target}` as keyof typeof MODEL_IDS]];
+}
+
+/**
+ * Route de secours par l'anglais pour une paire qui a un modele direct (fr<->ar,
+ * convertis localement et donc parfois absents) ; undefined sinon.
+ */
+export function pivotFallback(source: Locale, target: Locale): ModelId[] | undefined {
+  if (source === "en" || target === "en" || modelRoute(source, target).length !== 1) return undefined;
+  return [MODEL_IDS[`${source}>en` as keyof typeof MODEL_IDS], MODEL_IDS[`en>${target}` as keyof typeof MODEL_IDS]];
+}
+
+/**
+ * Charge les modeles d'une route ; si l'un d'eux ne peut pas l'etre (fichier
+ * absent...) et qu'une route de secours existe, charge celle-ci a la place.
+ */
+export async function loadRoute<T>(
+  route: ModelId[],
+  fallback: ModelId[] | undefined,
+  load: (model: ModelId, index: number, count: number) => Promise<T>,
+): Promise<T[]> {
+  try {
+    return await Promise.all(route.map((model, index) => load(model, index, route.length)));
+  } catch (error) {
+    if (!fallback || fallback.length === 0) throw error;
+    return Promise.all(fallback.map((model, index) => load(model, index, fallback.length)));
+  }
 }
 
 /** Longueur maximale d'un segment envoye au modele (Opus-MT est entraine sur des phrases). */

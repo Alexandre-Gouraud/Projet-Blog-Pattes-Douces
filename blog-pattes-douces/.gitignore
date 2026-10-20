@@ -45,5 +45,7 @@ next-env.d.ts
 
 # traduction : modeles installes par `pnpm translation:setup`
 /public/models/
+# environnement Python de la conversion des modeles fr<->ar
+/.venv-translation/
 # Ancien emplacement du moteur ONNX (avant octobre 2026) : a supprimer s'il existe encore
 /public/ort/
