@@ -95,10 +95,6 @@ export function dislikeArticle(articleId: string, userId: string) {
 
 /* --- Commentaires --- */
 
-export function fetchComments(articleId?: string) {
-  return request<Comment[]>(articleId ? API.commentsByArticle(articleId) : API.comments);
-}
-
 /** Commentaires ecrits par l'utilisateur. */
 export function fetchCommentsByCommenter(userId: string) {
   return request<Comment[]>(API.commentsByCommenter(userId));

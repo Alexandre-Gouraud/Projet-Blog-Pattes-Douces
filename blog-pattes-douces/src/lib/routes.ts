@@ -38,7 +38,6 @@ export const API = {
   articleLike: (id: string) => `/api/articles/${id}/like`,
   articleDislike: (id: string) => `/api/articles/${id}/dislike`,
   comments: "/api/comments",
-  commentsByArticle: (articleId: string) => `/api/comments?articleId=${encodeURIComponent(articleId)}`,
   commentsByCommenter: (userId: string) => `/api/comments?commenterId=${encodeURIComponent(userId)}`,
   commentsOnAuthorArticles: (authorId: string) => `/api/comments?authorId=${encodeURIComponent(authorId)}`,
   uploads: (filename: string) => `/api/uploads?filename=${encodeURIComponent(filename)}`,

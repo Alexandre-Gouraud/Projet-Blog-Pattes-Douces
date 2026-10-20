@@ -44,16 +44,7 @@
         "few": "{count} مشاهدات",
         "many": "{count} مشاهدةً",
         "other": "{count} مشاهدة"
-      },
-      "likes": {
-        "zero": "{count} إعجاب",
-        "one": "إعجاب واحد",
-        "two": "إعجابان",
-        "few": "{count} إعجابات",
-        "many": "{count} إعجابًا",
-        "other": "{count} إعجاب"
-      },
-      "dislikes": { "other": "{count} عدم إعجاب" }
+      }
     }
   },
   "shell": {

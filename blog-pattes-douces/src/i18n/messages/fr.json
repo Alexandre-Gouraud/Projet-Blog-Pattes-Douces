@@ -23,9 +23,7 @@
     "count": {
       "articles": { "one": "{count} article", "other": "{count} articles" },
       "comments": { "one": "{count} commentaire", "other": "{count} commentaires" },
-      "views": { "one": "{count} vue", "other": "{count} vues" },
-      "likes": { "one": "{count} j'aime", "other": "{count} j'aime" },
-      "dislikes": { "one": "{count} je n'aime pas", "other": "{count} je n'aime pas" }
+      "views": { "one": "{count} vue", "other": "{count} vues" }
     }
   },
   "shell": {

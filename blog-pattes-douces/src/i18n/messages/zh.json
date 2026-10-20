@@ -23,9 +23,7 @@
     "count": {
       "articles": { "other": "{count} 篇文章" },
       "comments": { "other": "{count} 条评论" },
-      "views": { "other": "{count} 次浏览" },
-      "likes": { "other": "{count} 个赞" },
-      "dislikes": { "other": "{count} 个踩" }
+      "views": { "other": "{count} 次浏览" }
     }
   },
   "shell": {
