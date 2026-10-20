@@ -100,7 +100,7 @@ export default function ActivityList() {
               {liked.map((article) => (
                 <li key={article.id} className="flex flex-col gap-1 rounded-xl bg-cream px-4 py-3.5">
                   <Link href={ROUTES.article(article.id)} className="font-[650] text-ink">
-                    <span lang={article.langue ?? undefined}>{article.titre}</span>
+                    <span lang={article.langue ?? undefined} dir="auto">{article.titre}</span>
                   </Link>
                   <p className="m-0 text-sm text-ink2">
                     {f(t.common.by, { name: article.auteur?.pseudo ?? t.species.former })} (

@@ -120,7 +120,7 @@ export default function StatsView() {
                     {stats.articles.map((article) => (
                       <tr key={article.id} className="border-b border-line">
                         <th scope="row" className="px-2 py-2.5 text-start font-semibold">
-                          <span lang={article.langue ?? undefined}>{article.titre}</span>
+                          <span lang={article.langue ?? undefined} dir="auto">{article.titre}</span>
                         </th>
                         <td className={cell}>{article.vue.length}</td>
                         <td className={cell}>{article.reaction1.length}</td>

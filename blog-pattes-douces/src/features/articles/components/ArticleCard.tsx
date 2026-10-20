@@ -51,11 +51,11 @@ export function ArticleCard({
 
       <h2 className="m-0 text-xl leading-[1.3] font-[650]">
         <Link href={href} className="text-ink no-underline hover:underline">
-          <span lang={lang}>{article.titre}</span>
+          <span lang={lang} dir="auto">{article.titre}</span>
         </Link>
       </h2>
       <p className="m-0 line-clamp-3 text-ink2">
-        <span lang={lang}>{article.texte}</span>
+        <span lang={lang} dir="auto">{article.texte}</span>
       </p>
 
       <div className="flex flex-wrap items-center gap-2 pt-1">

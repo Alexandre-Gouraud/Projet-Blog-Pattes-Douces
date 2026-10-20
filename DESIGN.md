@@ -352,7 +352,7 @@ Les `alert()` natifs du navigateur sont supprimés.
 ### 9.12 Pied de page
 
 - Fond `--surface`, © 2026, `<nav aria-label="Liens de pied de page">` : À propos, Contact, Confidentialité, puis la mention **« Accessibilité : partiellement conforme »**.
-- Cette mention d'état de conformité est obligatoire dès la page d'accueil (RGAA, « Mentions et pages obligatoires »). Elle reste lisible en entier : seul le mot « Accessibilité » est un lien vers la page Accessibilité, et l'état est écrit à la suite en texte simple. L'état doit correspondre au dernier audit : « partiellement conforme » exige qu'au moins 50 % des critères soient respectés ; sans audit en cours de validité, le RGAA impose « non conforme ».
+- Cette mention d'état de conformité est obligatoire dès la page d'accueil (RGAA, « Mentions et pages obligatoires »). Elle reste lisible en entier : seul le mot « Accessibilité » est un lien vers la page Accessibilité, souligné car il est placé dans une phrase (sa couleur seule ne le distingue pas assez du texte voisin, RGAA 10.6), et l'état est écrit à la suite en texte simple. L'état doit correspondre au dernier audit : « partiellement conforme » exige qu'au moins 50 % des critères soient respectés ; sans audit en cours de validité, le RGAA impose « non conforme ».
 - Les quatre liens mènent à de vraies pages : À propos, Contact (tickets GitHub), Confidentialité (données réellement collectées) et la page Accessibilité, qui contient la déclaration selon le modèle du RGAA, le schéma pluriannuel 2026-2028 et le plan d'actions de l'année.
 
 ### 9.13 Page 404
@@ -427,7 +427,7 @@ Les articles (titre et texte) et les commentaires écrits dans une autre langue 
 **Règles**
 
 - Le titre du document (`<title>`) est traduit : « {titre de page} – Pattes Douces » (RGAA 8.6 / WCAG 2.4.2). Celui d'un article est son titre.
-- **Contenus des membres** (articles, commentaires) : ils restent dans leur langue d'origine et portent leur propre attribut `lang` (RGAA 8.7 / WCAG 3.1.2). Un nouvel article ou commentaire prend la langue de l'interface au moment de sa rédaction.
+- **Contenus des membres** (articles, commentaires) : ils restent dans leur langue d'origine et portent leur propre attribut `lang` (RGAA 8.7 / WCAG 3.1.2), avec `dir="auto"` : un texte français garde son sens de lecture de gauche à droite dans l'interface arabe, et un texte traduit en arabe passe de droite à gauche. Un nouvel article ou commentaire prend la langue de l'interface au moment de sa rédaction.
 - **RTL** : uniquement des propriétés logiques (`margin-inline-start`, `inset-inline-start/end`, `border-inline-end`, `text-align: start/end`). Les icônes directionnelles, comme la flèche retour, sont inversées.
 - **Pluriels et formats** : les textes dynamiques (« 3 commentaires », « 2 articles trouvés ») sont des objets de formes CLDR (`one`, `other`… ; 6 formes en arabe, 1 en chinois), accordés par `Intl.PluralRules`. Pas de concaténation figée.
 - Dates au format local `JJ/MM/AAAA` (`AAAA/MM/JJ` en chinois), en chiffres latins dans toutes les langues.

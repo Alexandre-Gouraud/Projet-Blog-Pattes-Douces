@@ -32,7 +32,8 @@ type State =
 /**
  * Detail d'un article (DESIGN.md §9.7) : retour, article, reactions et
  * commentaires. Un membre peut commenter ; un visiteur est invite a se
- * connecter. Le contenu garde sa langue d'origine (attribut lang).
+ * connecter. Le contenu garde sa langue d'origine (attribut lang) et son sens
+ * d'ecriture (dir="auto" : un texte francais reste de gauche a droite en arabe).
  */
 export default function ArticleDetail({ articleId: id }: { articleId: string }) {
   const { t, f, p, date, locale } = useI18n();
@@ -165,7 +166,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
       <BackLink label={t.article.back} />
       <article className={`${cardClass} flex flex-col gap-[18px] p-5 desk:p-8`}>
         <PageTitle className="text-balance">
-          <span lang={translation.lang(0)}>{translation.text(0)}</span>
+          <span lang={translation.lang(0)} dir="auto">{translation.text(0)}</span>
         </PageTitle>
         <div className="flex items-center gap-3">
           <Avatar name={author ?? "?"} seed={current.auteurId} size={44} />
@@ -190,7 +191,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
         )}
         <TranslateControl translation={translation} />
         <p className="m-0 max-w-[68ch] text-lg leading-[1.7] whitespace-pre-line text-ink">
-          <span lang={translation.lang(1)}>{translation.text(1)}</span>
+          <span lang={translation.lang(1)} dir="auto">{translation.text(1)}</span>
         </p>
         <div className="flex flex-wrap gap-2 border-t border-line pt-4">
           <ReactionButton
@@ -284,7 +285,7 @@ function CommentEntry({ comment }: { comment: ArticleWithComments["commentaires"
           <strong className="text-ink">{author}</strong> · <time dateTime={comment.date}>{date(comment.date)}</time>
         </p>
         <p className="m-0 break-words whitespace-pre-line">
-          <span lang={translation.lang(0)}>{translation.text(0)}</span>
+          <span lang={translation.lang(0)} dir="auto">{translation.text(0)}</span>
         </p>
         <TranslateControl
           translation={translation}
