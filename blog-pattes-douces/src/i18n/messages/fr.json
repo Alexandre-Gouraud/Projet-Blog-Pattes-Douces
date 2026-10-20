@@ -128,6 +128,7 @@
     "errEmpty": "renseignez votre pseudo et votre mot de passe.",
     "errBad": "pseudo ou mot de passe incorrect.",
     "errServer": "le serveur ne répond pas. Réessayez dans un instant.",
+    "errLocked": { "one": "trop de tentatives de connexion. Réessayez dans {count} minute.", "other": "trop de tentatives de connexion. Réessayez dans {count} minutes." },
     "required": "Connectez-vous pour accéder à cette page.",
     "welcomeBack": "Bon retour parmi nous, {name} !"
   },
