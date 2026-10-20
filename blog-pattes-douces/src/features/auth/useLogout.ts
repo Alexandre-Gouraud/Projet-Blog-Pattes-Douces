@@ -21,8 +21,10 @@ export function useLogout() {
       toast(t.shell.logoutFailed);
       return;
     }
-    clearSession();
-    toast(t.shell.loggedOut);
+    // Navigation voulue : on previent RequireAuth pour qu'il n'envoie pas vers
+    // la connexion (« connexion requise ») en voyant la session vide.
     router.push(ROUTES.feed);
+    clearSession({ onPurpose: true });
+    toast(t.shell.loggedOut);
   };
 }
