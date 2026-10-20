@@ -13,6 +13,6 @@ export async function GET() {
     return NextResponse.json({ user }, { status: 200, headers: NO_STORE });
   } catch (error) {
     console.error("Error reading session:", error);
-    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
+    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500, headers: NO_STORE });
   }
 }
