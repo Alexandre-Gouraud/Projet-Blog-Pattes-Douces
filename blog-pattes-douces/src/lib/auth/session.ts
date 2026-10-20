@@ -19,50 +19,85 @@ type SessionState = {
   /** false tant que /api/auth/me n'a pas repondu (et pendant le rendu serveur). */
   ready: boolean;
   user: CurrentUser | null;
+  /**
+   * true quand /api/auth/me a echoue autrement que par un 401 (reseau, 5xx,
+   * delai depasse) et qu'on ne sait donc pas si l'utilisateur est connecte :
+   * il ne faut surtout pas le traiter en visiteur.
+   */
+  unknown: boolean;
 };
 
-const UNKNOWN: SessionState = { ready: false, user: null };
+const UNKNOWN: SessionState = { ready: false, user: null, unknown: false };
 
 let state: SessionState = UNKNOWN;
-// Incremente a chaque changement local : une reponse de /me partie avant un
-// login ou un logout ne doit pas ecraser l'etat plus recent.
+// Incremente par setSessionUser et clearSession seulement : une reponse de /me
+// partie avant un login ou un logout ne doit pas ecraser l'etat plus recent.
+// Les rafraichissements concurrents (demarrage + focus) ne s'invalident pas.
 let version = 0;
 let started = false;
 const listeners = new Set<() => void>();
 
 function emit(next: SessionState) {
   state = next;
-  version += 1;
   listeners.forEach((listener) => listener());
 }
 
 /** Interroge le serveur et met la copie locale a jour. */
 export async function refreshSession(): Promise<void> {
   const requested = version;
-  let user: CurrentUser | null = null;
+  let user: CurrentUser | null;
   try {
     user = await fetchMe();
   } catch {
-    // Reseau ou serveur indisponible : on garde l'etat connu (visiteur au premier chargement).
-    if (state.ready) return;
+    // Reseau, 5xx ou delai depasse : on ne sait pas. On garde l'utilisateur
+    // deja connu ; au premier chargement l'etat devient « inconnu » (pas visiteur)
+    // et le prochain focus reessaiera.
+    if (requested !== version || state.ready) return;
+    emit({ ready: true, user: null, unknown: true });
+    return;
   }
   if (requested !== version) return;
   const same =
     state.ready &&
+    !state.unknown &&
     state.user?.id === user?.id &&
     state.user?.pseudo === user?.pseudo &&
     state.user?.espece === user?.espece;
-  if (!same) emit({ ready: true, user });
+  if (!same) emit({ ready: true, user, unknown: false });
 }
 
 /** Apres une connexion reussie : le serveur a pose le cookie, on connait l'utilisateur. */
 export function setSessionUser(user: CurrentUser): void {
-  emit({ ready: true, user });
+  version += 1;
+  emit({ ready: true, user, unknown: false });
 }
 
-/** Apres une deconnexion ou une suppression de compte (le serveur a detruit la session). */
-export function clearSession(): void {
-  emit({ ready: true, user: null });
+// Fenetre pendant laquelle un utilisateur vide en etat de deconnexion voulue :
+// RequireAuth ne doit pas alors l'envoyer vers la connexion.
+const SIGN_OUT_GRACE_MS = 5000;
+let signedOutOnPurposeAt = 0;
+
+/** Vrai juste apres une deconnexion ou une suppression de compte voulue par l'utilisateur. */
+export function justSignedOutOnPurpose(now: number = Date.now()): boolean {
+  return now - signedOutOnPurposeAt < SIGN_OUT_GRACE_MS;
+}
+
+/**
+ * Apres une deconnexion ou une suppression de compte (le serveur a detruit la
+ * session). `onPurpose` : l'appelant navigue lui-meme vers le fil, sans passer
+ * par la page de connexion.
+ */
+export function clearSession(options: { onPurpose?: boolean } = {}): void {
+  if (options.onPurpose) signedOutOnPurposeAt = Date.now();
+  version += 1;
+  emit({ ready: true, user: null, unknown: false });
+}
+
+/** Reinitialise l'etat (tests uniquement). */
+export function resetSessionForTests(): void {
+  state = UNKNOWN;
+  version = 0;
+  signedOutOnPurposeAt = 0;
 }
 
 function start() {
@@ -81,7 +116,9 @@ function subscribe(listener: () => void): () => void {
   };
 }
 
-const getSnapshot = () => state;
+/** Etat courant (lu par React via useSyncExternalStore, et par les tests). */
+export const getSessionSnapshot = () => state;
+const getSnapshot = getSessionSnapshot;
 const getServerSnapshot = () => UNKNOWN;
 
 function useSession(): SessionState {
@@ -104,6 +141,11 @@ export function useUserId(): string | null {
 
 export function useSpecies(): string | null {
   return useSession().user?.espece ?? null;
+}
+
+/** true quand /api/auth/me a echoue sans reponse claire : session inconnue, pas visiteur. */
+export function useSessionUnknown(): boolean {
+  return useSession().unknown;
 }
 
 /**

@@ -46,9 +46,9 @@ export default function ProfileView() {
     if (!userId) return;
     try {
       await deleteAccount(userId);
-      clearSession();
-      toast(t.profile.deleted);
       router.push(ROUTES.feed);
+      clearSession({ onPurpose: true });
+      toast(t.profile.deleted);
     } catch {
       toast(t.common.deleteFailed);
     }

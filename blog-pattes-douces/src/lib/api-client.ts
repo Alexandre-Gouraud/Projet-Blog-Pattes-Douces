@@ -46,10 +46,13 @@ export function logout() {
   return request<{ message: string }>(API.logout, { method: "POST" });
 }
 
+/** Delai maximal de /api/auth/me : au-dela on ne sait pas, on ne traite pas en visiteur. */
+const ME_TIMEOUT_MS = 8000;
+
 /** Utilisateur de la session serveur, ou null si personne n'est connecte. */
 export async function fetchMe(): Promise<CurrentUser | null> {
   try {
-    const { user } = await request<{ user: CurrentUser }>(API.me, { cache: "no-store" });
+    const { user } = await request<{ user: CurrentUser }>(API.me, { cache: "no-store", signal: AbortSignal.timeout(ME_TIMEOUT_MS) });
     return user;
   } catch (error) {
     if (error instanceof ApiError && error.status === 401) return null;
