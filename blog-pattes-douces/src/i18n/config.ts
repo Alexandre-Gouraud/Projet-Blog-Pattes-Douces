@@ -26,7 +26,7 @@ export type LocaleInfo = {
 export const LOCALE_INFO: Record<Locale, LocaleInfo> = {
   fr: { code: "fr", name: "Français", dir: "ltr", flag: "/images/flags/fr.svg", intl: "fr-FR" },
   en: { code: "en", name: "English", dir: "ltr", flag: "/images/flags/gb.svg", intl: "en-GB" },
-  ar: { code: "ar", name: "العربية", dir: "rtl", flag: "/images/flags/sa.svg", intl: "ar-u-nu-latn" },
+  ar: { code: "ar", name: "العربية", dir: "rtl", flag: "/images/flags/arab-league.png", intl: "ar-u-nu-latn" },
   zh: { code: "zh", name: "中文", dir: "ltr", flag: "/images/flags/cn.svg", intl: "zh-CN" },
 };
 

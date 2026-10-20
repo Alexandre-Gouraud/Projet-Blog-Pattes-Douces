@@ -357,7 +357,7 @@ Intégrée au shell : logo, h1 « Page introuvable », texte, bouton primaire «
 |---|---|---|---|
 | Français (par défaut) | `fr` | France | LTR |
 | English | `en` | Royaume-Uni | LTR |
-| العربية | `ar` | Arabie saoudite (convention ; à valider avec l'équipe) | **RTL** |
+| العربية | `ar` | Ligue arabe | **RTL** |
 | 中文 (mandarin, chinois simplifié) | `zh` | Chine | LTR |
 
 **Règles**
