@@ -6,7 +6,7 @@ import { speciesLabel } from "@/features/articles/species";
 import { useLogout } from "@/features/auth/useLogout";
 import { useI18n } from "@/i18n/I18nProvider";
 import { Link } from "@/i18n/navigation";
-import { usePseudo, useSpecies, useUserId } from "@/lib/auth/session";
+import { usePseudo, useSessionUnknown, useSpecies, useUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 
 /**
@@ -20,6 +20,7 @@ export function AccountBlock({ variant, onNavigate }: { variant: "sidebar" | "dr
   const userId = useUserId();
   const espece = useSpecies();
   const logout = useLogout();
+  const unknown = useSessionUnknown();
   const size = variant === "drawer" ? "lg" : "md";
 
   if (pseudo) {
@@ -47,6 +48,9 @@ export function AccountBlock({ variant, onNavigate }: { variant: "sidebar" | "dr
       </>
     );
   }
+
+  // Session inconnue (serveur injoignable) : ni connexion ni deconnexion a proposer.
+  if (unknown) return null;
 
   return (
     <>

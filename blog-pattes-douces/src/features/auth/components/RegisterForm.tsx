@@ -171,8 +171,8 @@ export default function RegisterForm() {
             </span>
           </p>
         )}
-        <Button type="submit" size="lg">
-          {t.register.submit}
+        <Button type="submit" size="lg" aria-disabled={submitting}>
+          {submitting ? t.register.submitting : t.register.submit}
         </Button>
       </form>
       <p className="m-0 rounded-xl bg-surface px-4 py-3.5 text-center">

@@ -6,6 +6,7 @@
     "quote": "「{text}」",
     "error": "错误：",
     "retry": "重试",
+    "retrying": "正在重试…",
     "loadError": "内容加载失败。请检查网络连接后重试。",
     "cancel": "取消",
     "publishedOn": "发布于",
@@ -118,6 +119,7 @@
   },
   "login": {
     "allRequired": "所有字段均为必填。",
+    "submitting": "正在登录…",
     "pseudo": "用户名",
     "password": "密码",
     "firstTime": "第一次来 Pattes Douces？",
@@ -130,6 +132,7 @@
   },
   "register": {
     "starRequired": "标有星号（*）的字段为必填。",
+    "submitting": "正在创建账号…",
     "pseudo": "宠物昵称 *",
     "pseudoHelp": "3 到 30 个字符。",
     "email": "电子邮箱 *",

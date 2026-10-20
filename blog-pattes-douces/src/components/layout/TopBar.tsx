@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { useI18n } from "@/i18n/I18nProvider";
 import { Link } from "@/i18n/navigation";
-import { useIsLoggedIn } from "@/lib/auth/session";
+import { useIsLoggedIn, useSessionUnknown } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 import { ProfileLink } from "./AccountBlock";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -64,6 +64,7 @@ function HomeLink() {
 export function TopBar({ sidebarOpen, onToggleSidebar }: { sidebarOpen: boolean; onToggleSidebar: () => void }) {
   const { t } = useI18n();
   const loggedIn = useIsLoggedIn();
+  const unknown = useSessionUnknown();
 
   return (
     <header className="sticky top-0 z-20 hidden min-h-[60px] items-center gap-3 border-b border-line bg-app px-4 py-2 desk:flex">
@@ -74,7 +75,7 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: { sidebarOpen: boolean;
           <div className="ms-auto flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher menuId="menu-langue-haut" compact />
-            {loggedIn ? <ProfileLink /> : <ButtonLink href={ROUTES.login}>{t.shell.login}</ButtonLink>}
+            {loggedIn ? <ProfileLink /> : !unknown && <ButtonLink href={ROUTES.login}>{t.shell.login}</ButtonLink>}
           </div>
         </>
       )}

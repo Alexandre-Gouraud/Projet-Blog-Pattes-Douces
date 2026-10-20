@@ -15,7 +15,7 @@ import { useContentTranslation } from "@/features/translation/useContentTranslat
 import { useI18n } from "@/i18n/I18nProvider";
 import { Link, usePathname } from "@/i18n/navigation";
 import { ApiError, addView, createComment, fetchArticle } from "@/lib/api-client";
-import { useIsLoggedIn, useUserId } from "@/lib/auth/session";
+import { useIsLoggedIn, useSessionUnknown, useUserId } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
 import { LIMITS } from "@/lib/validation";
 import type { ArticleWithComments } from "@/types";
@@ -40,6 +40,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
   const pathname = usePathname();
   const userId = useUserId();
   const loggedIn = useIsLoggedIn();
+  const sessionUnknown = useSessionUnknown();
   const react = useReact();
   const [state, setState] = useState<State>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
@@ -245,7 +246,7 @@ export default function ArticleDetail({ articleId: id }: { articleId: string }) 
               <Button type="submit">{t.article.publishComment}</Button>
             </div>
           </form>
-        ) : (
+        ) : sessionUnknown ? null : (
           <p className="m-0 rounded-xl bg-cream px-4 py-3.5">
             <Link href={ROUTES.loginThen(pathname)} className="font-semibold">
               {t.article.loginLink}
