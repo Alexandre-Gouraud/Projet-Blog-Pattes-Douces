@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma, publicUserSelect } from "@/lib/prisma";
 import { badRequest } from "@/lib/http";
-import { forbidden, requireUser } from "@/lib/auth/server";
+import { clearSessionCookie, forbidden, requireUser } from "@/lib/auth/server";
 import { isObjectId } from "@/lib/validation";
 
 export async function GET(req: Request, { params }: RouteContext<"/api/users/[id]">) {
@@ -65,6 +65,9 @@ export async function DELETE(req: Request, { params }: RouteContext<"/api/users/
     if (deleted.count === 0) {
       return NextResponse.json({ error: "Utilisateur non trouvé" }, { status: 404 });
     }
+
+    // Les sessions sont supprimees en base : le cookie ne sert plus a rien.
+    await clearSessionCookie();
 
     return NextResponse.json({ message: "Compte supprimé avec succès" }, { status: 200 });
   } catch (error) {

@@ -84,6 +84,12 @@ export async function destroySession(): Promise<void> {
   cookieStore.delete(SESSION_COOKIE);
 }
 
+/** Retire le cookie de session du navigateur (sans toucher a la base). */
+export async function clearSessionCookie(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete(SESSION_COOKIE);
+}
+
 export function forbidden(error = "Action non autorisée") {
   return NextResponse.json({ error }, { status: 403 });
 }
@@ -109,7 +115,13 @@ export async function requireUser(
 ): Promise<{ user: SessionUser; response?: undefined } | { user?: undefined; response: NextResponse }> {
   const crossOrigin = rejectCrossOrigin(request);
   if (crossOrigin) return { response: crossOrigin };
-  const user = await getSessionUser();
-  if (!user) return { response: NextResponse.json({ error: "Connexion requise" }, { status: 401 }) };
-  return { user };
+  try {
+    const user = await getSessionUser();
+    if (!user) return { response: NextResponse.json({ error: "Connexion requise" }, { status: 401 }) };
+    return { user };
+  } catch (error) {
+    // Base indisponible : une reponse JSON, jamais une page d'erreur HTML.
+    console.error("Error reading session:", error);
+    return { response: NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 }) };
+  }
 }
