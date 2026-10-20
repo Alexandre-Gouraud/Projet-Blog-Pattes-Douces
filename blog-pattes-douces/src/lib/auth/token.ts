@@ -35,13 +35,32 @@ export function shouldRenew(lastSeenAt: Date, now: Date = new Date()): boolean {
 }
 
 /**
- * Attributs du cookie de session : httpOnly (illisible par JavaScript),
- * SameSite=Lax, Secure en production seulement (le dev tourne en http).
+ * Attribut Secure du cookie : par defaut vrai en production, faux sinon (le
+ * dev tourne en http). `COOKIE_SECURE` ("true" / "false") le force, par exemple
+ * pour servir l'image Docker en http simple. Toute autre valeur est ignoree :
+ * on ne bascule jamais en non-securise en production par accident.
  */
-export function cookieOptions(nodeEnv: string | undefined = process.env.NODE_ENV) {
+export function isCookieSecure(
+  nodeEnv: string | undefined = process.env.NODE_ENV,
+  override: string | undefined = process.env.COOKIE_SECURE
+): boolean {
+  const value = override?.trim().toLowerCase();
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return nodeEnv === "production";
+}
+
+/**
+ * Attributs du cookie de session : httpOnly (illisible par JavaScript),
+ * SameSite=Lax, Secure selon isCookieSecure.
+ */
+export function cookieOptions(
+  nodeEnv: string | undefined = process.env.NODE_ENV,
+  override: string | undefined = process.env.COOKIE_SECURE
+) {
   return {
     httpOnly: true,
-    secure: nodeEnv === "production",
+    secure: isCookieSecure(nodeEnv, override),
     sameSite: "lax" as const,
     path: "/",
     maxAge: SESSION_MAX_AGE_SECONDS,
