@@ -49,3 +49,7 @@ next-env.d.ts
 /.venv-translation/
 # Ancien emplacement du moteur ONNX (avant octobre 2026) : a supprimer s'il existe encore
 /public/ort/
+
+# playwright
+/test-results/
+/playwright-report/
