@@ -23,3 +23,5 @@ README.md
 
 # Reinstalles dans l'image par scripts/translation-assets.mjs
 public/models
+# Ancien emplacement du moteur ONNX (avant octobre 2026) : a supprimer s'il existe encore
+public/ort

@@ -232,7 +232,7 @@ flowchart LR
 blog-pattes-douces/
 ├── prisma/schema.prisma    Data model (User, Article, Commentaire)
 ├── public/                 Logo, flags; models/ installed by translation:setup
-├── scripts/                translation-assets.mjs (translation models and runtime)
+├── scripts/                translation-assets.mjs (translation models)
 ├── src/
 │   ├── app/[lang]/         Pages and root layout, one version per language
 │   ├── app/api/            REST API (route handlers)
@@ -579,7 +579,7 @@ flowchart LR
 blog-pattes-douces/
 ├── prisma/schema.prisma    Modèle de données (User, Article, Commentaire)
 ├── public/                 Logo, drapeaux ; models/ installé par translation:setup
-├── scripts/                translation-assets.mjs (modèles et moteur de traduction)
+├── scripts/                translation-assets.mjs (modèles de traduction)
 ├── src/
 │   ├── app/[lang]/         Pages et layout racine, une version par langue
 │   ├── app/api/            API REST (route handlers)
