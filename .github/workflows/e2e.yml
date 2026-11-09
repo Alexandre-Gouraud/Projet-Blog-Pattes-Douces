@@ -24,7 +24,10 @@ defaults:
 jobs:
   e2e:
     name: Playwright + axe
-    runs-on: ubuntu-latest
+    # mongo:8.0 refuse de demarrer sur un noyau Linux 6.19 ou plus recent
+    # (SERVER-121912) : ubuntu-latest (26.04) et ubuntu-24.04 sont en 7.0,
+    # ubuntu-22.04 en 6.8. Revenir a ubuntu-latest des qu'une image 8.0 corrigee existe.
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     permissions:
       contents: read # recuperer le code
