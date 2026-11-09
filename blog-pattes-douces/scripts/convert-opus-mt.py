@@ -14,7 +14,7 @@ conversion.json. Pour chaque modele, <sortie>/local/opus-mt-<paire>/ contient :
   onnx/decoder_model_merged_quantized.onnx
   conversion.json                          (source, revision, licence, quantification)
 
-Etapes : export ONNX par optimum (tache text2text-generation-with-past, qui
+Etapes : export ONNX par optimum-onnx (optimum 2.x) (tache text2text-generation-with-past, qui
 produit un decodeur "merged" avec et sans cache), quantification dynamique
 int8 des poids (onnxruntime), construction de tokenizer.json, puis VALIDATION
 (le script echoue si elle echoue) : le tokenizer est charge avec la librairie
