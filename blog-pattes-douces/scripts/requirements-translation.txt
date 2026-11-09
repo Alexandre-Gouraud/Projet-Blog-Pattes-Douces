@@ -1,8 +1,8 @@
 # Dependances Python verrouillees (avec empreintes) de scripts/convert-opus-mt.py.
-# Generee avec pip-tools sous Python 3.12 / Linux x86_64 (numpy 2.5 exige Python 3.12+) :
-#   pip-compile --generate-hashes --strip-extras --index-url https://download.pytorch.org/whl/cpu \
-#     --extra-index-url https://pypi.org/simple scripts/requirements-translation.in
-# puis torch est deplace dans requirements-torch.txt (index PyTorch CPU, installe a part).
+# Generee avec uv pour Python 3.12 / Linux x86_64 (numpy 2.5 exige Python 3.12+) :
+#   uv pip compile --generate-hashes --python-version 3.12 \
+#     --python-platform x86_64-unknown-linux-gnu scripts/requirements-translation.in
+# puis torch est retire du verrou (requirements-torch.txt, index PyTorch CPU, installe a part).
 # Installation : pip install --require-hashes -r scripts/requirements-translation.txt
 # Utilisees une seule fois a l'installation ; rien de Python n'est utilise a l'execution.
 
