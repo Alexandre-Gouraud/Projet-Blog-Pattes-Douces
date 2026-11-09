@@ -63,6 +63,10 @@ the **Prisma** ORM, and article images are hosted on **Vercel Blob**. The
 interface is available in **4 languages** and designed to meet **RGAA 4.1.2 /
 WCAG 2.2 level AA**.
 
+**Version 1.0.0** is the first stable release. Changes are listed in
+[CHANGELOG.md](CHANGELOG.md), and supported versions and vulnerability
+reporting are described in [SECURITY.md](SECURITY.md).
+
 > The application code lives in [`blog-pattes-douces/`](blog-pattes-douces/).
 > The detailed technical reference (API, data model, i18n, version constraints)
 > is in [`blog-pattes-douces/README.md`](blog-pattes-douces/README.md) (in French),
@@ -439,6 +443,11 @@ l'API REST vivent dans le même projet, les données sont stockées dans
 **MongoDB** via l'ORM **Prisma**, et les images d'articles sont hébergées sur
 **Vercel Blob**. L'interface est disponible en **4 langues** et conçue pour
 respecter le **RGAA 4.1.2 / WCAG 2.2 niveau AA**.
+
+**La version 1.0.0** est la première version stable. Les changements sont
+listés dans [CHANGELOG.md](CHANGELOG.md), et les versions prises en charge
+ainsi que le signalement de vulnérabilités sont décrits dans
+[SECURITY.md](SECURITY.md).
 
 > Le code de l'application se trouve dans [`blog-pattes-douces/`](blog-pattes-douces/).
 > La référence technique détaillée (API, modèle de données, i18n, contraintes

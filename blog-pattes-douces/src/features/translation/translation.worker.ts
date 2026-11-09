@@ -8,7 +8,7 @@
 import { env, pipeline, type TranslationPipeline } from "@huggingface/transformers";
 import type { ModelId } from "./models";
 import { joinTranslated, loadRoute, splitForTranslation } from "./models";
-import type { WorkerRequest, WorkerResponse } from "./protocol";
+import { isTrustedOrigin, isWorkerRequest, type WorkerRequest, type WorkerResponse } from "./protocol";
 
 env.allowRemoteModels = false;
 env.allowLocalModels = true;
@@ -98,10 +98,13 @@ async function handle(request: WorkerRequest) {
   post({ type: "done", id, texts: results });
 }
 
-self.addEventListener("message", (event: MessageEvent<WorkerRequest>) => {
-  handle(event.data).catch((error: unknown) => {
-    if (event.data.type === "translate") {
-      post({ type: "error", id: event.data.id, message: error instanceof Error ? error.message : String(error) });
+self.addEventListener("message", (event: MessageEvent<unknown>) => {
+  if (!isTrustedOrigin(event.origin, self.location.origin)) return;
+  const data = event.data;
+  if (!isWorkerRequest(data)) return;
+  handle(data).catch((error: unknown) => {
+    if (data.type === "translate") {
+      post({ type: "error", id: data.id, message: error instanceof Error ? error.message : String(error) });
     }
   });
 });

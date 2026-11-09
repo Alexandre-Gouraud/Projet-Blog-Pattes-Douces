@@ -2,13 +2,12 @@
 # (elles sont dans requirements-translation.txt). Empreintes des roues CPython 3.12 et 3.13
 # (Linux x86_64/aarch64, Windows, macOS arm64).
 # pip install --require-hashes --no-deps --index-url https://download.pytorch.org/whl/cpu -r scripts/requirements-torch.txt
-torch==2.7.1 \
-    --hash=sha256:0bc887068772233f532b51a3e8c8cfc682ae62bef74bf4e0c53526c8b9e4138f \
-    --hash=sha256:3bf2db5adf77b433844f080887ade049c4705ddf9fe1a32023ff84ff735aa5ad \
-    --hash=sha256:7b4f8b2b83bd08f7d399025a9a7b323bdbb53d20566f1e0d584689bb92d82f9a \
-    --hash=sha256:7ecd868a086468e1bcf74b91db425c1c2951a9cfcd0592c4c73377b7e42485ae \
-    --hash=sha256:84ea1f6a1d15663037d01b121d6e33bb9da3c90af8e069e5072c30f413455a57 \
-    --hash=sha256:8f8b3cfc53010a4b4a3c7ecb88c212e9decc4f5eeb6af75c3c803937d2d60947 \
-    --hash=sha256:a2618775f32eb4126c5b2050686da52001a08cffa331637d9cf51c8250931e00 \
-    --hash=sha256:b66f77f6f67317344ee083aa7ac4751a14395fcb38060d564bf513978d267153 \
-    --hash=sha256:eb17646792ac4374ffc87e42369f45d21eff17c790868963b90483ef0b6db4ef
+torch==2.13.0 \
+    --hash=sha256:0b8f7d0423027ae8b90c7977c627f3379f325363a08224dffad9b4b2d684a83d \
+    --hash=sha256:2fe228aba290d14b9f31b049be550dbd469c3fd3013d7a19705b30454da97027 \
+    --hash=sha256:33449899ce5496c1b84b4853179d94fd102028ae1407314d9fb956bb79e70d09 \
+    --hash=sha256:3fbf9c9d1f3c10c2d59d04aca426dee9ccc6ceb32d255c61e93acc3b4f75fae6 \
+    --hash=sha256:4ca4a9394b0c771238a4f73590fdbbc4debad85ed0fa63d026ae1b085da7d6e2 \
+    --hash=sha256:6f307c2c32d764ffc6ff6893b801fad6d4752f3e67966cb8abf1843427c02604 \
+    --hash=sha256:a17ff48608634db245e17e8bb00a9558554a49aeb1e4f5fe6cd039af2a10515b \
+    --hash=sha256:a8b450c1e58e5800e5b4691dac412f8d2d65a1dc3298166f91596603a3531e6f
