@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces/actions/workflows/build.yml"><img src="https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces/actions/workflows/build.yml/badge.svg" alt="Build"></a>
+  <a href="https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/actions/workflows/build.yml"><img src="https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/actions/workflows/build.yml/badge.svg" alt="Build"></a>
   <img src="https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white" alt="Next.js 16">
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19">
   <img src="https://img.shields.io/badge/MongoDB-8.0-47A248?logo=mongodb&logoColor=white" alt="MongoDB 8.0">
@@ -142,7 +142,7 @@ automatically uses the version pinned in `package.json`.
 To start, get the project:
 
 ```bash
-git clone https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces.git
+git clone https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces.git
 cd Projet-Blog-Pattes-Douces/blog-pattes-douces
 cp .env.example .env
 ```
@@ -361,7 +361,7 @@ models (Helsinki-NLP) are distributed under the Apache-2.0 license.
 </p>
 
 <p align="center">
-  <a href="https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces/actions/workflows/build.yml"><img src="https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces/actions/workflows/build.yml/badge.svg" alt="Build"></a>
+  <a href="https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/actions/workflows/build.yml"><img src="https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/actions/workflows/build.yml/badge.svg" alt="Build"></a>
   <img src="https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white" alt="Next.js 16">
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19">
   <img src="https://img.shields.io/badge/MongoDB-8.0-47A248?logo=mongodb&logoColor=white" alt="MongoDB 8.0">
@@ -488,7 +488,7 @@ automatiquement la version fixée dans `package.json`.
 Pour commencer, récupérez le projet :
 
 ```bash
-git clone https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces.git
+git clone https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces.git
 cd Projet-Blog-Pattes-Douces/blog-pattes-douces
 cp .env.example .env
 ```

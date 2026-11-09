@@ -31,4 +31,4 @@ export function ExternalLink({ href, children }: { href: string; children: React
   );
 }
 
-export const REPOSITORY_URL = "https://github.com/Alexandre-git-SDV/Projet-Blog-Pattes-Douces";
+export const REPOSITORY_URL = "https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces";
