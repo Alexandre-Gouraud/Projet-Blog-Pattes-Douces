@@ -136,7 +136,7 @@ une autre langue que celle de l'interface (voir [DESIGN.md §9.15](../DESIGN.md)
 | Client | `src/features/translation/translator.ts` | Un worker par page, cache des traductions pour la session, préchauffage au survol / focus |
 | Interface | `useContentTranslation.ts`, `TranslateControl.tsx` | Bascule traduction / original, zone `role="status"`, `lang` par texte |
 | Fichiers | `scripts/translation-assets.mjs` | `pnpm translation:setup` : modèles dans `public/models` (~1 Go). Le moteur ONNX WebAssembly n'est pas copié : le build Next.js l'émet dans `/_next/static/`, en un seul exemplaire |
-| Conversion | `scripts/convert-opus-mt.py`, `scripts/requirements-*.txt` | Convertit `Helsinki-NLP/opus-mt-fr-ar` et `-ar-fr` (révisions épinglées) en ONNX q8 avec optimum, génère leur `tokenizer.json`, valide, puis écrit `conversion.json` ; ignoré si déjà fait |
+| Conversion | `scripts/convert-opus-mt.py`, `scripts/requirements-*.txt` | Convertit `Helsinki-NLP/opus-mt-fr-ar` et `-ar-fr` (révisions épinglées) en ONNX q8 avec optimum-onnx, génère leur `tokenizer.json`, valide, puis écrit `conversion.json` ; ignoré si déjà fait |
 
 - Tout est servi par le site (`env.allowRemoteModels = false`) : aucun texte
   n'est envoyé à un service tiers.
