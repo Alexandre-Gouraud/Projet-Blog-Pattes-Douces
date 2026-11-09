@@ -5,6 +5,29 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-11-09
+
+First stable release. No code change compared with 0.3.0: this version marks
+the functional scope below as stable.
+
+### Scope
+
+- Community blog: articles with optional image, comments, likes/dislikes,
+  views, member pages (profile, my articles, my comments, activity,
+  statistics).
+- Accounts with server-side sessions, ownership checks and attempt limiting.
+- Interface in French, English, Arabic (right to left) and Chinese, with local
+  translation of member content in the browser.
+- Accessible interface (RGAA 4.1.2 / WCAG 2.2 AA target), light and dark
+  themes, automated axe checks in CI.
+
+### Support policy
+
+- The latest `1.0.x` release receives security fixes; versions below 1.0 are no
+  longer supported.
+- Vulnerabilities are reported privately as described in
+  [SECURITY.md](SECURITY.md).
+
 ## [0.3.0] - 2026-11-09
 
 Security hardening release.
@@ -71,6 +94,7 @@ Accessible UI, dark mode and internationalisation in four languages.
 
 Core community blog: articles, comments, reactions and member dashboard.
 
+[1.0.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/releases/tag/v0.1.0
