@@ -36,7 +36,8 @@
       "unrs-resolver"
     ],
     "overrides": {
-      "deepmerge-ts": "^8.0.0"
+      "deepmerge-ts": "^8.0.0",
+      "undici@<6.29.1": "6.29.1"
     }
   },
   "devDependencies": {
