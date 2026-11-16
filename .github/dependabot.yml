@@ -60,7 +60,7 @@ updates:
         patterns: ['*']
         update-types: ['minor', 'patch']
 
-  # Image de base du Dockerfile de l'application (node:24-slim)
+  # Image de base du Dockerfile de l'application (node:26-slim)
   - package-ecosystem: 'docker'
     directory: '/blog-pattes-douces'
     schedule:

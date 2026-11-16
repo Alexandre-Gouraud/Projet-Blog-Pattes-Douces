@@ -260,15 +260,15 @@ est exécuté sur une base jetable.
 
 ## Docker
 
-**`Dockerfile`** : build en plusieurs étapes sur `node:24-slim`.
+**`Dockerfile`** : build en plusieurs étapes sur `node:26-slim`.
 
 | Étape | Contenu |
 |---|---|
-| `deps` | Dépendances (`pnpm install --frozen-lockfile`) et client Prisma |
+| `deps` | pnpm (version du champ `packageManager`, installé avec npm), dépendances (`pnpm install --frozen-lockfile`) et client Prisma |
 | `translation-convert` | `python:3.12-slim` (épinglée par empreinte) : installe les dépendances verrouillées (torch CPU) et convertit les modèles fr ↔ ar ; jetable, Python n'arrive pas dans l'image finale |
 | `translation` | `scripts/translation-assets.mjs --no-convert` : modèles, en cache tant que le script et le lockfile ne changent pas ; reprend les modèles convertis |
 | `builder` | `pnpm build` en mode `standalone` (`NEXT_OUTPUT_STANDALONE=true`) |
-| `runner` | Image finale : serveur autonome, `public/` avec les modèles, utilisateur non root |
+| `runner` | Image finale : serveur autonome, `public/` avec les modèles, utilisateur non root, sans npm ni npx |
 
 **`compose.yaml`**
 
@@ -379,6 +379,6 @@ Ce qui est en place :
 | **TypeScript** | 6.x | `@typescript-eslint/parser` n'accepte pas TypeScript 7 (`<6.1.0`). |
 | **Transformers.js** | 4.x | Exécute les modèles Opus-MT dans le navigateur. Le script d'installation de sa dépendance Node `onnxruntime-node` est ignoré par pnpm : elle ne sert qu'hors du navigateur. |
 | **Python (traduction)** | 3.12+ ; `scripts/requirements-*.txt` (hashes) | Verrou généré sous Python 3.12 (numpy 2.5 l'exige) et sous Linux x86_64 : conversion prise en charge sous Linux et dans Docker (sous Windows, des dépendances propres à la plateforme manquent au verrou). optimum 1.27 ne s'importe pas avec torch 2.14 (testé) et exige transformers < 4.57 : torch 2.7.1 et transformers 4.53.3 épinglés, uniquement à l'installation. |
-| **Node.js** | 24 LTS | Version de la CI et de l'image Docker ; les majeures de l'image sont bloquées dans Dependabot. |
+| **Node.js** | 26 LTS | Version de la CI et de l'image Docker ; les majeures de l'image sont bloquées dans Dependabot. |
 | **pnpm** | 10.x | Fixée par `packageManager` dans `package.json`. |
 | **MongoDB** | 8.0 | Branche stable à support long. |

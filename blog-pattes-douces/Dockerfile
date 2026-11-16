@@ -2,14 +2,13 @@
 # Image de production de Pattes Douces (Next.js en mode standalone).
 # Utilisee par compose.yaml (profil "app") : docker compose --profile app up -d --build --wait
 
-# ---- Base : Node.js 24 LTS --------------------------------------------------
-FROM node:24-slim AS base
+# ---- Base : Node.js 26 LTS --------------------------------------------------
+FROM node:26-slim AS base
 # Prisma a besoin d'OpenSSL pour charger son moteur de requetes.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends openssl ca-certificates \
  && rm -rf /var/lib/apt/lists/*
-ENV NEXT_TELEMETRY_DISABLED=1 \
-    COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
 # ---- Dependances (couche en cache tant que le lockfile ne change pas) --------
@@ -17,8 +16,10 @@ FROM base AS deps
 COPY package.json pnpm-lock.yaml ./
 # Le schema est requis ici : @prisma/client genere le client a l'installation.
 COPY prisma ./prisma
-# pnpm dans la version exacte du champ "packageManager" de package.json.
-RUN corepack enable && corepack install && pnpm install --frozen-lockfile
+# pnpm dans la version exacte du champ "packageManager" de package.json
+# (Node 25+ ne fournit plus corepack : pnpm est installe avec npm).
+RUN npm install -g "$(node -p "require('./package.json').packageManager")" \
+ && pnpm install --frozen-lockfile
 
 # ---- Traduction des contenus : conversion des modeles fr<->ar (Python) -------
 # Etape jetable, en cache tant que les dependances et le script ne changent pas.
@@ -52,6 +53,9 @@ RUN pnpm build
 
 # ---- Image finale : uniquement le serveur autonome ---------------------------
 FROM base AS runner
+# Le serveur n'a besoin que de node : npm et npx sont retires (surface d'attaque).
+RUN rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx \
+           /usr/local/bin/corepack /usr/local/bin/pnpm /usr/local/bin/pnpx
 ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME=0.0.0.0
