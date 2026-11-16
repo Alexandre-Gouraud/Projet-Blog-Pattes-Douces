@@ -9,8 +9,6 @@ on:
   pull_request:
     branches: [main, development]
     paths: *ci-files
-  schedule:
-    - cron: '0 5 * * 0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

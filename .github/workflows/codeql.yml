@@ -11,8 +11,6 @@ on:
   pull_request:
     branches: [main, development]
     paths-ignore: *non-functional-paths
-  schedule:
-    - cron: '0 5 * * 0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
