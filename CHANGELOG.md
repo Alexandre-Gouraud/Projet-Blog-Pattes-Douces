@@ -5,7 +5,9 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2026-11-16
+
+Docker images on the GitHub Container Registry and Node.js 26 LTS.
 
 ### Added
 
@@ -20,6 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   npm at the `packageManager` version, since Node.js 25+ no longer bundles
   corepack.
 - The runtime image no longer ships npm or npx.
+- Support policy: the latest `1.1.x` release now receives security fixes.
+
+### CI
+
+- New Release workflow: builds and pushes the image of a `vX.Y.Z` tag; run
+  manually, it rebuilds an existing tag from its exact source tree.
+- The Build workflow pushes `main` and `main-<sha>`; on pull requests it only
+  builds the image.
+- Dependabot ignores Python minor and major bumps: the hash-locked translation
+  requirements only cover CPython 3.12 and 3.13.
+
+### Dependencies
+
+- Development: jsdom 31.0.1, eslint 10.15.0, @playwright/test 1.65.1,
+  @typescript-eslint/parser 8.72.2, @next/eslint-plugin-next 16.4.6.
+- `python:3.12-slim` digest refreshed (translation conversion stage).
 
 ## [1.0.0] - 2026-11-09
 
@@ -110,7 +128,7 @@ Accessible UI, dark mode and internationalisation in four languages.
 
 Core community blog: articles, comments, reactions and member dashboard.
 
-[Unreleased]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v1.0.0...HEAD
+[1.1.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.1.0...v0.2.0

@@ -1,6 +1,6 @@
 {
   "name": "blog-pattes-douces",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "packageManager": "pnpm@10.34.6",
   "scripts": {

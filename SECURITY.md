@@ -4,8 +4,8 @@
 
 | Version | Supported |
 |---|---|
-| 1.0.x | Yes |
-| < 1.0 | No (please upgrade to the latest 1.0.x release) |
+| 1.1.x | Yes |
+| < 1.1 | No (please upgrade to the latest 1.1.x release) |
 
 Security fixes are released as patch versions of the latest minor release.
 
@@ -41,8 +41,8 @@ reviewed on every release; see [CHANGELOG.md](CHANGELOG.md).
 
 | Version | Prise en charge |
 |---|---|
-| 1.0.x | Oui |
-| < 1.0 | Non (passez à la dernière version 1.0.x) |
+| 1.1.x | Oui |
+| < 1.1 | Non (passez à la dernière version 1.1.x) |
 
 Les correctifs de sécurité sont publiés en versions correctives de la dernière
 version mineure.

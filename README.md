@@ -63,7 +63,7 @@ the **Prisma** ORM, and article images are hosted on **Vercel Blob**. The
 interface is available in **4 languages** and designed to meet **RGAA 4.1.2 /
 WCAG 2.2 level AA**.
 
-**Version 1.0.0** is the first stable release. Changes are listed in
+**Version 1.1.0** is the latest release (1.0.0 was the first stable one). Changes are listed in
 [CHANGELOG.md](CHANGELOG.md), and supported versions and vulnerability
 reporting are described in [SECURITY.md](SECURITY.md).
 
@@ -204,7 +204,7 @@ Registry (tags `X.Y.Z`, `X.Y`, `X` and `latest`; `main` and `main-<sha>` follow
 the `main` branch):
 
 ```bash
-docker pull ghcr.io/alexandre-gouraud/projet-blog-pattes-douces:1.0.0
+docker pull ghcr.io/alexandre-gouraud/projet-blog-pattes-douces:1.1.0
 ```
 
 The image only contains the application: it needs a MongoDB replica set and the
@@ -456,7 +456,7 @@ l'API REST vivent dans le même projet, les données sont stockées dans
 **Vercel Blob**. L'interface est disponible en **4 langues** et conçue pour
 respecter le **RGAA 4.1.2 / WCAG 2.2 niveau AA**.
 
-**La version 1.0.0** est la première version stable. Les changements sont
+**La version 1.1.0** est la dernière version (1.0.0 était la première version stable). Les changements sont
 listés dans [CHANGELOG.md](CHANGELOG.md), et les versions prises en charge
 ainsi que le signalement de vulnérabilités sont décrits dans
 [SECURITY.md](SECURITY.md).
@@ -600,7 +600,7 @@ Registry (tags `X.Y.Z`, `X.Y`, `X` et `latest` ; `main` et `main-<sha>` suivent
 la branche `main`) :
 
 ```bash
-docker pull ghcr.io/alexandre-gouraud/projet-blog-pattes-douces:1.0.0
+docker pull ghcr.io/alexandre-gouraud/projet-blog-pattes-douces:1.1.0
 ```
 
 L'image ne contient que l'application : il lui faut une base MongoDB en replica
