@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Docker images published on the GitHub Container Registry
+  (`ghcr.io/alexandre-gouraud/projet-blog-pattes-douces`): `X.Y.Z`, `X.Y`, `X`
+  and `latest` for each release (Release workflow on `vX.Y.Z` tags), `main` and
+  `main-<sha>` for the `main` branch.
+
+### Changed
+
+- Node.js 26 LTS for the Docker image and CI (was 24). pnpm is installed with
+  npm at the `packageManager` version, since Node.js 25+ no longer bundles
+  corepack.
+- The runtime image no longer ships npm or npx.
+
 ## [1.0.0] - 2026-11-09
 
 First stable release. No code change compared with 0.3.0: this version marks
@@ -94,6 +110,7 @@ Accessible UI, dark mode and internationalisation in four languages.
 
 Core community blog: articles, comments, reactions and member dashboard.
 
+[Unreleased]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Alexandre-Gouraud/Projet-Blog-Pattes-Douces/compare/v0.1.0...v0.2.0

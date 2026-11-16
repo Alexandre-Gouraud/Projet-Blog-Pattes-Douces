@@ -23,7 +23,7 @@
   <img src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white" alt="Prisma 6">
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4">
   <img src="https://img.shields.io/badge/Vitest-5-6E9F18?logo=vitest&logoColor=white" alt="Vitest 5">
-  <img src="https://img.shields.io/badge/Node.js-24_LTS-5FA04E?logo=nodedotjs&logoColor=white" alt="Node.js 24 LTS">
+  <img src="https://img.shields.io/badge/Node.js-26_LTS-5FA04E?logo=nodedotjs&logoColor=white" alt="Node.js 26 LTS">
   <img src="https://img.shields.io/badge/RGAA_4.1.2-WCAG_2.2_AA-005A9C" alt="RGAA 4.1.2 / WCAG 2.2 AA">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License">
 </p>
@@ -136,14 +136,14 @@ Two methods to choose from:
 |---|---|:---:|:---:|---|
 | [Git](https://git-scm.com) | recent | ✅ | ✅ | `git --version` |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | recent | ✅ ¹ | ✅ | `docker compose version` |
-| [Node.js](https://nodejs.org) | 24 LTS | ✅ | — | `node -v` |
+| [Node.js](https://nodejs.org) | 26 LTS | ✅ | — | `node -v` |
 | [pnpm](https://pnpm.io) | 10 | ✅ | — | `pnpm -v` |
 | [Python](https://www.python.org) | 3.12+ | ✅ ² | — | `python3 --version` |
 
 ¹ For the local database only; not needed with a [MongoDB Atlas](https://www.mongodb.com/atlas) database.
 ² Only to convert the French <-> Arabic translation models (`pnpm translation:setup`); optional, and not needed with Docker.
-pnpm is installed with `corepack enable` (bundled with Node.js), which
-automatically uses the version pinned in `package.json`.
+Install pnpm with `npm install -g pnpm@10` (Node.js 25+ no longer bundles
+corepack); pnpm then automatically uses the version pinned in `package.json`.
 
 To start, get the project:
 
@@ -198,6 +198,17 @@ The image build prepares the translation models in a cached stage: the first
 build downloads and converts them (~1 GB; Python only in a throwaway stage, the final image has none), the following ones reuse them.
 `--wait` returns once the application responds. To stop everything:
 `docker compose --profile app down` (add `-v` to also erase the data).
+
+**Published images.** Each release is also published on the GitHub Container
+Registry (tags `X.Y.Z`, `X.Y`, `X` and `latest`; `main` and `main-<sha>` follow
+the `main` branch):
+
+```bash
+docker pull ghcr.io/alexandre-gouraud/projet-blog-pattes-douces:1.0.0
+```
+
+The image only contains the application: it needs a MongoDB replica set and the
+same environment variables as the `app` service of `compose.yaml`.
 
 ### Environment variables
 
@@ -353,7 +364,7 @@ Every push and pull request to `main` or `development` triggers:
 
 | Workflow | Checks |
 |---|---|
-| **Build** | Install, Prisma schema, ESLint, unit tests (Vitest), TypeScript, Next.js build, Docker image build |
+| **Build** | Install, Prisma schema, ESLint, unit tests (Vitest), TypeScript, Next.js build, Docker image build (pushed to ghcr.io as `main` / `main-<sha>` on `main`) |
 | **Accessibility E2E** | MongoDB, seed, production build, Playwright + axe on public and member pages (4 languages, 2 themes), keyboard checks; HTML report uploaded on failure |
 | **CodeQL** | Security analysis of the JavaScript / TypeScript code and workflows |
 | **Actions & CI Files** | Workflow lint (actionlint) and security audit (zizmor) |
@@ -364,7 +375,8 @@ module. The end-to-end tests run axe-core (WCAG 2.2 A/AA) and keyboard checks;
 member pages are only tested in CI, or locally with `E2E_CREATE_USER=1` (use a
 dedicated database). [Dependabot](.github/dependabot.yml) proposes weekly updates for npm
 dependencies, GitHub Actions and the Docker image, with a 7-day delay after
-each release.
+each release. Pushing a `vX.Y.Z` tag runs the **Release** workflow, which
+publishes the image of that version on ghcr.io.
 
 ## License
 
@@ -404,7 +416,7 @@ The other pairs are the ONNX conversions of the same family published by Xenova.
   <img src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white" alt="Prisma 6">
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4">
   <img src="https://img.shields.io/badge/Vitest-5-6E9F18?logo=vitest&logoColor=white" alt="Vitest 5">
-  <img src="https://img.shields.io/badge/Node.js-24_LTS-5FA04E?logo=nodedotjs&logoColor=white" alt="Node.js 24 LTS">
+  <img src="https://img.shields.io/badge/Node.js-26_LTS-5FA04E?logo=nodedotjs&logoColor=white" alt="Node.js 26 LTS">
   <img src="https://img.shields.io/badge/RGAA_4.1.2-WCAG_2.2_AA-005A9C" alt="RGAA 4.1.2 / WCAG 2.2 AA">
   <img src="https://img.shields.io/badge/licence-MIT-blue" alt="Licence MIT">
 </p>
@@ -519,14 +531,14 @@ Deux méthodes au choix :
 |---|---|:---:|:---:|---|
 | [Git](https://git-scm.com) | récente | ✅ | ✅ | `git --version` |
 | [Docker](https://docs.docker.com/get-docker/) + Compose | récente | ✅ ¹ | ✅ | `docker compose version` |
-| [Node.js](https://nodejs.org) | 24 LTS | ✅ | — | `node -v` |
+| [Node.js](https://nodejs.org) | 26 LTS | ✅ | — | `node -v` |
 | [pnpm](https://pnpm.io) | 10 | ✅ | — | `pnpm -v` |
 | [Python](https://www.python.org) | 3.12+ | ✅ ² | — | `python3 --version` |
 
 ¹ Pour la base locale uniquement ; inutile avec une base [MongoDB Atlas](https://www.mongodb.com/atlas).
 ² Uniquement pour convertir les modèles de traduction français <-> arabe (`pnpm translation:setup`) ; facultatif, et inutile avec Docker.
-pnpm s'installe avec `corepack enable` (fourni avec Node.js), qui utilise
-automatiquement la version fixée dans `package.json`.
+pnpm s'installe avec `npm install -g pnpm@10` (Node.js 25+ ne fournit plus
+corepack) ; pnpm utilise ensuite automatiquement la version fixée dans `package.json`.
 
 Pour commencer, récupérez le projet :
 
@@ -582,6 +594,17 @@ Le build de l'image prépare les modèles de traduction dans une étape mise en
 cache : le premier build les télécharge et les convertit (~1 Go ; Python seulement dans une étape jetable, l'image finale n'en a pas), les suivants les réutilisent.
 `--wait` rend la main quand l'application répond. Pour tout arrêter :
 `docker compose --profile app down` (ajouter `-v` pour effacer aussi les données).
+
+**Images publiées.** Chaque version est aussi publiée sur le GitHub Container
+Registry (tags `X.Y.Z`, `X.Y`, `X` et `latest` ; `main` et `main-<sha>` suivent
+la branche `main`) :
+
+```bash
+docker pull ghcr.io/alexandre-gouraud/projet-blog-pattes-douces:1.0.0
+```
+
+L'image ne contient que l'application : il lui faut une base MongoDB en replica
+set et les mêmes variables d'environnement que le service `app` de `compose.yaml`.
 
 ### Variables d'environnement
 
@@ -741,7 +764,7 @@ Chaque push et pull request vers `main` ou `development` déclenche :
 
 | Workflow | Vérifications |
 |---|---|
-| **Build** | Installation, schéma Prisma, ESLint, tests unitaires (Vitest), TypeScript, build Next.js, construction de l'image Docker |
+| **Build** | Installation, schéma Prisma, ESLint, tests unitaires (Vitest), TypeScript, build Next.js, construction de l'image Docker (publiée sur ghcr.io en `main` / `main-<sha>` depuis `main`) |
 | **CodeQL** | Analyse de sécurité du code JavaScript / TypeScript et des workflows |
 | **Actions & CI Files** | Lint des workflows (actionlint) et audit de sécurité (zizmor) |
 
@@ -749,7 +772,9 @@ Les tests unitaires couvrent l'i18n (pluriels, choix de la langue, parité des
 4 fichiers de messages), la validation, les routes, le proxy de langue et le
 module de traduction. [Dependabot](.github/dependabot.yml) propose chaque
 semaine les mises à jour des dépendances npm, des actions GitHub et de l'image
-Docker, avec un délai de 7 jours après chaque publication.
+Docker, avec un délai de 7 jours après chaque publication. Le push d'un tag
+`vX.Y.Z` lance le workflow **Release**, qui publie l'image de cette version sur
+ghcr.io.
 
 ## Licence
 
