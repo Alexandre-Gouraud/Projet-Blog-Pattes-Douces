@@ -111,7 +111,7 @@ jobs:
           images: ${{ steps.image.outputs.name }}
           tags: |
             type=ref,event=branch
-            type=sha,prefix={{branch}}-
+            type=sha,prefix={{branch}}-,enable=${{ github.event_name == 'push' }}
           flavor: latest=false
 
       # Construit l'image a chaque fois ; ne la publie que pour un push sur main.
