@@ -1,0 +1,106 @@
+name: Release
+
+# Publie l'image Docker d'une version sur ghcr.io.
+#  - push d'un tag vX.Y.Z : tags X.Y.Z, X.Y, X (a partir de 1.0) et latest.
+#  - lancement manuel : reconstruit l'image d'un tag deja publie, a partir de
+#    l'arbre source exact de ce tag (tag X.Y.Z seul, sauf si floating_tags).
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build (vX.Y.Z)
+        required: true
+        type: string
+      floating_tags:
+        description: Also point X.Y, X and latest to this version
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read # lire le code du tag
+      packages: write # publier l'image sur ghcr.io
+
+    steps:
+      # Entrees validees ici et passees par l'environnement (pas d'injection).
+      - name: Resolve version
+        id: version
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_FLOATING: ${{ inputs.floating_tags }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then
+            tag="$GITHUB_REF_NAME"
+            floating=true
+          else
+            tag="$INPUT_TAG"
+            floating="$INPUT_FLOATING"
+          fi
+          if ! printf '%s' "$tag" | grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'; then
+            echo "::error::Invalid tag '$tag' (expected vX.Y.Z)"
+            exit 1
+          fi
+          if [ "$floating" != "true" ]; then floating=false; fi
+          {
+            echo "tag=$tag"
+            echo "floating=$floating"
+            echo "image=ghcr.io/${GITHUB_REPOSITORY,,}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Checkout the tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ steps.version.outputs.tag }}
+          persist-credentials: false
+
+      # En lancement manuel, github.sha est celui de main : on etiquette l'image
+      # avec le commit reellement construit.
+      - name: Source commit
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ${{ steps.version.outputs.image }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.version.outputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.version.outputs.tag }},enable=${{ steps.version.outputs.floating }}
+            type=semver,pattern={{major}},value=${{ steps.version.outputs.tag }},enable=${{ steps.version.outputs.floating }}
+          flavor: latest=${{ steps.version.outputs.floating }}
+          labels: |
+            org.opencontainers.image.revision=${{ steps.source.outputs.sha }}
+
+      # Pas de cache partage : l'image d'une version est construite de zero.
+      - name: Build and push
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: blog-pattes-douces
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
