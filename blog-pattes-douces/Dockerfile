@@ -26,7 +26,7 @@ RUN npm install -g "$(node -p "require('./package.json').packageManager")" \
 # Python, torch et optimum restent dans cette etape : l'image finale n'a pas Python.
 # Image epinglee par empreinte (python:3.12-slim) ; dependances installees avec
 # leurs empreintes (--require-hashes), torch CPU depuis l'index PyTorch.
-FROM python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS translation-convert
+FROM python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b AS translation-convert
 WORKDIR /convert
 COPY scripts/requirements-torch.txt scripts/requirements-translation.txt ./scripts/
 RUN pip install --no-cache-dir --require-hashes --no-deps \

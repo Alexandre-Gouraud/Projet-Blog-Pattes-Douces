@@ -78,3 +78,7 @@ updates:
       # Rester sur la version LTS de Node : les majeures se valident a la main.
       - dependency-name: 'node'
         update-types: ['version-update:semver-major']
+      # Le verrou de traduction (scripts/requirements-*.txt, avec empreintes) ne
+      # couvre que CPython 3.12/3.13 : seules les empreintes 3.12 se mettent a jour.
+      - dependency-name: 'python'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
